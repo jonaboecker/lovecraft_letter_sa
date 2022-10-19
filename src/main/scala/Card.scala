@@ -26,7 +26,7 @@ class Card (val name: String, val value: Int, val number: Int, val effect: Strin
             tempSt + "|  " + tempVec(1) + "  |" + eol
         }
     }
-    def body = ("|" + (" H") * cardWith + "|" + eol) * cardHeight
+    def body = ("|" + ("H") * cardWith + "|" + eol) * cardHeight
 
     def card = edge + title + body + edge
 
