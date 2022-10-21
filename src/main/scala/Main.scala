@@ -14,6 +14,7 @@
         "Wenn du den Gehirnzylinder ablegst, scheidest du aus"
     )
     val card3 = new Card("Der leuchtende Trapezoeder", 7, 1, "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, musst du den leuchtenden Trapezoeder ausspielen. Ignoriere dies, wenn du wahnsinnig bist.", "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, gewinnst du die Runde.")
+    val card4 = new Card("Tiefe Wesen", 1, 1, "Errätst du den Wert der Hand karte eines Mitspielers (außer der 1), scheidet dieser aus.", "Wähle einen Mitspieler Besitzt dessen Handkarte eine scheidet er aus. Wenn nicht, wende die normale Funktion dieser Karte gegen den Mitspieler an.")
     // println(card)
     // println(card2)
     var tempVec = Vector(card1, card2, card3)
