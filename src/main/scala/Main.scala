@@ -2,7 +2,7 @@
 //def bar() = (("+" + "-" * 5) * 5) + "+" + eol
 
 @main def hello: Unit =
-    println("Hello world!")
+    println("Hello world!!")
     println(msg)
     // println(bar())
     val card1 = new Card("Investigator", 1, 5, "Rate", "")
