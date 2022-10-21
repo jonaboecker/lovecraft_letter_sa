@@ -13,7 +13,7 @@
         "Wenn du den Gehirnzylinder ablegst, scheidest du aus",
         "Wenn du den Gehirnzylinder ablegst, scheidest du aus"
     )
-    val card3 = new Card("Investigator2", 1, 5, "Rate", "")
+    val card3 = new Card("Der leuchtende Trapezoeder", 7, 1, "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, musst du den leuchtenden Trapezoeder ausspielen. Ignoriere dies, wenn du wahnsinnig bist.", "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, gewinnst du die Runde.")
     // println(card)
     // println(card2)
     var tempVec = Vector(card1, card2, card3)

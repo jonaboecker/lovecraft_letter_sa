@@ -26,21 +26,18 @@ class Card (val name: String, val value: Int, val number: Int, val effect: Strin
         }
     }
     def body = {
-        //("|" + ("H") * cardWith + "|" + eol) * cardHeight
-        val tempVec = splitname(effect, 2)
-        //val tempSt = "Hallo"
-        val tempArray: Array[String] = tempVec.toArray
-        for (i <- 0 until cardHeight - 1) {
-            if (tempVec.length > i) {
-                tempArray.updated(0, tempArray(0) + "|" + tempVec(i) + "|" + eol)
-                //tempSt.appended("|" + tempVec(i) + "|" + eol)
-            } else {
-                //tempSt.appended("|" + ("H") * cardWith + "|" + eol)
-                tempArray.updated(0, tempArray(0) + "|" + ("H") * cardWith + "|" + eol)
-            }
+        val tEffect = (" ") * (cardWith - 2) + effect + (" ") * ((cardWith - 2) - effect.length % (cardWith - 2) + (cardWith - 2))
+        if (mad_effect.equals("")) {
+            val textLength = tEffect.length
+            val bothEffects = tEffect + (" ")*((cardWith - 2) * cardHeight - textLength)
+            val tempVec = splitname(bothEffects, 2)
+            tempVec.map("| " + _ + " |" + eol).mkString
+        } else {
+            val textLength = (tEffect + "mad: " + mad_effect).length
+            val bothEffects = tEffect + "mad: " + mad_effect + (" ")*((cardWith - 2) * cardHeight - textLength)
+            val tempVec = splitname(bothEffects, 2)
+            tempVec.map("| " + _ + " |" + eol).mkString
         }
-        //tempSt
-        tempArray(0)
     }
 
     def card = edge + title + body + edge
