@@ -19,6 +19,7 @@ project/metals.sbt
 .tasty
 
 # sbt
+project/
 project/project/
 project/target/
 target/
@@ -40,3 +41,4 @@ null/
 .history
 .scala_dependencies
 .cache-main
+.scalafmt.conf
