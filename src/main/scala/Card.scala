@@ -1,3 +1,5 @@
+package scala
+
 class Card (val name: String, val value: Int, val number: Int, val effect: String, val mad_effect: String){
     val eol = sys.props("line.separator")
     val cardWith = 18
