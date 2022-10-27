@@ -20,7 +20,7 @@ class BoardSpec extends AnyWordSpec with Matchers {
         "|1 Investigator   5|   |1 Investigator   5|   |1 Investigator   5|" + eol +
           "|                  |   |                  |   |                  |" + eol
       )
-      defaultBoard.titel() should ===(TitelResult)
+      defaultBoard.title() should ===(TitelResult)
       val BodyResult = (
         "| Rate             |   | Rate             |   | Rate             |" + eol +
           "|                  |   |                  |   |                  |" + eol +

@@ -1,25 +1,47 @@
 package scala
 
-class Board(val cards: Vector[Card]) {
+class Board(val indices: Vector[Int]) {
   val eol = sys.props("line.separator")
+  val cardWith = 18
+  val cardHeight = 12
+  val cards = new Card
 
-  def splitAtEol(card: Card): Vector[String] = card.toString.split(eol).toVector
-  // def append (s: String): Vector[String] = v1.appended(s)
-  def connect(
-      a1: Vector[String],
-      a2: Vector[String],
-      a3: Vector[String]
-  ): Vector[String] = {
-    val a4 = a1.toArray
-    for (i <- a1.indices) {
-      a4(i) = a1(i) + "   " + a2(i) + "                   " + a3(i) + eol
-    }
-    a4.toVector
+  def fillspace(name: String, margin: Int): String =
+    name + " " * (cardWith - margin - name.length)
+
+  def edge = ("+" + "-" * cardWith + "+   ") * 3 + eol
+
+  def title = {
+    // val tempVec = splitname(name, 4)
+    val tempSt =
+      "|" + cards.getValue(indices(0)) + " " + cards.getTitelSnippet(
+        indices(0),
+        1,
+        cardWith - 4
+      ) + " " + cards.getAmount(indices(0)) + "|" + eol + "|  " + cards
+        .getTitelSnippet(
+          indices(0),
+          2,
+          cardWith - 4
+        ) + "  |" + eol
   }
-  def board = {
-    val tempVec =
-      connect(splitAtEol(cards(0)), splitAtEol(cards(1)), splitAtEol(cards(2)))
-    " " * 17 + "Handkarten" + " " * 39 + "Ablagestapel" + eol + tempVec.mkString
-  }
-  override def toString: String = board
+//   def body = {
+//     val tEffect =
+//       (" ") * (cardWith - 2) + effect + (" ") * ((cardWith - 2) - effect.length % (cardWith - 2) + (cardWith - 2))
+//     if (mad_effect.equals("")) {
+//       val textLength = tEffect.length
+//       val bothEffects =
+//         tEffect + (" ") * ((cardWith - 2) * cardHeight - textLength)
+//       val tempVec = splitname(bothEffects, 2)
+//       tempVec.map("| " + _ + " |" + eol).mkString
+//     } else {
+//       val textLength = (tEffect + "mad: " + mad_effect).length
+//       val bothEffects =
+//         tEffect + "mad: " + mad_effect + (" ") * ((cardWith - 2) * cardHeight - textLength)
+//       val tempVec = splitname(bothEffects, 2)
+//       tempVec.map("| " + _ + " |" + eol).mkString
+//     }
+//   }
+
+  override def toString: String = edge + title + edge
 }

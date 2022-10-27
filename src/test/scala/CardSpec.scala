@@ -9,12 +9,15 @@ import org.scalatest._
 class CardSpec extends AnyWordSpec with Matchers {
 
   "A Card" should {
+    val defaultCard = new Card
     "return the correct String" in {
-      Card.getName(1) === ("Investigator")
-      Card.getValue(1) === ("1")
-      Card.getAmount(1) === ("5")
-      Card.getEffect(1) === ("Rate")
-      Card.getMadEffect(1) === ("")
+      defaultCard.getName(1) === ("Investigatoren")
+      defaultCard.getValue(1) === ("1")
+      defaultCard.getAmount(1) === ("5")
+      defaultCard.getEffect(1) === ("Rate")
+      defaultCard.getMadEffect(1) === ("")
+      defaultCard.getEffectSnippet(1, 2, 14) === ("              ")
+      defaultCard.getTitelSnippet(1, 2, 14) === (" ")
     }
   }
 }
