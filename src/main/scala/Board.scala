@@ -18,30 +18,45 @@ class Board(val indices: Vector[Int]) {
         indices(0),
         1,
         cardWith - 4
-      ) + " " + cards.getAmount(indices(0)) + "|" + eol + "|  " + cards
-        .getTitelSnippet(
-          indices(0),
-          2,
+      ) + " " + cards.getAmount(indices(0)) + "|   " +
+        "|" + cards.getValue(indices(1)) + " " + cards.getTitelSnippet(
+          indices(1),
+          1,
           cardWith - 4
-        ) + "  |" + eol
+        ) + " " + cards.getAmount(indices(1)) + "|   " +
+        "|" + cards.getValue(indices(2)) + " " + cards.getTitelSnippet(
+          indices(2),
+          1,
+          cardWith - 4
+        ) + " " + cards.getAmount(indices(2)) + "|   "
+        + eol + "|  " + cards
+          .getTitelSnippet(
+            indices(0),
+            2,
+            cardWith - 4
+          ) + "  |   " + "|  " + cards
+          .getTitelSnippet(
+            indices(1),
+            2,
+            cardWith - 4
+          ) + "  |   " + "|  " + cards
+          .getTitelSnippet(
+            indices(2),
+            2,
+            cardWith - 4
+          ) + "  |   " + eol
+    tempSt
   }
-//   def body = {
-//     val tEffect =
-//       (" ") * (cardWith - 2) + effect + (" ") * ((cardWith - 2) - effect.length % (cardWith - 2) + (cardWith - 2))
-//     if (mad_effect.equals("")) {
-//       val textLength = tEffect.length
-//       val bothEffects =
-//         tEffect + (" ") * ((cardWith - 2) * cardHeight - textLength)
-//       val tempVec = splitname(bothEffects, 2)
-//       tempVec.map("| " + _ + " |" + eol).mkString
-//     } else {
-//       val textLength = (tEffect + "mad: " + mad_effect).length
-//       val bothEffects =
-//         tEffect + "mad: " + mad_effect + (" ") * ((cardWith - 2) * cardHeight - textLength)
-//       val tempVec = splitname(bothEffects, 2)
-//       tempVec.map("| " + _ + " |" + eol).mkString
-//     }
-//   }
 
-  override def toString: String = edge + title + edge
+  def bodybuilder(index: Vector[Int], row: Int) = {
+    "| " + cards.getEffectSnippet(index(0), row, cardWith - 2) + " |   " +
+      "| " + cards.getEffectSnippet(index(1), row, cardWith - 2) + " |   " +
+      "| " + cards.getEffectSnippet(index(2), row, cardWith - 2) + " |" + eol
+  }
+  def body = {
+    val res = for (x <- 1 until (cardHeight + 1)) yield bodybuilder(indices, x)
+    res.mkString
+  }
+
+  override def toString: String = edge + title + body + edge
 }

@@ -51,7 +51,7 @@ class Card() {
   }
 
   def getEffectSnippet(index: Int, row: Int, width: Int) = {
-    val tempString = cards(index)(3) + eol + cards(index)(4)
+    val tempString = cards(index)(3) + " Mad: " + cards(index)(4)
     fillspace(tempString.slice((row - 1) * width, row * width), width)
   }
 
