@@ -11,6 +11,10 @@ class BoardSpec extends AnyWordSpec with Matchers {
   "A Board" should {
     val defaultBoard = new Board(Vector(1, 1, 1))
 
+    "return the correct String for fillspace" in {
+      defaultBoard.fillspace("Hallo", 10) should ===("Hallo   ")
+    }
+
     "return the correct EdgeString" in {
       val EdgeResult =
         ("+------------------+   +------------------+   +------------------+   " + eol)
@@ -41,6 +45,18 @@ class BoardSpec extends AnyWordSpec with Matchers {
           "|                  |   |                  |   |                  |" + eol
       )
       defaultBoard.body should ===(BodyResult)
+    }
+
+    "return the correct String form bodybuilder" in {
+      defaultBoard.bodybuilder(Vector(1, 1, 1), 1) should ===(
+        "| Rate Mad:        |   | Rate Mad:        |   | Rate Mad:        |" + eol
+      )
+    }
+
+    "return the correct String for toString" in {
+      val result =
+        defaultBoard.edge + defaultBoard.title + defaultBoard.body + defaultBoard.edge
+      defaultBoard.toString should ===(result)
     }
 
   }

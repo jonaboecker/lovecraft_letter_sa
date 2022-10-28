@@ -32,5 +32,8 @@ class CardSpec extends AnyWordSpec with Matchers {
     "return the correct Title Snippet" in {
       defaultCard.getTitelSnippet(1, 1, 14) should ===("Investigator  ")
     }
+    "return the correct String for fillspace" in {
+      defaultCard.fillspace("Hallo", 10) should ===("Hallo     ")
+    }
   }
 }
