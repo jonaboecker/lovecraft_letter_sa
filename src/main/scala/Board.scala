@@ -14,21 +14,24 @@ class Board(val indices: Vector[Int]) {
   def title = {
     // val tempVec = splitname(name, 4)
     val tempSt =
-      "|" + cards.getValue(indices(0)) + " " + cards.getTitelSnippet(
-        indices(0),
-        1,
-        cardWith - 4
-      ) + " " + cards.getAmount(indices(0)) + "|   " +
-        "|" + cards.getValue(indices(1)) + " " + cards.getTitelSnippet(
-          indices(1),
+      "|" + cards.cards.fromOrdinal(indices(0)).getValue + " " + cards
+        .getTitelSnippet(
+          indices(0),
           1,
           cardWith - 4
-        ) + " " + cards.getAmount(indices(1)) + "|   " +
-        "|" + cards.getValue(indices(2)) + " " + cards.getTitelSnippet(
-          indices(2),
-          1,
-          cardWith - 4
-        ) + " " + cards.getAmount(indices(2)) + "|   "
+        ) + " " + cards.cards.fromOrdinal(indices(0)).getAmount + "|   " +
+        "|" + cards.cards.fromOrdinal(indices(1)).getValue + " " + cards
+          .getTitelSnippet(
+            indices(1),
+            1,
+            cardWith - 4
+          ) + " " + cards.cards.fromOrdinal(indices(1)).getAmount + "|   " +
+        "|" + cards.cards.fromOrdinal(indices(2)).getValue + " " + cards
+          .getTitelSnippet(
+            indices(2),
+            1,
+            cardWith - 4
+          ) + " " + cards.cards.fromOrdinal(indices(2)).getAmount + "|   "
         + eol + "|  " + cards
           .getTitelSnippet(
             indices(0),

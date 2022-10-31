@@ -12,19 +12,19 @@ class CardSpec extends AnyWordSpec with Matchers {
     val defaultCard = new Card
     "return the correct Name" in {
       val nameResult = ("Investigator")
-      defaultCard.getName(1) should ===(nameResult)
+      defaultCard.cards.fromOrdinal(1).toString() should ===(nameResult)
     }
     "return the correct Value" in {
-      defaultCard.getValue(1) should ===("1")
+      defaultCard.cards.fromOrdinal(1).getValue should ===("1")
     }
     "return the correct Amount" in {
-      defaultCard.getAmount(1) should ===("5")
+      defaultCard.cards.fromOrdinal(1).getAmount should ===("5")
     }
     "return the correct Effect" in {
-      defaultCard.getEffect(1) should ===("Rate")
+      defaultCard.cards.fromOrdinal(1).getEffect should ===("Rate")
     }
     "return the correct MadEffect" in {
-      defaultCard.getMadEffect(1) should ===("")
+      defaultCard.cards.fromOrdinal(1).getMadEffect should ===("")
     }
     "return the correct Effect Snippet" in {
       defaultCard.getEffectSnippet(1, 2, 14) should ===("              ")

@@ -1,57 +1,40 @@
 package scala
 
-class Card() {
+case class Card() {
   val eol = sys.props("line.separator")
   // val cardWith = 18
   // val cardHeight = 12
 
-  val cards: Vector[Vector[String]] =
-    Vector(
-      Vector(
-        "",
-        "-",
-        "-",
-        "",
-        ""
-      ),
-      Vector(
-        "Investigator",
-        "1",
-        "5",
-        "Rate",
-        ""
-      ),
-      Vector(
-      )
-    )
+  enum cards(
+      value: String,
+      amount: String,
+      effect: String,
+      mad_effect: String
+  ) {
 
-  def getName(index: Int) = {
-    cards(index)(0)
-  }
+    case Blank extends cards("-", "-", "", "")
+    case Investigator extends cards("1", "5", "Rate", "")
 
-  def getValue(index: Int) = {
-    cards(index)(1)
-  }
+    def getValue = value
 
-  def getAmount(index: Int) = {
-    cards(index)(2)
-  }
+    def getAmount = amount
 
-  def getEffect(index: Int) = {
-    cards(index)(3)
-  }
+    def getEffect = effect
 
-  def getMadEffect(index: Int) = {
-    cards(index)(4)
+    def getMadEffect = mad_effect
+
   }
 
   def getTitelSnippet(index: Int, row: Int, width: Int) = {
-    val tempString = cards(index)(0)
+    val tempString = cards.fromOrdinal(index).toString()
     fillspace(tempString.slice((row - 1) * width, row * width), width)
   }
 
   def getEffectSnippet(index: Int, row: Int, width: Int) = {
-    val tempString = cards(index)(3) + " Mad: " + cards(index)(4)
+    val tempString =
+      cards.fromOrdinal(index).getEffect + " Mad: " + cards
+        .fromOrdinal(index)
+        .getMadEffect
     fillspace(tempString.slice((row - 1) * width, row * width), width)
   }
 
