@@ -14,6 +14,22 @@ case class Card() {
 
     case Blank extends cards("-", "-", "", "")
     case Investigator extends cards("1", "5", "Rate", "")
+    case C2 extends cards("1", "5", "Rate", "")
+    case C3 extends cards("1", "5", "Rate", "")
+    case C4 extends cards("1", "5", "Rate", "")
+    case C5 extends cards("1", "5", "Rate", "")
+    case C6 extends cards("1", "5", "Rate", "")
+    case C7 extends cards("1", "5", "Rate", "")
+    case C8 extends cards("1", "5", "Rate", "")
+    case C9 extends cards("1", "5", "Rate", "")
+    case C10 extends cards("1", "5", "Rate", "")
+    case C11 extends cards("1", "5", "Rate", "")
+    case C12 extends cards("1", "5", "Rate", "")
+    case C13 extends cards("1", "5", "Rate", "")
+    case C14 extends cards("1", "5", "Rate", "")
+    case C15 extends cards("1", "5", "Rate", "")
+    case C16 extends cards("1", "5", "Rate", "")
+
 
     def getValue = value
 
