@@ -18,10 +18,10 @@ class DrawPileSpec extends AnyWordSpec with Matchers {
     "return the correct Tuple" in {
       defaultDrawPile.drawAndGet(List(3,2,1)) should ===((List(2,1),3))
     }
-    "return the correct Amount" in {
+    "return the correct Starting Hands" in {
       defaultDrawPile.startingHands(List(1,2,3,4,5,6),4) should ===((List(5,6),List(4,3,2,1)))
     }
-    "return the correct Effect" in {
+    "return the correct Starting Hands rek" in {
       defaultDrawPile.rekStartingHands(List(1,2,3,4,5,6), 4, Nil) ===((List(5,6),List(4,3,2,1)))
     }
   }
