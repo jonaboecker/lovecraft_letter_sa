@@ -38,7 +38,7 @@ case class Card() {
         extends cards(
           "4",
           "2",
-          "Du bist bis zu deinem nächsten Zug geschützt.",
+          "Du bist bis zu deinem naechsten Zug geschuetzt.",
           ""
         )
     case Dr_Henry_Armintage
@@ -59,7 +59,7 @@ case class Card() {
         extends cards(
           "7",
           "1",
-          "Wenn du zusaetzlich eine Karte mit einer „5\" oder höher auf der Hand hast, musst du den silbernen Schlüssel ausspielen.",
+          "Wenn du zusaetzlich eine Karte mit einer „5\" oder hoeher auf der Hand hast, musst du den silbernen Schluessel ausspielen.",
           ""
         )
     case Necronomicon
@@ -74,7 +74,7 @@ case class Card() {
           "1",
           "1",
           "Erraetst du den Wert der Handkarte eines Mitspielers (außer der „1\"), scheidet dieser aus.",
-          "Wähle einen Mitspieler. Besitzt dessen Handkarte eine „1\", scheidet er aus. Wenn nicht, wende die normale Funktion dieser Karte gegen den Mitspieler an."
+          "Waehle einen Mitspieler. Besitzt dessen Handkarte eine „1\", scheidet er aus. Wenn nicht, wende die normale Funktion dieser Karte gegen den Mitspieler an."
         )
     case Weltraum_Met
         extends cards(
@@ -88,35 +88,35 @@ case class Card() {
           "3",
           "1",
           "Vergleiche deine Handkarte mit der eines Mitspielers. Der Spieler mit dem niedrigeren Wert scheidet aus.",
-          "Wähle einen Mitspieler, der nicht wahnsinnig ist. Er scheidet aus."
+          "Waehle einen Mitspieler, der nicht wahnsinnig ist. Er scheidet aus."
         )
     case Liber_Ivonis
         extends cards(
           "4",
           "1",
-          "Du bist bis zu deinem nächsten Zug geschützt.",
+          "Du bist bis zu deinem naechsten Zug geschuetzt.",
           "Du kannst bis zum Ende der Runde nicht ausscheiden."
         )
     case MI_GO
         extends cards(
           "5",
           "1",
-          "Wähle einen Spieler, der seine Handkarte ablegt und eine neue Karte zieht.",
-          "Wähle einen Mitspieler. Nimm dessen Handkarte auf deine Hand und spiele dann 1 Handkarte aus. Der Mitspieler nimmt sich den Gehirnzylinder der Mi-Go."
+          "Waehle einen Spieler, der seine Handkarte ablegt und eine neue Karte zieht.",
+          "Waehle einen Mitspieler. Nimm dessen Handkarte auf deine Hand und spiele dann 1 Handkarte aus. Der Mitspieler nimmt sich den Gehirnzylinder der Mi-Go."
         )
     case Nyarlathotep
         extends cards(
           "6",
           "1",
           "Tausche deine Handkarte mit der eines Mitspielers.",
-          "Nimm alle Handkarten der Mitspieler. Schave sie an und gib jedem 1 Karte deiner Wahl zurück."
+          "Nimm alle Handkarten der Mitspieler. Schave sie an und gib jedem 1 Karte deiner Wahl zurueck."
         )
     case Der_leuchtende_Trapezoeder
         extends cards(
           "7",
           "1",
-          "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, musst du den leuchtenden Trapezoeder ausspielen. Ignoriere dies, wenn du wahnsinnig bist.",
-          "Wenn du zusätzlich eine Karte mit einer \"5\" oder höher auf der Hand hast, gewinnst du die Runde."
+          "Wenn du zusaetzlich eine Karte mit einer \"5\" oder hoeher auf der Hand hast, musst du den leuchtenden Trapezoeder ausspielen. Ignoriere dies, wenn du wahnsinnig bist.",
+          "Wenn du zusaetzlich eine Karte mit einer \"5\" oder hoeher auf der Hand hast, gewinnst du die Runde."
         )
     case Cthulhu
         extends cards(
