@@ -21,7 +21,7 @@ class CardSpec extends AnyWordSpec with Matchers {
       defaultCard.cards.fromOrdinal(1).getAmount should ===("5")
     }
     "return the correct Effect" in {
-      defaultCard.cards.fromOrdinal(1).getEffect should ===("Rate")
+      defaultCard.cards.fromOrdinal(1).getEffect should ===("Erraetst du den Wert der Handkarte eines Mitspielers (ausser der \"1\"), scheidet dieser aus.")
     }
     "return the correct MadEffect" in {
       defaultCard.cards.fromOrdinal(1).getMadEffect should ===("")
