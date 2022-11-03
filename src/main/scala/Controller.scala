@@ -55,30 +55,30 @@ case class Controller() {
       case _   => spieleranzahl
   }
 
-  def getInputAndPrintLoop(currentPlayer: Int, playerList: List[Player], drawPile: List[Int], hands: List[Int], discardPiles:List[List[Int]]): Unit = {
+  def getInputAndPrintLoop(lastPlayer: Int, playerList: List[Player], drawPile: List[Int], hands: List[Int], discardPiles:List[List[Int]]): Unit = {
 
-    val newCurrentPlayer = (currentPlayer + 1) % playerList.length
+    val currentPlayer = (lastPlayer + 1) % playerList.length
     val (newDrawPile:List[Int], drawedCard: Int) = drawPileO.drawAndGet(drawPile)
-    printf("\n%s ist an der Reihe\n", playerList(newCurrentPlayer))
-    print(Board(Vector(drawedCard, hands(newCurrentPlayer), discardPiles(newCurrentPlayer).head)))
+    printf("\n%s ist an der Reihe\n", playerList(currentPlayer))
+    print(Board(Vector(drawedCard, hands(currentPlayer), discardPiles(currentPlayer).head)))
     println("Welche Karte moechtest du spielen? (1|2)")
     val input = readLine
     input match
       case "1" =>
-        val newDiscardPiles = playCard(newCurrentPlayer, drawedCard, discardPiles)
-        getInputAndPrintLoop(newCurrentPlayer, playerList, newDrawPile, hands, newDiscardPiles)
+        val newDiscardPiles = playCard(currentPlayer, drawedCard, discardPiles)
+        getInputAndPrintLoop(currentPlayer, playerList, newDrawPile, hands, newDiscardPiles)
       case "2" =>
-        val newDiscardPiles = playCard(newCurrentPlayer, hands(newCurrentPlayer), discardPiles)
-        val newHands = hands.updated(newCurrentPlayer, drawedCard)
-        getInputAndPrintLoop(newCurrentPlayer, playerList, newDrawPile, newHands, newDiscardPiles)
+        val newDiscardPiles = playCard(currentPlayer, hands(currentPlayer), discardPiles)
+        val newHands = hands.updated(currentPlayer, drawedCard)
+        getInputAndPrintLoop(currentPlayer, playerList, newDrawPile, newHands, newDiscardPiles)
       case "q"|"Q" => return
       case _ =>
         println("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
-        getInputAndPrintLoop(currentPlayer, playerList, drawPile, hands, discardPiles)
+        getInputAndPrintLoop(lastPlayer, playerList, drawPile, hands, discardPiles)
   }
 
-  def playCard(currentPlayer:Int, card:Int, discardPiles:List[List[Int]]):List[List[Int]] = {
-    val newPlayerDiscardPile = card :: discardPiles(currentPlayer)
-    discardPiles.updated(currentPlayer,newPlayerDiscardPile)
+  def playCard(lastPlayer:Int, card:Int, discardPiles:List[List[Int]]):List[List[Int]] = {
+    val newPlayerDiscardPile = card :: discardPiles(lastPlayer)
+    discardPiles.updated(lastPlayer,newPlayerDiscardPile)
   }
 }
