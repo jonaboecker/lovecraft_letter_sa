@@ -2,8 +2,8 @@ package scala
 
 class Board(val indices: Vector[Int]) {
   val eol = sys.props("line.separator")
-  val cardWith = 18
-  val cardHeight = 12
+  val cardWith = 24
+  val cardHeight = 13
   val cards = new Card
 
   def fillspace(name: String, margin: Int): String =
@@ -48,7 +48,7 @@ class Board(val indices: Vector[Int]) {
             2,
             cardWith - 4
           ) + "  |   " + eol
-    tempSt
+    tempSt + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + eol
   }
 
   def bodybuilder(index: Vector[Int], row: Int) = {

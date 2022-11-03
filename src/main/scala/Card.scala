@@ -17,7 +17,7 @@ case class Card() {
         extends cards(
           "1",
           "5",
-          "Erraetst du den Wert der Handkarte eines Mitspielers (außer der „1\"), scheidet dieser aus.",
+          "Erraetst du den Wert der Handkarte eines Mitspielers (ausser der \"1\"), scheidet dieser aus.",
           ""
         )
     case Katzen_von_Ulthar
@@ -59,7 +59,7 @@ case class Card() {
         extends cards(
           "7",
           "1",
-          "Wenn du zusaetzlich eine Karte mit einer „5\" oder hoeher auf der Hand hast, musst du den silbernen Schluessel ausspielen.",
+          "Wenn du zusaetzlich eine Karte mit einer \"5\" oder hoeher auf der Hand hast, musst du den silbernen Schluessel ausspielen.",
           ""
         )
     case Necronomicon
@@ -73,8 +73,8 @@ case class Card() {
         extends cards(
           "1",
           "1",
-          "Erraetst du den Wert der Handkarte eines Mitspielers (außer der „1\"), scheidet dieser aus.",
-          "Waehle einen Mitspieler. Besitzt dessen Handkarte eine „1\", scheidet er aus. Wenn nicht, wende die normale Funktion dieser Karte gegen den Mitspieler an."
+          "Erraetst du den Wert der Handkarte eines Mitspielers (ausser der \"1\"), scheidet dieser aus.",
+          "Waehle einen Mitspieler. Besitzt dessen Handkarte eine \"1\", scheidet er aus. Wenn nicht, wende die normale Funktion dieser Karte gegen den Mitspieler an."
         )
     case Weltraum_Met
         extends cards(
@@ -109,7 +109,7 @@ case class Card() {
           "6",
           "1",
           "Tausche deine Handkarte mit der eines Mitspielers.",
-          "Nimm alle Handkarten der Mitspieler. Schave sie an und gib jedem 1 Karte deiner Wahl zurueck."
+          "Nimm alle Handkarten der Mitspieler. Schaue sie an und gib jedem 1 Karte deiner Wahl zurueck."
         )
     case Der_leuchtende_Trapezoeder
         extends cards(
@@ -157,5 +157,6 @@ case class Card() {
   }
 
   def fillspace(name: String, width: Int): String =
-    name + " " * (width - name.length)
+    val temp = name.trim
+    temp + " " * (width - temp.length)
 }
