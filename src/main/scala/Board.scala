@@ -1,6 +1,6 @@
 package scala
 
-class Board(val indices: Vector[Int]) {
+class Board(val indices: Vector[Int], val head:Int) {
   val eol = sys.props("line.separator")
   val cardWith = 24
   val cardHeight = 13
@@ -61,5 +61,11 @@ class Board(val indices: Vector[Int]) {
     res.mkString
   }
 
-  override def toString: String = edge + title + body + edge
+  def header(head:Int) ={
+    head match
+    case 0 => ""
+    case 1 => "         Karte 1                      Karte 2                    Ablagestapel          " + eol
+  }
+
+  override def toString: String = header(head) + edge + title + body + edge
 }

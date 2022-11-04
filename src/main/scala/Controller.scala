@@ -74,7 +74,7 @@ case class Controller() {
           drawedCard,
           hands(currentPlayer),
           discardPiles(currentPlayer).head
-        )
+        ), 1
       )
     )
     println("Welche Karte moechtest du spielen? (1|2)")
