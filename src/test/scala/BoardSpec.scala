@@ -9,47 +9,49 @@ class BoardSpec extends AnyWordSpec with Matchers {
   val eol = sys.props("line.separator")
 
   "A Board" should {
-    val defaultBoard = new Board(Vector(1, 1, 1))
+    val defaultBoard = new Board(Vector(0, 0, 0))
 
     "return the correct String for fillspace" in {
-      defaultBoard.fillspace("Hallo", 10) should ===("Hallo   ")
+      defaultBoard.fillspace("Hallo", 10) should ===("Hallo         ")
     }
 
     "return the correct EdgeString" in {
       val EdgeResult =
-        ("+------------------+   +------------------+   +------------------+   " + eol)
+        ("+------------------------+   +------------------------+   +------------------------+   " + eol)
       defaultBoard.edge should ===(EdgeResult)
     }
 
     "return the correct TitleString" in {
       val TitelResult = (
-        "|1 Investigator   5|   |1 Investigator   5|   |1 Investigator   5|   " + eol +
-          "|                  |   |                  |   |                  |   " + eol
+        "|- Blank                -|   |- Blank                -|   |- Blank                -|   " + eol +
+          "|                        |   |                        |   |                        |   " + eol +
+          "|------------------------|   |------------------------|   |------------------------|   " + eol
       )
       defaultBoard.title should ===(TitelResult)
     }
 
     "return the correct BodyString" in {
       val BodyResult = (
-        "| Rate Mad:        |   | Rate Mad:        |   | Rate Mad:        |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol +
-          "|                  |   |                  |   |                  |" + eol
+        "| Mad:                   |   | Mad:                   |   | Mad:                   |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol +
+          "|                        |   |                        |   |                        |" + eol
       )
       defaultBoard.body should ===(BodyResult)
     }
 
     "return the correct String form bodybuilder" in {
-      defaultBoard.bodybuilder(Vector(1, 1, 1), 1) should ===(
-        "| Rate Mad:        |   | Rate Mad:        |   | Rate Mad:        |" + eol
+      defaultBoard.bodybuilder(Vector(0, 0, 0), 1) should ===(
+        "| Mad:                   |   | Mad:                   |   | Mad:                   |" + eol
       )
     }
 

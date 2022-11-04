@@ -21,13 +21,15 @@ class CardSpec extends AnyWordSpec with Matchers {
       defaultCard.cards.fromOrdinal(1).getAmount should ===("5")
     }
     "return the correct Effect" in {
-      defaultCard.cards.fromOrdinal(1).getEffect should ===("Erraetst du den Wert der Handkarte eines Mitspielers (ausser der \"1\"), scheidet dieser aus.")
+      defaultCard.cards.fromOrdinal(1).getEffect should ===(
+        "Erraetst du den Wert der Handkarte eines Mitspielers (ausser der \"1\"), scheidet dieser aus."
+      )
     }
     "return the correct MadEffect" in {
       defaultCard.cards.fromOrdinal(1).getMadEffect should ===("")
     }
     "return the correct Effect Snippet" in {
-      defaultCard.getEffectSnippet(1, 2, 14) should ===("              ")
+      defaultCard.getEffectSnippet(0, 2, 14) should ===("              ")
     }
     "return the correct Title Snippet" in {
       defaultCard.getTitelSnippet(1, 1, 14) should ===("Investigator  ")
