@@ -1,4 +1,5 @@
-package scala
+package de.htwg.lovecraftletter
+package model
 
 import scala.util.Random
 

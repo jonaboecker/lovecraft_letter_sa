@@ -1,9 +1,32 @@
-package scala
+package de.htwg.lovecraftletter
+package controller
 
-import scala.io.StdIn.readLine
+import model._
+import util.Observable
 
-case class Controller() {
+case class Controller(var state:GameState) extends Observable {
   val drawPileO = new DrawPile
+
+  def initialize = {
+    notifyObservers(0)
+    val (playerList: List[Player], discardPiles: List[List[Int]]) =
+      legeSpielerAn
+    val drawPile = new DrawPile
+    val (newDrawPile: List[Int], hands: List[Int]) =
+      drawPile.startingHands(drawPile.newPile, playerList.length)
+  }
+
+  def playerAmount(input:String): Int = {
+    input match
+      case "3" => state.updatePlayerAmmount(3)
+      case "4" => 4
+      case "5" => 5
+      case "6" => 6
+      case _   => notifyObservers(0)
+  }
+
+  
+
 
   def runLL = {
     val (playerList: List[Player], discardPiles: List[List[Int]]) =
@@ -46,16 +69,7 @@ case class Controller() {
     }
   }
 
-  def spieleranzahl: Int = {
-    println("Bitte Spieleranzahl zwischen 3 und 6 angeben.")
-    val input = readLine
-    input match
-      case "3" => 3
-      case "4" => 4
-      case "5" => 5
-      case "6" => 6
-      case _   => spieleranzahl
-  }
+  
 
   def getInputAndPrintLoop(
       lastPlayer: Int,
