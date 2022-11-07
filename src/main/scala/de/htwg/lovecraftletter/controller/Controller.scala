@@ -4,57 +4,39 @@ package controller
 import model._
 import util.Observable
 
+
+import scala.io.StdIn.readLine
+
 case class Controller(var state:GameState) extends Observable {
   val drawPileO = new DrawPile
 
-  def initialize = {
-    notifyObservers(0)
-    val (playerList: List[Player], discardPiles: List[List[Int]]) =
-      legeSpielerAn
-    val drawPile = new DrawPile
-    val (newDrawPile: List[Int], hands: List[Int]) =
-      drawPile.startingHands(drawPile.newPile, playerList.length)
+  def initialize(playerList: List[Player]) = {
+    state.currentPlayer = 0;
+    state.drawPile = drawPileO.newPile
+    state.player = playerList
+    for(i <- 0 until playerList.length) {
+        val (newDrawPile:List[Int], hand:Int) = drawPileO.drawAndGet(state.drawPile)
+        state.drawPile = newDrawPile
+        val player = state.player(i).updateCardAndDiscardPile(hand, List(0))
+        state.player = state.player.updated(i, player)
+    }
+    notifyObservers
   }
 
   def playerAmount(input:String): Int = {
     input match
-      case "3" => state.updatePlayerAmmount(3)
+      case "3" => 3
       case "4" => 4
       case "5" => 5
       case "6" => 6
-      case _   => notifyObservers(0)
+      case _   => 0
   }
 
-  
-
-
-  def runLL = {
-    val (playerList: List[Player], discardPiles: List[List[Int]]) =
-      legeSpielerAn
-    val drawPile = new DrawPile
-    val (newDrawPile: List[Int], hands: List[Int]) =
-      drawPile.startingHands(drawPile.newPile, playerList.length)
-    getInputAndPrintLoop(-1, playerList, newDrawPile, hands, discardPiles)
-  }
-  def legeSpielerAn: (List[Player], List[List[Int]]) = {
-    val playerList: List[Player] = rekLegeSpielerAn(Nil, spieleranzahl)
-    val discardPiles: List[List[Int]] =
-      rekLegeAblagestapelAn(Nil, playerList.length)
-    (playerList.reverse, discardPiles)
-  }
-  def rekLegeSpielerAn(
-      playerList: List[Player],
-      playerAmount: Int
-  ): List[Player] = {
-    printf("Bitte Namen fuer Spieler %d angeben\n", playerList.length + 1)
-    val input = readLine
-    val updatedList = Player(input) :: playerList
-    if (updatedList.length != playerAmount) {
-      rekLegeSpielerAn(updatedList, playerAmount)
-    } else {
-      updatedList
-    }
-  }
+  def getBoard = {
+    val currentPlayer = state.player(state.currentPlayer)
+    val board = Board(Vector(state.currentCard, currentPlayer.hand, currentPlayer.discardPile.head), 1)
+    board.toString
+  }  
 
   def rekLegeAblagestapelAn(
       discardList: List[List[Int]],
