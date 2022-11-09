@@ -1,4 +1,4 @@
-package scala
+package de.htwg.lovecraftletter.model
 
 case class Player(name: String, hand: Int, discardPile: List[Int]) {
   def updateCardAndDiscardPile(card: Int, newDiscardPile: List[Int]): Player = {

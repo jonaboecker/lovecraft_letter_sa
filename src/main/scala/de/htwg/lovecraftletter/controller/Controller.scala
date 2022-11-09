@@ -9,7 +9,7 @@ import scala.io.StdIn.readLine
 case class Controller(var state: GameState) extends Observable {
   val drawPileO = new DrawPile
 
-  def initialize(playerList: List[Player]) = {
+  def initialize(playerList: List[Player]): GameState = {
     state.currentPlayer = 0;
     state.drawPile = drawPileO.newPile
     state.player = playerList
@@ -59,7 +59,7 @@ case class Controller(var state: GameState) extends Observable {
     state
   }
 
-  def playCard(playedCard: Int) = {
+  def playCard(playedCard: Int): GameState = {
     state = playedCard match
       case 1 => state.playCard
       case 2 => state.swapHandAndCurrent.playCard

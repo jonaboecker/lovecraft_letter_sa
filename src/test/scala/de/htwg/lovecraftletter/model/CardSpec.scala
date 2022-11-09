@@ -1,4 +1,4 @@
-package scala
+package de.htwg.lovecraftletter.model
 
 //import Card.scala
 

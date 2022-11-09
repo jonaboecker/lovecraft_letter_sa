@@ -1,4 +1,4 @@
-package scala
+package de.htwg.lovecraftletter.model
 
 case class Card() {
   val eol = sys.props("line.separator")

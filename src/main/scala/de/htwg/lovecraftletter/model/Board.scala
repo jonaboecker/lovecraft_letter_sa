@@ -1,6 +1,6 @@
-package scala
+package de.htwg.lovecraftletter.model
 
-class Board(val indices: Vector[Int], val head:Int) {
+class Board(val indices: Vector[Int], val head: Int) {
   val eol = sys.props("line.separator")
   val cardWith = 24
   val cardHeight = 13
@@ -61,10 +61,11 @@ class Board(val indices: Vector[Int], val head:Int) {
     res.mkString
   }
 
-  def header(head:Int) ={
+  def header(head: Int) = {
     head match
-    case 0 => ""
-    case 1 => "         Karte 1                      Karte 2                    Ablagestapel          " + eol
+      case 0 => ""
+      case 1 =>
+        "         Karte 1                      Karte 2                    Ablagestapel          " + eol
   }
 
   override def toString: String = header(head) + edge + title + body + edge

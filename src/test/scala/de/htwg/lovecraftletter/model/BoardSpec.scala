@@ -1,4 +1,4 @@
-package scala
+package de.htwg.lovecraftletter.model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,7 +9,7 @@ class BoardSpec extends AnyWordSpec with Matchers {
   val eol = sys.props("line.separator")
 
   "A Board" should {
-    val defaultBoard = new Board(Vector(0, 0, 0),0)
+    val defaultBoard = new Board(Vector(0, 0, 0), 0)
 
     "return the correct String for fillspace" in {
       defaultBoard.fillspace("Hallo", 10) should ===("Hallo         ")
@@ -61,8 +61,10 @@ class BoardSpec extends AnyWordSpec with Matchers {
       defaultBoard.toString should ===(result)
     }
     "return the correct String from header" in {
-        defaultBoard.header(0) should === ("")
-        defaultBoard.header(1) should === ("         Karte 1                      Karte 2                    Ablagestapel          " + eol)
+      defaultBoard.header(0) should ===("")
+      defaultBoard.header(1) should ===(
+        "         Karte 1                      Karte 2                    Ablagestapel          " + eol
+      )
     }
 
   }

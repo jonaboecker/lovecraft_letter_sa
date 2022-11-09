@@ -3,6 +3,7 @@ package aview
 
 import controller._
 import util.Observer
+import model._
 
 import scala.io.StdIn.readLine
 
