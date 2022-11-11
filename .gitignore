@@ -20,7 +20,6 @@ project/metals.sbt
 .tasty
 
 # sbt
-project
 project/project/
 project/target/
 target/
