@@ -3,6 +3,7 @@
 
 # bloop and metals
 .bloop
+project/.bloop
 .bsp
 
 # metals
@@ -19,7 +20,7 @@ project/metals.sbt
 .tasty
 
 # sbt
-project/
+project
 project/project/
 project/target/
 target/
