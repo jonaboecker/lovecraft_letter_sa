@@ -127,10 +127,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       val defaultController2 = Controller(defaultState2)
       defaultController2.playCard(2) should ===(
         GameState(
-          1,
-          List(2, 3, 4, 5, 1),
+          0,
+          List(3, 4, 5, 1),
           List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(5, 0))),
-          0
+          2
         )
       )
     }
