@@ -46,13 +46,13 @@ final case class TUI(controller: Controller) extends Observer {
     println(s)
   }
 
-  override def update = show(controller.getBoard)
-
-  def getInputAndPrintLoop: Unit = {
+  override def update = {
     show("\n" + controller.getPlayerName + "ist an der Reihe")
     show(controller.getBoard)
     show("Welche Karte moechtest du spielen? (1|2)")
+  }
 
+  def getInputAndPrintLoop: Unit = {
     val input = readLine
     input match
       case "1" =>
@@ -62,10 +62,6 @@ final case class TUI(controller: Controller) extends Observer {
       case "q" | "Q" => return
       case _ =>
         show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
-        getInputAndPrintLoop
-
-    controller.nextPlayer
-    controller.drawCard
     getInputAndPrintLoop
   }
 }

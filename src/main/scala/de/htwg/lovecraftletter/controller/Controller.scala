@@ -4,8 +4,6 @@ package controller
 import model._
 import util.Observable
 
-import scala.io.StdIn.readLine
-
 case class Controller(var state: GameState) extends Observable {
   val drawPileO = new DrawPile
 
@@ -21,6 +19,8 @@ case class Controller(var state: GameState) extends Observable {
       state.player = state.player.updated(i, player)
     }
     drawCard
+    notifyObservers
+    state
   }
 
   def playerAmount(input: String): Int = {
@@ -63,6 +63,9 @@ case class Controller(var state: GameState) extends Observable {
     state = playedCard match
       case 1 => state.playCard
       case 2 => state.swapHandAndCurrent.playCard
+    nextPlayer
+    drawCard
+    notifyObservers
     state
   }
 }
