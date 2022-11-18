@@ -36,12 +36,25 @@ jobs:
   run_tests:
    runs-on: ubuntu-latest
    steps:
-     - uses: actions/checkout@v2
-     - name: Build Project and export Coverage
-       env:
-         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-       run: |
-         export CI_BRANCH="${GITHUB_REF#refs/heads/}"
-         sbt jacoco jacocoCoveralls
+    - name: Git checkout (merge)
+      uses: actions/checkout@v3
+      if: github.event_name != 'pull_request'
+       with:
+         fetch-depth: 0
+
+    - name: Git checkout (PR)
+      uses: actions/checkout@v3
+      if: github.event_name == 'pull_request'
+      with:
+        fetch-depth: 0
+        # see: https://frontside.com/blog/2020-05-26-github-actions-pull_request/#how-does-pull_request-affect-actionscheckout
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Run tests
+      run: sbt clean coverage test
+
+    - name: Upload coverage data to Coveralls
+      run: sbt coverageReport coveralls
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
