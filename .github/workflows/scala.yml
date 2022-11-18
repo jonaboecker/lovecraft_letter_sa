@@ -29,8 +29,8 @@ jobs:
       run: sbt clean coverage test
     - name: Upload coverage data to Coveralls
       run: sbt coverageReport coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
   run_tests:
    runs-on: ubuntu-latest
