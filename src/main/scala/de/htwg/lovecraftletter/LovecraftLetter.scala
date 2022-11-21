@@ -9,7 +9,7 @@ import controller.Controller
 
 @main def run: Unit = {
   println("Welcome to LovecraftLetter")
-  val gamestate = new GameState(0,Nil,Nil,0)
+  val gamestate = new GameState(0, Nil, Nil, 0)
   val controller = new Controller(gamestate)
   val tui = TUI(controller)
   tui.runLL
@@ -17,4 +17,3 @@ import controller.Controller
   // print(new Board(tempVec))
   // getInputAndPrintLoop()
 }
-

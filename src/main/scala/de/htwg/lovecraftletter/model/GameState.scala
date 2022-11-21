@@ -38,4 +38,10 @@ final case class GameState(
     )
     GameState(currentPlayer, drawPile, tempPlayer, player(currentPlayer).hand)
   }
+
+  def eliminatePlayer: GameState = {
+    val tempPlayer =
+      player.updated(currentPlayer, player(currentPlayer).eliminatePlayer())
+    GameState(currentPlayer, drawPile, tempPlayer, currentCard)
+  }
 }

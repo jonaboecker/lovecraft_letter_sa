@@ -33,7 +33,7 @@ final case class TUI(controller: Controller) extends Observer {
     } else {
       printf("Bitte Namen fuer Spieler %d angeben\n", playerList.length + 1)
       val input = readLine
-      val updatedList = Player(input, 0, Nil) :: playerList
+      val updatedList = Player(input, 0, Nil, true) :: playerList
       if (updatedList.length != playerAmount) {
         rekCreatePlayers(updatedList, playerAmount)
       } else {

@@ -9,7 +9,10 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     val defaultState = new GameState(
       1,
       List(2, 3, 4, 5, 1),
-      List(Player("Guschtav", 1, List(0)), Player("Guschtav", 1, List(0))),
+      List(
+        Player("Guschtav", 1, List(0), true),
+        Player("Guschtav", 1, List(0), true)
+      ),
       1
     )
     "return the correct Player" in {
@@ -17,7 +20,10 @@ class GameStateSpec extends AnyWordSpec with Matchers {
         GameState(
           0,
           List(2, 3, 4, 5, 1),
-          List(Player("Guschtav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Guschtav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -27,7 +33,10 @@ class GameStateSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(3, 4, 5, 1),
-          List(Player("Guschtav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Guschtav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           2
         )
       )
@@ -38,8 +47,8 @@ class GameStateSpec extends AnyWordSpec with Matchers {
           1,
           List(2, 3, 4, 5, 1),
           List(
-            Player("Guschtav", 1, List(0)),
-            Player("Guschtav", 1, List(1, 0))
+            Player("Guschtav", 1, List(0), true),
+            Player("Guschtav", 1, List(1, 0), true)
           ),
           0
         )
@@ -49,7 +58,10 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val defaultState2 = new GameState(
         1,
         List(2, 3, 4, 5, 1),
-        List(Player("Guschtav", 1, List(0)), Player("Guschtav", 5, List(0))),
+        List(
+          Player("Guschtav", 1, List(0), true),
+          Player("Guschtav", 5, List(0), true)
+        ),
         1
       )
       defaultState2.swapHandAndCurrent should ===(
@@ -57,8 +69,8 @@ class GameStateSpec extends AnyWordSpec with Matchers {
           1,
           List(2, 3, 4, 5, 1),
           List(
-            Player("Guschtav", 1, List(0)),
-            Player("Guschtav", 1, List(0))
+            Player("Guschtav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
           ),
           5
         )

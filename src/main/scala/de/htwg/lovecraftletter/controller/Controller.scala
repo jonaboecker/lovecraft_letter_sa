@@ -3,6 +3,7 @@ package controller
 
 import model._
 import util.Observable
+import scala.util.control.Breaks._
 
 case class Controller(var state: GameState) extends Observable {
   val drawPileO = new DrawPile
@@ -47,6 +48,10 @@ case class Controller(var state: GameState) extends Observable {
 
   def nextPlayer = {
     state = state.nextPlayer
+    while (!state.player(state.currentPlayer).inGame) {
+      state = state.nextPlayer
+    }
+    // todo madcheck if mad
     state
   }
 
@@ -60,12 +65,74 @@ case class Controller(var state: GameState) extends Observable {
   }
 
   def playCard(playedCard: Int): GameState = {
-    state = playedCard match
-      case 1 => state.playCard
-      case 2 => state.swapHandAndCurrent.playCard
+    playedCard match
+      case 1 => MadHandler.play // todo change state to
+      case 2 =>
+        state = state.swapHandAndCurrent
+        MadHandler.play
+    // handle discarded card
     nextPlayer
-    drawCard
+    MadHandler.draw
     notifyObservers
     state
+  }
+
+  def checkUponWin = {
+    if (state.player.filter(_.inGame).length == 1) {
+      // change state to player x won
+      // NO
+    }
+  }
+
+  object MadHandler {
+    def draw =
+      if (state.player(state.currentPlayer).madCheck() > 0) drawMad
+      else drawNormal
+
+    def drawNormal = {
+      println("DN")
+      drawCard
+    }
+
+    def drawMad = {
+      // while (state.player(state.currentPlayer).madCheck() > 0 &&) {}
+      for (
+        x <- 0 until state.player(state.currentPlayer).madCheck()
+        if state.player(state.currentPlayer).inGame
+      ) {
+        drawCard
+        if (state.currentCard > 8) {
+          state = state.eliminatePlayer
+          checkUponWin
+          println("OUT")
+          // todo: state change to kick player
+          // break
+        }
+        state = state.playCard
+      }
+      // todo: state change to surived madcheck
+      drawCard
+      println("DM")
+    }
+
+    def play =
+      if (state.player(state.currentPlayer).madCheck() > 0) playMad
+      else playNormal
+
+    def playNormal = {
+      state = state.playCard
+      println("PN")
+    }
+
+    def playMad = {
+      if (state.currentCard > 8) {
+        // state to playMadCard
+        state = state.playCard
+        // notifyObservers
+        println("NO")
+      }
+      state = state.playCard
+      println("PM")
+    }
   }
 }

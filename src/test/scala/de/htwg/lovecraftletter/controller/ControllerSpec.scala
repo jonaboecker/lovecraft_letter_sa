@@ -13,9 +13,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       val defaultController = new Controller(GameState(0, Nil, Nil, 0))
       val result: GameState = defaultController.initialize(
         List(
-          Player("Gustav", 0, Nil),
-          Player("Guschtav", 0, Nil),
-          Player("Guschtav", 0, Nil)
+          Player("Gustav", 0, Nil, true),
+          Player("Guschtav", 0, Nil, true),
+          Player("Guschtav", 0, Nil, true)
         )
       )
       result.currentPlayer should ===(0)
@@ -29,7 +29,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -44,7 +47,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -56,14 +62,20 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
       val result = GameState(
         0,
         List(2, 3, 4, 5, 1),
-        List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), true)
+        ),
         1
       )
       defaultController.nextPlayer should ===(result)
@@ -73,7 +85,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -84,7 +99,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -92,7 +110,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           2
         )
       )
@@ -102,7 +123,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           1,
           List(2, 3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
           1
         )
       )
@@ -111,8 +135,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           0,
           List(3, 4, 5, 1),
           List(
-            Player("Gustav", 1, List(0)),
-            Player("Guschtav", 1, List(1, 0))
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(1, 0), true)
           ),
           2
         )
@@ -121,7 +145,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       val defaultState2 = new GameState(
         1,
         List(2, 3, 4, 5, 1),
-        List(Player("Gustav", 1, List(0)), Player("Guschtav", 5, List(0))),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 5, List(0), true)
+        ),
         1
       )
       val defaultController2 = Controller(defaultState2)
@@ -129,7 +156,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         GameState(
           0,
           List(3, 4, 5, 1),
-          List(Player("Gustav", 1, List(0)), Player("Guschtav", 1, List(5, 0))),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(5, 0), true)
+          ),
           2
         )
       )
