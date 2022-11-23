@@ -10,7 +10,8 @@ import org.scalatest._
 class ControllerSpec extends AnyWordSpec with Matchers {
   "A Controller" should {
     "return the correct initial state" in {
-      val defaultController = new Controller(GameState(0, Nil, Nil, 0),"standard")
+      val defaultController =
+        new Controller(GameState(0, Nil, Nil, 0), "standard")
       val result: GameState = defaultController.initialize(
         List(
           Player("Gustav", 0, Nil, true),
@@ -34,7 +35,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ),"standard"
+        ),
+        "standard"
       )
       defaultController.playerAmount("3") should ===(3)
       defaultController.playerAmount("4") should ===(4)
@@ -52,13 +54,16 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       val board = Board(3, Vector(1, 1, 0), 1)
-      defaultController.StateHandler.getBoard should ===("\nGuschtav ist an der Reihe\n" + board.toString + "\nWelche Karte moechtest du spielen? (1|2)")
+      defaultController.StateHandler.getBoard should ===(
+        "\nGuschtav ist an der Reihe\n" + board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
+      )
     }
     "return correct next Player" in {
-      //test if all player in Game
+      // test if all player in Game
       val defaultController = new Controller(
         GameState(
           1,
@@ -68,7 +73,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       val result = GameState(
         0,
@@ -80,8 +86,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         1
       )
       defaultController.nextPlayer should ===(result)
-      //test if a player is out
-        val defaultController2 = new Controller(
+      // test if a player is out
+      val defaultController2 = new Controller(
         GameState(
           0,
           List(2, 3, 4, 5, 1),
@@ -91,7 +97,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Player 3", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       val result2 = GameState(
         2,
@@ -115,7 +122,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       defaultController.getPlayerName should ===("Guschtav")
     }
@@ -129,7 +137,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       defaultController.MadHandler.draw should ===(
         GameState(
@@ -144,7 +153,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
     }
     "return the correct state after draw card if player is mad" in {
-      //not eliminate
+      // not eliminate
       val defaultController = new Controller(
         GameState(
           0,
@@ -154,7 +163,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           0
-        ), "standard"
+        ),
+        "standard"
       )
       defaultController.MadHandler.draw should ===(
         GameState(
@@ -167,7 +177,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           3
         )
       )
-            // eliminate player
+      // eliminate player
       val defaultController2 = new Controller(
         GameState(
           0,
@@ -177,7 +187,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           0
-        ), "standard"
+        ),
+        "standard"
       )
       defaultController2.MadHandler.draw should ===(
         GameState(
@@ -201,7 +212,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           1
-        ), "standard"
+        ),
+        "standard"
       )
       defaultController.playCard(1) should ===(
         GameState(
@@ -246,7 +258,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         10
       )
-    val defaultController3 = Controller(defaultState3, "standard")
+      val defaultController3 = Controller(defaultState3, "standard")
       defaultController3.playCard(1) should ===(
         GameState(
           0,
@@ -259,7 +271,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         )
       )
 
-            val defaultState4 = new GameState(
+      val defaultState4 = new GameState(
         1,
         List(2, 3, 4, 5, 1),
         List(
@@ -268,7 +280,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       )
-    val defaultController4 = Controller(defaultState4, "standard")
+      val defaultController4 = Controller(defaultState4, "standard")
       defaultController4.playCard(1) should ===(
         GameState(
           0,
@@ -282,56 +294,64 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
     }
     "return correct Boolean for checkUponWin" in {
-        val defaultController = new Controller(
-            GameState(
-            1,
-            List(2, 3, 4, 5, 1),
-            List(
-                Player("Gustav", 1, List(0), true),
-                Player("Guschtav", 1, List(0), false)
-            ),
-            1
-            ), "standard"
-        )
-        defaultController.checkUponWin should ===(true)
-        val defaultController2 = new Controller(
-            GameState(
-            1,
-            List(2, 3, 4, 5, 1),
-            List(
-                Player("Gustav", 1, List(0), true),
-                Player("Guschtav", 1, List(0), true)
-            ),
-            1
-            ), "standard"
-        )
-        defaultController2.checkUponWin should ===(false)
+      val defaultController = new Controller(
+        GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), false)
+          ),
+          1
+        ),
+        "standard"
+      )
+      defaultController.checkUponWin should ===(true)
+      val defaultController2 = new Controller(
+        GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          1
+        ),
+        "standard"
+      )
+      defaultController2.checkUponWin should ===(false)
     }
   }
-  "State Handler should return correct string" in{
+  "State Handler should return correct string" in {
     val defaultController = new Controller(
-            GameState(
-            1,
-            List(2, 3, 4, 5, 1),
-            List(
-                Player("Gustav", 1, List(0), true),
-                Player("Guschtav", 1, List(0), false)
-            ),
-            1
-            ), "standard"
-        )
-        defaultController.StateHandler.handle should ===(defaultController.StateHandler.getBoard)
-        val defaultController2 = new Controller(
-            GameState(
-            1,
-            List(2, 3, 4, 5, 1),
-            List(
-                Player("Gustav", 1, List(0), true),
-                Player("Guschtav", 1, List(0), false)
-            ),
-            1
-            ), "selectEffect"
-        )
-        defaultController2.StateHandler.handle should ===(defaultController2.StateHandler.selectEffect)
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      "standard"
+    )
+    defaultController.StateHandler.handle should ===(
+      defaultController.StateHandler.getBoard
+    )
+    val defaultController2 = new Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      "selectEffect"
+    )
+    defaultController2.StateHandler.handle should ===(
+      defaultController2.StateHandler.selectEffect
+    )
   }
 }
