@@ -7,7 +7,7 @@ name: Scala CI
 
 on:
   push:
-    branches: [ "main", "DeveloperBranch", "se05-MVC", "tryAtomaticTesting" ]
+    branches: [ "main", "DeveloperBranch", "se05-MVC", "tryAtomaticTesting", "se07-Pattern" ]
   pull_request:
     branches: [ "main", "DeveloperBranch" ]
 
