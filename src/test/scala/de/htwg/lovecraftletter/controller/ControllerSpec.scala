@@ -83,7 +83,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       //test if a player is out
         val defaultController2 = new Controller(
         GameState(
-          1,
+          0,
           List(2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(0), true),
@@ -144,6 +144,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
     }
     "return the correct state after draw card if player is mad" in {
+      //not eliminate
       val defaultController = new Controller(
         GameState(
           0,
@@ -164,6 +165,29 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           3
+        )
+      )
+            // eliminate player
+      val defaultController2 = new Controller(
+        GameState(
+          0,
+          List(11, 2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(10, 0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          0
+        ), "standard"
+      )
+      defaultController2.MadHandler.draw should ===(
+        GameState(
+          0,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(11, 10, 0), false),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          0
         )
       )
     }
@@ -208,6 +232,28 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           List(
             Player("Gustav", 1, List(0), true),
             Player("Guschtav", 1, List(5, 0), true)
+          ),
+          2
+        )
+      )
+
+      val defaultState3 = new GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 5, List(9, 0), true)
+        ),
+        10
+      )
+    val defaultController3 = Controller(defaultState3, "standard")
+      defaultController3.playCard(1) should ===(
+        GameState(
+          0,
+          List(3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 5, List(10, 9, 0), true)
           ),
           2
         )

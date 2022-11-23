@@ -101,7 +101,10 @@ case class Controller(var state: GameState, var controllerState: String) extends
         state = state.playCard
       }
       // todo: state change to surived madcheck
-      drawCard
+      if(state.player(state.currentPlayer).inGame)
+        drawCard
+      else
+        state
     }
 
     def play =
@@ -117,8 +120,9 @@ case class Controller(var state: GameState, var controllerState: String) extends
         controllerState = "selectEffect"
         state = state.playCard
         notifyObservers
+      } else {
+        state = state.playCard
       }
-      state = state.playCard
     }
   }
 
