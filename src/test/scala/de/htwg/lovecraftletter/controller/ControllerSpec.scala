@@ -258,6 +258,28 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           2
         )
       )
+
+            val defaultState4 = new GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 5, List(9, 0), true)
+        ),
+        1
+      )
+    val defaultController4 = Controller(defaultState4, "standard")
+      defaultController4.playCard(1) should ===(
+        GameState(
+          0,
+          List(3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 5, List(1, 9, 0), true)
+          ),
+          2
+        )
+      )
     }
     "return correct Boolean for checkUponWin" in {
         val defaultController = new Controller(
@@ -285,5 +307,31 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         )
         defaultController2.checkUponWin should ===(false)
     }
+  }
+  "State Handler should return correct string" in{
+    val defaultController = new Controller(
+            GameState(
+            1,
+            List(2, 3, 4, 5, 1),
+            List(
+                Player("Gustav", 1, List(0), true),
+                Player("Guschtav", 1, List(0), false)
+            ),
+            1
+            ), "standard"
+        )
+        defaultController.StateHandler.handle should ===(defaultController.StateHandler.getBoard)
+        val defaultController2 = new Controller(
+            GameState(
+            1,
+            List(2, 3, 4, 5, 1),
+            List(
+                Player("Gustav", 1, List(0), true),
+                Player("Guschtav", 1, List(0), false)
+            ),
+            1
+            ), "selectEffect"
+        )
+        defaultController2.StateHandler.handle should ===(defaultController2.StateHandler.selectEffect)
   }
 }
