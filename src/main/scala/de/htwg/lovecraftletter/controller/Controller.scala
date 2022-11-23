@@ -95,7 +95,6 @@ case class Controller(var state: GameState) extends Observable {
     }
 
     def drawMad = {
-      // while (state.player(state.currentPlayer).madCheck() > 0 &&) {}
       for (
         x <- 0 until state.player(state.currentPlayer).madCheck()
         if state.player(state.currentPlayer).inGame
