@@ -68,11 +68,13 @@ case class Controller(var state: GameState, var controllerState: String) extends
     println("play Effect")
   }
 
-  def checkUponWin = {
+  def checkUponWin: Boolean = {
     if (state.player.filter(_.inGame).length == 1) {
       // change state to player x won
       // NO
+      return true
     }
+    false
   }
 
   object MadHandler {
@@ -81,7 +83,6 @@ case class Controller(var state: GameState, var controllerState: String) extends
       else drawNormal
 
     def drawNormal = {
-      println("DN")
       drawCard
     }
 
@@ -94,7 +95,6 @@ case class Controller(var state: GameState, var controllerState: String) extends
         if (state.currentCard > 8) {
           state = state.eliminatePlayer
           checkUponWin
-          println("OUT")
           // todo: state change to kick player
           // break
         }
@@ -102,7 +102,6 @@ case class Controller(var state: GameState, var controllerState: String) extends
       }
       // todo: state change to surived madcheck
       drawCard
-      println("DM")
     }
 
     def play =
@@ -111,7 +110,6 @@ case class Controller(var state: GameState, var controllerState: String) extends
 
     def playNormal = {
       state = state.playCard
-      println("PN")
     }
 
     def playMad = {
@@ -119,10 +117,8 @@ case class Controller(var state: GameState, var controllerState: String) extends
         controllerState = "selectEffect"
         state = state.playCard
         notifyObservers
-        println("NO")
       }
       state = state.playCard
-      println("PM")
     }
   }
 

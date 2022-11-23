@@ -58,6 +58,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       defaultController.StateHandler.getBoard should ===("\nGuschtav ist an der Reihe\n" + board.toString + "\nWelche Karte moechtest du spielen? (1|2)")
     }
     "return correct next Player" in {
+      //test if all player in Game
       val defaultController = new Controller(
         GameState(
           1,
@@ -79,6 +80,30 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         1
       )
       defaultController.nextPlayer should ===(result)
+      //test if a player is out
+        val defaultController2 = new Controller(
+        GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), false),
+            Player("Player 3", 1, List(0), true)
+          ),
+          1
+        ), "standard"
+      )
+      val result2 = GameState(
+        2,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false),
+          Player("Player 3", 1, List(0), true)
+        ),
+        1
+      )
+      defaultController2.nextPlayer should ===(result2)
     }
     "return correct PlayerName" in {
       val defaultController = new Controller(
@@ -106,7 +131,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           1
         ), "standard"
       )
-      defaultController.drawCard should ===(
+      defaultController.MadHandler.draw should ===(
         GameState(
           1,
           List(3, 4, 5, 1),
@@ -115,6 +140,30 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true)
           ),
           2
+        )
+      )
+    }
+    "return the correct state after draw card if player is mad" in {
+      val defaultController = new Controller(
+        GameState(
+          0,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(10, 0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          0
+        ), "standard"
+      )
+      defaultController.MadHandler.draw should ===(
+        GameState(
+          0,
+          List(4, 5, 1),
+          List(
+            Player("Gustav", 1, List(2, 10, 0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          3
         )
       )
     }
@@ -163,6 +212,32 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           2
         )
       )
+    }
+    "return correct Boolean for checkUponWin" in {
+        val defaultController = new Controller(
+            GameState(
+            1,
+            List(2, 3, 4, 5, 1),
+            List(
+                Player("Gustav", 1, List(0), true),
+                Player("Guschtav", 1, List(0), false)
+            ),
+            1
+            ), "standard"
+        )
+        defaultController.checkUponWin should ===(true)
+        val defaultController2 = new Controller(
+            GameState(
+            1,
+            List(2, 3, 4, 5, 1),
+            List(
+                Player("Gustav", 1, List(0), true),
+                Player("Guschtav", 1, List(0), true)
+            ),
+            1
+            ), "standard"
+        )
+        defaultController2.checkUponWin should ===(false)
     }
   }
 }
