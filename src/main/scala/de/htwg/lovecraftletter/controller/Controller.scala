@@ -143,7 +143,7 @@ case class Controller(var state: GameState, var controllerState: String) extends
             currentPlayer.discardPile.head
             ),
             1)
-            "\n" + getPlayerName + "ist an der Reihe\n" + 
+            "\n" + getPlayerName + " ist an der Reihe\n" + 
             board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
     }
 

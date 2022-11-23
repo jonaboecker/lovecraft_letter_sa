@@ -55,7 +55,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ), "standard"
       )
       val board = Board(3, Vector(1, 1, 0), 1)
-      defaultController.StateHandler.getBoard should ===(board.toString)
+      defaultController.StateHandler.getBoard should ===("Guschtav ist an der Reihe\n" + board.toString + "\nWelche Karte moechtest du spielen? (1|2)")
     }
     "return correct next Player" in {
       val defaultController = new Controller(
