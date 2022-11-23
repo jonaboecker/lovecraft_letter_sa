@@ -5,7 +5,7 @@ import model._
 import util.Observable
 import scala.util.control.Breaks._
 
-case class Controller(var state: GameState) extends Observable {
+case class Controller(var state: GameState, var controllerState: String) extends Observable {
   val drawPileO = new DrawPile
 
   def initialize(playerList: List[Player]): GameState = {
@@ -33,25 +33,11 @@ case class Controller(var state: GameState) extends Observable {
       case _   => 0
   }
 
-  def getBoard = {
-    val currentPlayer = state.player(state.currentPlayer)
-    val board = Board(
-      Vector(
-        state.currentCard,
-        currentPlayer.hand,
-        currentPlayer.discardPile.head
-      ),
-      1
-    )
-    board.toString
-  }
-
   def nextPlayer = {
     state = state.nextPlayer
     while (!state.player(state.currentPlayer).inGame) {
       state = state.nextPlayer
     }
-    // todo madcheck if mad
     state
   }
 
@@ -75,6 +61,11 @@ case class Controller(var state: GameState) extends Observable {
     MadHandler.draw
     notifyObservers
     state
+  }
+
+  def playEffect(selecterEffect: String) = {
+    controllerState = "standard"
+    println("play Effect")
   }
 
   def checkUponWin = {
@@ -125,13 +116,40 @@ case class Controller(var state: GameState) extends Observable {
 
     def playMad = {
       if (state.currentCard > 8) {
-        // state to playMadCard
+        controllerState = "selectEffect"
         state = state.playCard
-        // notifyObservers
+        notifyObservers
         println("NO")
       }
       state = state.playCard
       println("PM")
     }
+  }
+
+  object StateHandler {
+    def handle = {
+        controllerState match
+            case "standard" => getBoard
+            case "selectEffect" => selectEffect
+            case _ => "du Idiot"
+    }
+
+    def getBoard = {
+        val currentPlayer = state.player(state.currentPlayer)
+        val board = Board(
+        Vector(
+            state.currentCard,
+            currentPlayer.hand,
+            currentPlayer.discardPile.head
+            ),
+            1)
+            "\n" + getPlayerName + "ist an der Reihe\n" + 
+            board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
+    }
+
+    def selectEffect = {
+        "Welchen Effekt moechtest du spielen? (1|2)"
+    }
+
   }
 }

@@ -47,9 +47,20 @@ final case class TUI(controller: Controller) extends Observer {
   }
 
   override def update = {
-    show("\n" + controller.getPlayerName + "ist an der Reihe")
-    show(controller.getBoard)
-    show("Welche Karte moechtest du spielen? (1|2)")
+    show(controller.StateHandler.handle)
+    controller.controllerState match
+        case "standard" => 
+        case "selectEffect" => controller.playEffect(getInput(Vector("1", "2")))
+    
+  }
+
+
+  def getInput(allowed: Vector[String]): String = {
+    val input = readLine
+    if(!allowed.contains(input))
+        getInput(allowed)
+    else
+        input
   }
 
   def getInputAndPrintLoop: Unit = {
