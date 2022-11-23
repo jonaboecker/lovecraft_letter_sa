@@ -131,7 +131,6 @@ case class Controller(var state: GameState, var controllerState: String) extends
         controllerState match
             case "standard" => getBoard
             case "selectEffect" => selectEffect
-            case _ => "du Idiot"
     }
 
     def getBoard = {
