@@ -1,72 +1,106 @@
 package de.htwg.lovecraftletter.model
 
-class Board(val indices: Vector[Int], val head: Int) {
-  val eol = sys.props("line.separator")
-  val cardWith = 24
-  val cardHeight = 13
-  val cards = new Card
 
-  def fillspace(name: String, margin: Int): String =
-    name + " " * (cardWith - margin - name.length)
+abstract class Board(val indices: Vector[Int], val head: Int){
+    val eol = sys.props("line.separator")
+    val cardWith = 24
+    val cardHeight = 13
+    val cards = new Card
 
-  def edge = ("+" + "-" * cardWith + "+   ") * 3 + eol
+    def fillspace(name: String, margin: Int): String =
+        name + " " * (cardWith - margin - name.length)
+    def edge = ("+" + "-" * cardWith + "+   ") * indices.length + eol
+    def header(head: Int) = {
+        head match
+        case 0 => ""
+        case 1 =>"         Karte 1                      Karte 2                    Ablagestapel          " + eol
+    }
+    def body = {
+        val res = for (x <- 1 until (cardHeight + 1)) yield bodybuilder(indices, x)
+        res.mkString
+    }
+    def title : String
+    def bodybuilder(index: Vector[Int], row: Int) : String
+    override def toString: String = header(head) + edge + title + body + edge
+}
 
-  def title = {
-    // val tempVec = splitname(name, 4)
-    val tempSt =
-      "|" + cards.cards.fromOrdinal(indices(0)).getValue + " " + cards
-        .getTitelSnippet(
-          indices(0),
-          1,
-          cardWith - 4
-        ) + " " + cards.cards.fromOrdinal(indices(0)).getAmount + "|   " +
-        "|" + cards.cards.fromOrdinal(indices(1)).getValue + " " + cards
-          .getTitelSnippet(
-            indices(1),
-            1,
-            cardWith - 4
-          ) + " " + cards.cards.fromOrdinal(indices(1)).getAmount + "|   " +
-        "|" + cards.cards.fromOrdinal(indices(2)).getValue + " " + cards
-          .getTitelSnippet(
-            indices(2),
-            1,
-            cardWith - 4
-          ) + " " + cards.cards.fromOrdinal(indices(2)).getAmount + "|   "
-        + eol + "|  " + cards
-          .getTitelSnippet(
-            indices(0),
-            2,
-            cardWith - 4
-          ) + "  |   " + "|  " + cards
-          .getTitelSnippet(
-            indices(1),
-            2,
-            cardWith - 4
-          ) + "  |   " + "|  " + cards
-          .getTitelSnippet(
-            indices(2),
-            2,
-            cardWith - 4
-          ) + "  |   " + eol
-    tempSt + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + eol
-  }
+object Board {
+    private class OneCardBoard(override val indices: Vector[Int], override val head: Int) extends Board(indices, head){
+        override def title = {
+            // val tempVec = splitname(name, 4)
+            val tempSt =
+            "|" + cards.cards.fromOrdinal(indices(0)).getValue + " " + cards
+                .getTitelSnippet(
+                indices(0),
+                1,
+                cardWith - 4
+                ) + " " + cards.cards.fromOrdinal(indices(0)).getAmount + "|   "
+                + eol + "|  " + cards
+                .getTitelSnippet(
+                    indices(0),
+                    2,
+                    cardWith - 4
+                ) + "  |   " + eol
+            tempSt + "|" + "-" * (cardWith) + "|   " + eol
+        }
+        override def bodybuilder(index: Vector[Int], row: Int) = {
+            "| " + cards.getEffectSnippet(index(0), row, cardWith - 2) + " |   " + eol
+        }
+    }
 
-  def bodybuilder(index: Vector[Int], row: Int) = {
-    "| " + cards.getEffectSnippet(index(0), row, cardWith - 2) + " |   " +
-      "| " + cards.getEffectSnippet(index(1), row, cardWith - 2) + " |   " +
-      "| " + cards.getEffectSnippet(index(2), row, cardWith - 2) + " |" + eol
-  }
-  def body = {
-    val res = for (x <- 1 until (cardHeight + 1)) yield bodybuilder(indices, x)
-    res.mkString
-  }
+    private class ThreeCardBoard(override val indices: Vector[Int], override val head: Int) extends Board(indices, head){
+        override def title = {
+            // val tempVec = splitname(name, 4)
+            val tempSt =
+            "|" + cards.cards.fromOrdinal(indices(0)).getValue + " " + cards
+                .getTitelSnippet(
+                indices(0),
+                1,
+                cardWith - 4
+                ) + " " + cards.cards.fromOrdinal(indices(0)).getAmount + "|   " +
+                "|" + cards.cards.fromOrdinal(indices(1)).getValue + " " + cards
+                .getTitelSnippet(
+                    indices(1),
+                    1,
+                    cardWith - 4
+                ) + " " + cards.cards.fromOrdinal(indices(1)).getAmount + "|   " +
+                "|" + cards.cards.fromOrdinal(indices(2)).getValue + " " + cards
+                .getTitelSnippet(
+                    indices(2),
+                    1,
+                    cardWith - 4
+                ) + " " + cards.cards.fromOrdinal(indices(2)).getAmount + "|   "
+                + eol + "|  " + cards
+                .getTitelSnippet(
+                    indices(0),
+                    2,
+                    cardWith - 4
+                ) + "  |   " + "|  " + cards
+                .getTitelSnippet(
+                    indices(1),
+                    2,
+                    cardWith - 4
+                ) + "  |   " + "|  " + cards
+                .getTitelSnippet(
+                    indices(2),
+                    2,
+                    cardWith - 4
+                ) + "  |   " + eol
+            tempSt + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + "|" + "-" * (cardWith) + "|   " + eol
+        }
+        override def bodybuilder(index: Vector[Int], row: Int) = {
+            "| " + cards.getEffectSnippet(index(0), row, cardWith - 2) + " |   " +
+            "| " + cards.getEffectSnippet(index(1), row, cardWith - 2) + " |   " +
+            "| " + cards.getEffectSnippet(index(2), row, cardWith - 2) + " |" + eol
+        }
+    }
 
-  def header(head: Int) = {
-    head match
-      case 0 => ""
-      case 1 =>
-        "         Karte 1                      Karte 2                    Ablagestapel          " + eol
-  }
 
-  override def toString: String = header(head) + edge + title + body + edge
+    def apply(cardAmmount:Int, indices: Vector[Int], head: Int):Board = {
+            cardAmmount match {
+                case 1 => new OneCardBoard(indices, head)
+                //case 2 => new TwoCardBoard(indices, head)
+                case 3 => new ThreeCardBoard(indices, head)
+            }
+        }
 }

@@ -136,7 +136,7 @@ case class Controller(var state: GameState, var controllerState: String) extends
 
     def getBoard = {
         val currentPlayer = state.player(state.currentPlayer)
-        val board = Board(
+        val board = Board(3,
         Vector(
             state.currentCard,
             currentPlayer.hand,
@@ -148,7 +148,8 @@ case class Controller(var state: GameState, var controllerState: String) extends
     }
 
     def selectEffect = {
-        "Welchen Effekt moechtest du spielen? (1|2)"
+        Board(1, Vector(state.player(state.currentPlayer).discardPile.head),0).toString + 
+        "\nWelchen Effekt moechtest du spielen? (1|2)"
     }
 
   }
