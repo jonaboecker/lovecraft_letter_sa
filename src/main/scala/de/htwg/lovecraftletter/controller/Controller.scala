@@ -5,7 +5,8 @@ import model._
 import util.Observable
 import scala.util.control.Breaks._
 
-case class Controller(var state: GameState, var controllerState: String) extends Observable {
+case class Controller(var state: GameState, var controllerState: Vector[String])
+    extends Observable {
   val drawPileO = new DrawPile
 
   def initialize(playerList: List[Player]): GameState = {
@@ -38,6 +39,7 @@ case class Controller(var state: GameState, var controllerState: String) extends
     while (!state.player(state.currentPlayer).inGame) {
       state = state.nextPlayer
     }
+    MadHandler.draw
     state
   }
 
@@ -58,20 +60,24 @@ case class Controller(var state: GameState, var controllerState: String) extends
         MadHandler.play
     // handle discarded card
     nextPlayer
-    MadHandler.draw
     notifyObservers
     state
   }
 
   def playEffect(selecterEffect: String) = {
-    controllerState = "standard"
+    controllerState = Vector("standard")
     println("play Effect")
   }
 
   def checkUponWin: Boolean = {
-    if (state.player.filter(_.inGame).length == 1) {
-      // change state to player x won
-      // NO
+    val players = state.player.filter(_.inGame)
+    if (players.length == 1) {
+      controllerState = Vector("PlayerWins", players(0).name)
+      // checking if player won the game
+      // if not start new round
+      notifyObservers
+      // for now stop here
+      System.exit(0)
       return true
     }
     false
@@ -86,22 +92,20 @@ case class Controller(var state: GameState, var controllerState: String) extends
       drawCard
     }
 
-    def drawMad = {
+    def drawMad: GameState = {
       for (
         x <- 0 until state.player(state.currentPlayer).madCheck()
         if state.player(state.currentPlayer).inGame
       ) {
         drawCard
         if (state.currentCard > 8) {
-          state = state.eliminatePlayer
-          checkUponWin
-          // todo: state change to kick player
-          // break
+          eliminatePlayer(state.currentPlayer)
+        } else {
+          state = state.playCard
         }
-        state = state.playCard
       }
       // todo: state change to surived madcheck
-      if(state.player(state.currentPlayer).inGame)
+      if (state.player(state.currentPlayer).inGame)
         drawCard
       else
         state
@@ -117,7 +121,7 @@ case class Controller(var state: GameState, var controllerState: String) extends
 
     def playMad = {
       if (state.currentCard > 8) {
-        controllerState = "selectEffect"
+        controllerState = Vector("selectEffect")
         state = state.playCard
         notifyObservers
       } else {
@@ -126,30 +130,47 @@ case class Controller(var state: GameState, var controllerState: String) extends
     }
   }
 
+  def eliminatePlayer(player: Int) = {
+    state = state.eliminatePlayer(player)
+    controllerState = Vector("tellEliminatedPlayer", state.player(player).name)
+    notifyObservers
+    checkUponWin
+    nextPlayer
+  }
+
   object StateHandler {
     def handle = {
-        controllerState match
-            case "standard" => getBoard
-            case "selectEffect" => selectEffect
+      controllerState(0) match
+        case "standard"     => getBoard
+        case "selectEffect" => selectEffect
+        case "tellEliminatedPlayer" =>
+          "Spieler " + controllerState(1) + " wurde eliminiert"
+        case "PlayerWins" =>
+          "Spieler " + controllerState(1) + " hat die Runde gewonnen"
     }
 
     def getBoard = {
-        val currentPlayer = state.player(state.currentPlayer)
-        val board = Board(3,
+      val currentPlayer = state.player(state.currentPlayer)
+      val board = Board(
+        3,
         Vector(
-            state.currentCard,
-            currentPlayer.hand,
-            currentPlayer.discardPile.head
-            ),
-            1)
-            "\n" + getPlayerName + " ist an der Reihe\n" + 
-            board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
+          state.currentCard,
+          currentPlayer.hand,
+          currentPlayer.discardPile.head
+        ),
+        1
+      )
+      "\n" + getPlayerName + " ist an der Reihe\n" +
+        board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
     }
 
     def selectEffect = {
-        Board(1, Vector(state.player(state.currentPlayer).discardPile.head),0).toString + 
+      Board(
+        1,
+        Vector(state.player(state.currentPlayer).discardPile.head),
+        0
+      ).toString +
         "\nWelchen Effekt moechtest du spielen? (1|2)"
     }
-
   }
 }
