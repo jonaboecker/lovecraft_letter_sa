@@ -12,8 +12,8 @@ final case class TUI(controller: Controller) extends Observer {
 
   def runLL = {
     val playerList: List[Player] = createPlayers
-    controller.initialize(playerList)
     show("Viel Spass beim spielen")
+    controller.initialize(playerList)
     getInputAndPrintLoop
   }
 
