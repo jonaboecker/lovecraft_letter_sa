@@ -78,12 +78,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       val result = GameState(
         0,
-        List(2, 3, 4, 5, 1),
+        List(3, 4, 5, 1),
         List(
           Player("Gustav", 1, List(0), true),
           Player("Guschtav", 1, List(0), true)
         ),
-        1
+        2
       )
       defaultController.nextPlayer should ===(result)
       // test if a player is out
@@ -102,13 +102,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       val result2 = GameState(
         2,
-        List(2, 3, 4, 5, 1),
+        List(3, 4, 5, 1),
         List(
           Player("Gustav", 1, List(0), true),
           Player("Guschtav", 1, List(0), false),
           Player("Player 3", 1, List(0), true)
         ),
-        1
+        2
       )
       defaultController2.nextPlayer should ===(result2)
     }
@@ -184,7 +184,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           List(11, 2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(10, 0), true),
-            Player("Guschtav", 1, List(0), true)
+            Player("Guschtav", 1, List(0), true),
+            Player("P3", 1, List(0), true)
           ),
           0
         ),
@@ -192,13 +193,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       defaultController2.MadHandler.draw should ===(
         GameState(
-          0,
-          List(2, 3, 4, 5, 1),
+          1,
+          List(3, 4, 5, 1),
           List(
-            Player("Gustav", 1, List(11, 10, 0), false),
-            Player("Guschtav", 1, List(0), true)
+            Player("Gustav", 1, List(10, 0), false),
+            Player("Guschtav", 1, List(0), true),
+            Player("P3", 1, List(0), true)
           ),
-          0
+          2
         )
       )
     }

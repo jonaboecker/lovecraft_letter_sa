@@ -77,7 +77,7 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
       // if not start new round
       notifyObservers
       // for now stop here
-      System.exit(0)
+      //System.exit(0)
       return true
     }
     false
@@ -102,12 +102,10 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
           eliminatePlayer(state.currentPlayer)
         } else {
           state = state.playCard
+          drawCard
         }
       }
       // todo: state change to surived madcheck
-      if (state.player(state.currentPlayer).inGame)
-        drawCard
-      else
         state
     }
 
