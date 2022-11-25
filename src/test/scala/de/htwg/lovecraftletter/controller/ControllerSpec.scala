@@ -350,10 +350,40 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      Vector("standard")
+      Vector("selectEffect")
     )
     defaultController2.StateHandler.handle should ===(
       defaultController2.StateHandler.selectEffect
+    )
+    val defaultController3 = new Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      Vector("tellEliminatedPlayer", "Test")
+    )
+    defaultController3.StateHandler.handle should ===(
+      "Spieler Test wurde eliminiert"
+    )
+    val defaultController4 = new Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      Vector("PlayerWins", "Test")
+    )
+    defaultController4.StateHandler.handle should ===(
+      "Spieler Test hat die Runde gewonnen"
     )
   }
 }
