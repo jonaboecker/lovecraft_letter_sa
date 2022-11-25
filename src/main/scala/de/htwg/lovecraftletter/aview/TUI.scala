@@ -49,9 +49,10 @@ final case class TUI(controller: Controller) extends Observer {
   override def update = {
     show(controller.StateHandler.handle)
     controller.controllerState(0) match
-      case "standard"     =>
-      case "selectEffect" => controller.playEffect(getInput(Vector("1", "2")))
-      case _              => controller.controllerState = Vector("standard")
+      case controllState.standard =>
+      case controllState.selectEffect =>
+        controller.playEffect(getInput(Vector("1", "2")))
+      case _ => controller.controllerState = (controllState.standard, "")
   }
 
   def getInput(allowed: Vector[String]): String = {
