@@ -5,8 +5,17 @@ import model._
 import util.Observable
 import scala.util.control.Breaks._
 
-case class Controller(var state: GameState, var controllerState: Vector[String])
-    extends Observable {
+enum controllState {
+  case standard
+  case selectEffect
+  case tellEliminatedPlayer
+  case playerWins
+}
+
+case class Controller(
+    var state: GameState,
+    var controllerState: (controllState, String)
+) extends Observable {
   val drawPileO = new DrawPile
 
   def initialize(playerList: List[Player]): GameState = {
@@ -65,19 +74,19 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
   }
 
   def playEffect(selecterEffect: String) = {
-    controllerState = Vector("standard")
+    controllerState = (controllState.standard, "")
     println("play Effect")
   }
 
   def checkUponWin: Boolean = {
     val players = state.player.filter(_.inGame)
     if (players.length == 1) {
-      controllerState = Vector("PlayerWins", players(0).name)
+      controllerState = (controllState.playerWins, players(0).name)
       // checking if player won the game
       // if not start new round
       notifyObservers
       // for now stop here
-      //System.exit(0)
+      // System.exit(0)
       return true
     }
     false
@@ -106,7 +115,7 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
         }
       }
       // todo: state change to surived madcheck
-        state
+      state
     }
 
     def play =
@@ -119,7 +128,7 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
 
     def playMad = {
       if (state.currentCard > 8) {
-        controllerState = Vector("selectEffect")
+        controllerState = (controllState.selectEffect, "")
         state = state.playCard
         notifyObservers
       } else {
@@ -130,7 +139,8 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
 
   def eliminatePlayer(player: Int) = {
     state = state.eliminatePlayer(player)
-    controllerState = Vector("tellEliminatedPlayer", state.player(player).name)
+    controllerState =
+      (controllState.tellEliminatedPlayer, state.player(player).name)
     notifyObservers
     checkUponWin
     nextPlayer
@@ -139,11 +149,11 @@ case class Controller(var state: GameState, var controllerState: Vector[String])
   object StateHandler {
     def handle = {
       controllerState(0) match
-        case "standard"     => getBoard
-        case "selectEffect" => selectEffect
-        case "tellEliminatedPlayer" =>
+        case controllState.standard     => getBoard
+        case controllState.selectEffect => selectEffect
+        case controllState.tellEliminatedPlayer =>
           "Spieler " + controllerState(1) + " wurde eliminiert"
-        case "PlayerWins" =>
+        case controllState.playerWins =>
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
     }
 
