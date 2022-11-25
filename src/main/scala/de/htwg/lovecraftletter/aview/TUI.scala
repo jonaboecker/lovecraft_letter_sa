@@ -55,13 +55,13 @@ final case class TUI(controller: Controller) extends Observer {
       case _ => controller.controllerState = (controllState.standard, "")
   }
 
-  def getInput(allowed: Vector[String]): String = {
+  def getInput(allowed: Vector[String]): Int = {
     val input = readLine
     if (!allowed.contains(input)) {
       show("Ungueltige Eingabe, versuche es erneut.")
       getInput(allowed)
     } else {
-      input
+      input.toInt
     }
   }
 

@@ -73,8 +73,9 @@ case class Controller(
     state
   }
 
-  def playEffect(selecterEffect: String) = {
+  def playEffect(selectedEffect: Int) = {
     controllerState = (controllState.standard, "")
+    EffectHandler(state, selectedEffect).strategy
     println("play Effect")
   }
 
@@ -114,7 +115,7 @@ case class Controller(
           drawCard
         }
       }
-      // todo: state change to surived madcheck
+
       state
     }
 
@@ -124,6 +125,7 @@ case class Controller(
 
     def playNormal = {
       state = state.playCard
+      playEffect(1)
     }
 
     def playMad = {
@@ -133,6 +135,7 @@ case class Controller(
         notifyObservers
       } else {
         state = state.playCard
+        playEffect(1)
       }
     }
   }
