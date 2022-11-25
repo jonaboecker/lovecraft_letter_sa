@@ -10,11 +10,15 @@ enum controllState {
   case selectEffect
   case tellEliminatedPlayer
   case playerWins
+  case getEffectedPlayer
+  case getInvestigatorGuess
+  case informOverPlayedEffect
 }
 
 case class Controller(
     var state: GameState,
-    var controllerState: (controllState, String)
+    var controllerState: (controllState, String),
+    var effectHandler: EffectHandler
 ) extends Observable {
   val drawPileO = new DrawPile
 
@@ -75,7 +79,8 @@ case class Controller(
 
   def playEffect(selectedEffect: Int) = {
     controllerState = (controllState.standard, "")
-    EffectHandler(state, selectedEffect).strategy
+    effectHandler.reInitialize(state, selectedEffect)
+    state = effectHandler.strategy
     println("play Effect")
   }
 
@@ -91,6 +96,12 @@ case class Controller(
       return true
     }
     false
+  }
+
+  def getAllowedPlayerForPlayerSelection:Vector[String] = {
+    val res = for (x <- 0 to (state.player.length)) yield (x+1).toString
+    //todo current player should not in Vector
+    res.toVector
   }
 
   object MadHandler {
@@ -158,6 +169,9 @@ case class Controller(
           "Spieler " + controllerState(1) + " wurde eliminiert"
         case controllState.playerWins =>
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
+        case controllState.getEffectedPlayer => "Waele einen Spieler auf den du deine Aktion anwenden willst"
+        case controllState.getInvestigatorGuess => "Welche Wert der Handkarte raetst du (2-8)"
+        case controllState.informOverPlayedEffect => controllerState(1)
     }
 
     def getBoard = {

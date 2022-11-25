@@ -9,6 +9,8 @@ import scala.io.StdIn.readLine
 
 final case class TUI(controller: Controller) extends Observer {
   controller.add(this)
+  controller.effectHandler = EffectHandler(controller, null, -1, -1)
+  controller.effectHandler.add(this)
 
   def runLL = {
     val playerList: List[Player] = createPlayers
@@ -52,6 +54,8 @@ final case class TUI(controller: Controller) extends Observer {
       case controllState.standard =>
       case controllState.selectEffect =>
         controller.playEffect(getInput(Vector("1", "2")))
+      case controllState.getEffectedPlayer => controller.effectHandler.setUserInput(getInput(controller.getAllowedPlayerForPlayerSelection))
+      case controllState.getInvestigatorGuess => controller.effectHandler.setUserInput(getInput(Vector("2", "3", "4", "5", "6", "7", "8")))
       case _ => controller.controllerState = (controllState.standard, "")
   }
 
