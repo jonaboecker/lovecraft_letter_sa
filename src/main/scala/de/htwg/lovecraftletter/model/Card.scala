@@ -78,7 +78,7 @@ case class Card() {
         )
     case Weltraum_Met
         extends cards(
-          "1",
+          "2",
           "5",
           "Schaue dir die Handkarte eines Mitspielers an.",
           "Schaue dir die Handkarte eines Mitspielers an. Ziehe 1 Karte und spiele dann 1 Handkarte aus."

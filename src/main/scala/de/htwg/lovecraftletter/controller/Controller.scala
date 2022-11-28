@@ -77,11 +77,12 @@ case class Controller(
     state
   }
 
-  def playEffect(selectedEffect: Int) = {
+  def playEffect(selectedEffect: Int):GameState = {
     controllerState = (controllState.standard, "")
     effectHandler.reInitialize(state, selectedEffect)
     state = effectHandler.strategy
-    println("play Effect")
+    state
+    //println("play Effect")
   }
 
   def checkUponWin: Boolean = {
@@ -153,13 +154,14 @@ case class Controller(
     }
   }
 
-  def eliminatePlayer(player: Int) = {
+  def eliminatePlayer(player: Int):GameState = {
     state = state.eliminatePlayer(player)
     controllerState =
       (controllState.tellEliminatedPlayer, state.player(player).name)
     notifyObservers
     checkUponWin
     //nextPlayer
+    state
   }
 
   object StateHandler {
@@ -172,7 +174,7 @@ case class Controller(
         case controllState.playerWins =>
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
         case controllState.getEffectedPlayer => "Waele einen Spieler auf den du deine Aktion anwenden willst"
-        case controllState.getInvestigatorGuess => "Welche Wert der Handkarte raetst du (2-8)"
+        case controllState.getInvestigatorGuess => "Welchen Wert der Handkarte raetst du (0|2-8)"
         case controllState.informOverPlayedEffect => controllerState(1)
     }
 

@@ -19,9 +19,9 @@ class EffectHandler(val contr: Controller, var state: GameState, var selectedEff
 
   def strategyNormal:GameState =
     state.player(state.currentPlayer).discardPile.head match
-      case 1 | 9  => playInvestigator
-      case 2 | 10 => state
-      case 3 | 11 => state
+      case 1 | 9  => guessTeammateHandcard
+      case 2 | 10 => showTeammateHandcard
+      case 3 | 11 => compareTeammateHandcard
       case 4 | 12 => state
       case 5 | 13 => state
       case 6 | 14 => state
@@ -40,42 +40,56 @@ class EffectHandler(val contr: Controller, var state: GameState, var selectedEff
 
   def setUserInput(input:Int):Int = {
     userInput = input
-    print("input settet with " + userInput)
+    //print("input settet with " + userInput)
     userInput
   }
 
-  def playInvestigator:GameState = {
+  def guessTeammateHandcard:GameState = {
     val choosedPlayer:Int = choosePlayer
-    println(choosedPlayer)
-    println(state.player(choosedPlayer).hand)
+    //println(choosedPlayer)
+    //println(state.player(choosedPlayer).hand)
     contr.controllerState = (controllState.getInvestigatorGuess, "")
     notifyObservers
     contr.resetControllerState
     //Wert der Handkarte bei 0-8 = enum, ansonsten input + 8, Blank zählt nicht
     if(userInput == 0 && state.player(choosedPlayer).hand == 16) {
-        contr.eliminatePlayer(choosedPlayer)
-        syncState
+        state = contr.eliminatePlayer(choosedPlayer)
     } else if(userInput != 0 && (state.player(choosedPlayer).hand == userInput || state.player(choosedPlayer).hand == userInput + 8)) {
-        contr.eliminatePlayer(choosedPlayer)
-        syncState
+        state = contr.eliminatePlayer(choosedPlayer)
     } else {
-        contr.controllerState = (controllState.informOverPlayedEffect, "Dein Tipp war leider falsch")
-        notifyObservers
-        contr.resetControllerState
+        standardOutput("Dein Tipp war leider falsch")
+    }
+    state
+  }
+
+  def showTeammateHandcard:GameState = {
+    val choosedPlayer:Int = choosePlayer
+    val output = state.player(choosedPlayer).name + "s Handkarte ist\n" + Board(1, Vector(state.player(choosedPlayer).hand), 0).toString
+    standardOutput(output)
+    state
+  }
+
+  def compareTeammateHandcard:GameState = {
+    val choosedPlayer:Int = choosePlayer
+    if(state.player(choosedPlayer).hand > state.player(state.currentPlayer).hand) {
+        state = contr.eliminatePlayer(state.currentPlayer)
+    } else if(state.player(choosedPlayer).hand < state.player(state.currentPlayer).hand) {
+        state = contr.eliminatePlayer(choosedPlayer)
     }
     state
   }
   
   def choosePlayer:Int = { //get Player for handle effect to
     contr.controllerState = (controllState.getEffectedPlayer, "")
+    //println("no")
     notifyObservers
-    println("no")
     contr.resetControllerState
     userInput - 1
   }
 
-  def syncState = {
-    state = contr.state
+  def standardOutput(output:String) = { //show Effect result to player
+    contr.controllerState = (controllState.informOverPlayedEffect, output)
+    notifyObservers
+    contr.resetControllerState
   }
-
 }
