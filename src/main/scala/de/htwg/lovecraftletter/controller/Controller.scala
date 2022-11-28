@@ -78,7 +78,7 @@ case class Controller(
   }
 
   def playEffect(selectedEffect: Int):GameState = {
-    controllerState = (controllState.standard, "")
+    resetControllerState
     effectHandler.reInitialize(state, selectedEffect)
     state = effectHandler.strategy
     state
