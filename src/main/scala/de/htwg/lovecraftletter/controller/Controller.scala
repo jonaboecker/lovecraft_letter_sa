@@ -101,6 +101,7 @@ case class Controller(
   def getAllowedPlayerForPlayerSelection:Vector[String] = {
     val res = for (x <- 0 to (state.player.length)) yield (x+1).toString
     //todo current player should not in Vector
+    //todo eliminated Player schould not in Vector
     res.toVector
   }
 
@@ -121,6 +122,7 @@ case class Controller(
         drawCard
         if (state.currentCard > 8) {
           eliminatePlayer(state.currentPlayer)
+          nextPlayer
         } else {
           state = state.playCard
           drawCard
@@ -157,7 +159,7 @@ case class Controller(
       (controllState.tellEliminatedPlayer, state.player(player).name)
     notifyObservers
     checkUponWin
-    nextPlayer
+    //nextPlayer
   }
 
   object StateHandler {
@@ -197,5 +199,9 @@ case class Controller(
       ).toString +
         "\nWelchen Effekt moechtest du spielen? (1|2)"
     }
+  }
+
+  def resetControllerState = {
+    controllerState = (controllState.standard, "")
   }
 }

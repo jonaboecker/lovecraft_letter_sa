@@ -50,12 +50,18 @@ class EffectHandler(val contr: Controller, var state: GameState, var selectedEff
     println(state.player(choosedPlayer).hand)
     contr.controllerState = (controllState.getInvestigatorGuess, "")
     notifyObservers
-    contr.controllerState = (controllState.standard, "")
-    if(state.player(choosedPlayer).hand == userInput) {
+    contr.resetControllerState
+    //Wert der Handkarte bei 0-8 = enum, ansonsten input + 8, Blank zählt nicht
+    if(userInput == 0 && state.player(choosedPlayer).hand == 16) {
         contr.eliminatePlayer(choosedPlayer)
+        syncState
+    } else if(userInput != 0 && (state.player(choosedPlayer).hand == userInput || state.player(choosedPlayer).hand == userInput + 8)) {
+        contr.eliminatePlayer(choosedPlayer)
+        syncState
     } else {
         contr.controllerState = (controllState.informOverPlayedEffect, "Dein Tipp war leider falsch")
         notifyObservers
+        contr.resetControllerState
     }
     state
   }
@@ -64,8 +70,12 @@ class EffectHandler(val contr: Controller, var state: GameState, var selectedEff
     contr.controllerState = (controllState.getEffectedPlayer, "")
     notifyObservers
     println("no")
-    contr.controllerState = (controllState.standard, "")
+    contr.resetControllerState
     userInput - 1
+  }
+
+  def syncState = {
+    state = contr.state
   }
 
 }
