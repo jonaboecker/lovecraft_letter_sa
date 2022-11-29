@@ -19,7 +19,9 @@ class EffectHandler(
       case 1 | 9  => guessTeammateHandcard
       case 2 | 10 => showTeammateHandcard
       case 3 | 11 => compareTeammateHandcard
-      case 4 | 12 => state
+      case 4 | 12 => 
+        standardOutput("Du bist bis zu deinem naechsten Zug geschuetzt")
+        state
       case 5 | 13 => state
       case 6 | 14 => state
       case 7 | 15 => state
@@ -30,7 +32,9 @@ class EffectHandler(
       case 9  => state
       case 10 => state
       case 11 => state
-      case 12 => state
+      case 12 => 
+        standardOutput("Du bist bis zur naechsten Runde geschuetzt")
+        state
       case 13 => state
       case 14 => state
       case 15 => state
@@ -38,6 +42,7 @@ class EffectHandler(
 
   def guessTeammateHandcard: GameState = {
     val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
     // println(choosedPlayer)
     // println(state.player(choosedPlayer).hand)
     contr.controllerState = (controllState.getInvestigatorGuess, "")
@@ -62,6 +67,7 @@ class EffectHandler(
 
   def showTeammateHandcard: GameState = {
     val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
     val output = state.player(choosedPlayer).name + "s Handkarte ist\n" + Board(
       1,
       Vector(state.player(choosedPlayer).hand),
@@ -73,6 +79,7 @@ class EffectHandler(
 
   def compareTeammateHandcard: GameState = {
     val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
     if (
       state.player(choosedPlayer).hand > state.player(state.currentPlayer).hand
     ) {
@@ -86,8 +93,11 @@ class EffectHandler(
   }
 
   def choosePlayer: Int = { // get Player for handle effect to
+    if(contr.getAllowedPlayerForPlayerSelection.isEmpty) {
+        standardOutput("Es kann kein Gegner ausgewaehlt werden")
+        return -1
+    }
     contr.controllerState = (controllState.getEffectedPlayer, "")
-    // println("no")
     contr.notifyObservers
     contr.resetControllerState
     contr.userInput - 1

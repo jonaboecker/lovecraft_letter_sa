@@ -114,15 +114,33 @@ case class Controller(
   }
 
   def getAllowedPlayerForPlayerSelection: Vector[String] = {
-    val res = for (x <- 0 to (state.player.length)) yield (x + 1).toString
+    //val res = for (x <- 0 until (state.player.length)) yield (x + 1).toString
     // todo current player should not in Vector
     // todo eliminated Player schould not in Vector
-    res.toVector
+    val res = rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
+    print(res)
+    //val res2 = res.toVector.drop(state.currentPlayer)
+    //print(res2)
+    res
+  }
+
+  def rekGetAllowedPlayerForPlayerSelection(counter:Int, playerList:List[Player], allowedPlayers:Vector[String]):Vector[String] = {
+    if(playerList.length == 0) {
+        return allowedPlayers
+    } else {
+        if(playerList.head.inGame && playerList.head != state.player(state.currentPlayer) && state.player(counter - 1).discardPile.head != 4 && state.player(counter - 1).discardPile.head != 12) {
+            var tempAllowedPlayers:Vector[String] = allowedPlayers.appended(counter.toString())
+            return rekGetAllowedPlayerForPlayerSelection(counter + 1, playerList.tail, tempAllowedPlayers)
+        } else {
+            var tempAllowedPlayers:Vector[String] = allowedPlayers
+            return rekGetAllowedPlayerForPlayerSelection(counter + 1, playerList.tail, tempAllowedPlayers)
+        }
+    }
   }
 
   object MadHandler {
     def draw =
-      if (state.player(state.currentPlayer).madCheck() > 0) drawMad
+      if (state.player(state.currentPlayer).discardPile.head != 12 && state.player(state.currentPlayer).madCheck() > 0) drawMad
       else drawNormal
 
     def drawNormal = {
