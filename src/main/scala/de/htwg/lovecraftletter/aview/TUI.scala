@@ -83,6 +83,8 @@ final case class TUI(controller: Controller) extends Observer {
       case "2" =>
         controller.playCard(2)
       case "q" | "Q" => return
+      case "undoStep" => controller.undoStep
+      case "redoStep" => controller.redoStep
       case _ =>
         show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
     getInputAndPrintLoop

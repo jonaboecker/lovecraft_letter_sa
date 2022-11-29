@@ -2,7 +2,7 @@ package de.htwg.lovecraftletter
 package controller
 
 import model._
-import util.Observable
+import util._
 import scala.util.control.Breaks._
 
 enum controllState {
@@ -20,6 +20,7 @@ case class Controller(
     var controllerState: (controllState, String),
     var userInput: Int
 ) extends Observable {
+  val undoManager = new UndoManager[GameState]
 
   val drawPileO = new DrawPile
 
@@ -67,6 +68,7 @@ case class Controller(
   }
 
   def playCard(playedCard: Int): GameState = {
+    undoManager.doStep(state)
     playedCard match
       case 1 => MadHandler.play // todo change state to
       case 2 =>
@@ -74,6 +76,18 @@ case class Controller(
         MadHandler.play
     // handle discarded card
     nextPlayer
+    notifyObservers
+    state
+  }
+
+  def undoStep:GameState = {
+    state = undoManager.undoStep(state)
+    notifyObservers
+    state
+  }
+
+  def redoStep:GameState = {
+    state = undoManager.redoStep(state)
     notifyObservers
     state
   }
