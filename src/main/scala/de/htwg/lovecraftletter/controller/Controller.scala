@@ -18,8 +18,9 @@ enum controllState {
 case class Controller(
     var state: GameState,
     var controllerState: (controllState, String),
-    var effectHandler: EffectHandler
+    var userInput: Int
 ) extends Observable {
+
   val drawPileO = new DrawPile
 
   def initialize(playerList: List[Player]): GameState = {
@@ -77,12 +78,11 @@ case class Controller(
     state
   }
 
-  def playEffect(selectedEffect: Int):GameState = {
+  def playEffect(selectedEffect: Int): GameState = {
     resetControllerState
-    effectHandler.reInitialize(state, selectedEffect)
-    state = effectHandler.strategy
+    state = EffectHandler(this, state, selectedEffect).strategy
     state
-    //println("play Effect")
+    // println("play Effect")
   }
 
   def checkUponWin: Boolean = {
@@ -99,10 +99,10 @@ case class Controller(
     false
   }
 
-  def getAllowedPlayerForPlayerSelection:Vector[String] = {
-    val res = for (x <- 0 to (state.player.length)) yield (x+1).toString
-    //todo current player should not in Vector
-    //todo eliminated Player schould not in Vector
+  def getAllowedPlayerForPlayerSelection: Vector[String] = {
+    val res = for (x <- 0 to (state.player.length)) yield (x + 1).toString
+    // todo current player should not in Vector
+    // todo eliminated Player schould not in Vector
     res.toVector
   }
 
@@ -154,13 +154,13 @@ case class Controller(
     }
   }
 
-  def eliminatePlayer(player: Int):GameState = {
+  def eliminatePlayer(player: Int): GameState = {
     state = state.eliminatePlayer(player)
     controllerState =
       (controllState.tellEliminatedPlayer, state.player(player).name)
     notifyObservers
     checkUponWin
-    //nextPlayer
+    // nextPlayer
     state
   }
 
@@ -173,8 +173,10 @@ case class Controller(
           "Spieler " + controllerState(1) + " wurde eliminiert"
         case controllState.playerWins =>
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
-        case controllState.getEffectedPlayer => "Waele einen Spieler auf den du deine Aktion anwenden willst"
-        case controllState.getInvestigatorGuess => "Welchen Wert der Handkarte raetst du (0|2-8)"
+        case controllState.getEffectedPlayer =>
+          "Waele einen Spieler auf den du deine Aktion anwenden willst"
+        case controllState.getInvestigatorGuess =>
+          "Welchen Wert der Handkarte raetst du (0|2-8)"
         case controllState.informOverPlayedEffect => controllerState(1)
     }
 

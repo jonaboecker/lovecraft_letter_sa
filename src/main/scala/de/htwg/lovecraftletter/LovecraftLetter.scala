@@ -10,7 +10,8 @@ import controller._
 @main def run: Unit = {
   println("Welcome to LovecraftLetter")
   val gamestate = new GameState(0, Nil, Nil, 0)
-  val controller = new Controller(gamestate, (controllState.standard, ""), null)
+  val controller: Controller =
+    new Controller(gamestate, (controllState.standard, ""), -999)
   val tui = TUI(controller)
   tui.runLL
   // val tempVec = Vector(1, 1, 1)
