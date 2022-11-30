@@ -22,8 +22,8 @@ class EffectHandler(
       case 4 | 12 => 
         standardOutput("Du bist bis zu deinem naechsten Zug geschuetzt")
         state
-      case 5 | 13 => state
-      case 6 | 14 => state
+      case 5 | 13 => discardAndDraw
+      case 6 | 14 => swapHandcards
       case 7 | 15 => state
       case 8 | 16 => state
 
@@ -89,6 +89,42 @@ class EffectHandler(
     ) {
       state = contr.eliminatePlayer(choosedPlayer)
     }
+    state
+  }
+
+  def discardAndDraw: GameState = {
+    val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
+    //Handkarte ablegen
+    state.player = state.player.updated(choosedPlayer, state.player(choosedPlayer).discardCard(state.player(choosedPlayer).hand))
+    //neue Karte ziehen
+    val drawPile = DrawPile()
+    val (tempDrawPile: List[Int], tempCard: Int) = drawPile.drawAndGet(state.drawPile)
+    //draw pile aktualisieren und gezogene Karte als Handkarte setzen
+    state.drawPile = tempDrawPile
+    state.player = state.player.updated(choosedPlayer, state.player(choosedPlayer).changeHand(tempCard))
+    //if necrominikom oder kathulu -> ausscheiden oder gewinnen
+    if(state.player(choosedPlayer).discardPile.head == 8) {
+        standardOutput("Necronomicon abgelegt")
+        state = contr.eliminatePlayer(choosedPlayer)
+    }
+    if(state.player(choosedPlayer).discardPile.head == 16) {
+        standardOutput("Cthulhu abgelegt")
+        if(state.player(choosedPlayer).madCheck() >= 2) {
+            state = contr.playerWins(choosedPlayer)
+        } else {
+            state = contr.eliminatePlayer(choosedPlayer)
+        }
+    }
+    state
+  }
+
+  def swapHandcards: GameState = {
+    val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
+    val tempCard:Int = state.player(state.currentPlayer).hand
+    state.player = state.player.updated(state.currentPlayer, state.player(state.currentPlayer).changeHand(state.player(choosedPlayer).hand))
+    state.player = state.player.updated(choosedPlayer, state.player(choosedPlayer).changeHand(tempCard))
     state
   }
 

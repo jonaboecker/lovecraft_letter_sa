@@ -67,9 +67,35 @@ case class Controller(
     state
   }
 
+  def checkForCard7or15(playedCard: Int): Int = {
+    if((state.currentCard == (7|15) || state.player(state.currentPlayer).hand == (7|15)) && !(state.currentCard == (7|15) && state.player(state.currentPlayer).hand == (7|15)) ) {
+        if((state.currentCard == 15 || state.player(state.currentPlayer).hand == 15) && state.player(state.currentPlayer).madCheck() > 0) {
+            return playedCard
+        }
+        if (state.currentCard == (7|15)){
+            state.player(state.currentPlayer).hand match
+                case 5|6|8|13|14|16 => 
+                    return 1
+                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 1 spielen")
+                    notifyObservers
+                    resetControllerState
+                case _ => return playedCard
+        } else if (state.player(state.currentPlayer).hand == (7|15)){
+             state.currentCard match
+                case 5|6|8|13|14|16 => return 2
+                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 2 spielen")
+                    notifyObservers
+                    resetControllerState
+                case _ => return playedCard
+        }
+    }
+    playedCard
+  }
+
   def playCard(playedCard: Int): GameState = {
     undoManager.doStep(state)
-    playedCard match
+    val card = checkForCard7or15(playedCard)
+    card match
       case 1 => MadHandler.play // todo change state to
       case 2 =>
         state = state.swapHandAndCurrent
@@ -102,15 +128,22 @@ case class Controller(
   def checkUponWin: Boolean = {
     val players = state.player.filter(_.inGame)
     if (players.length == 1) {
-      controllerState = (controllState.playerWins, players(0).name)
+        //state.player.indexOf(players(0))
+      playerWins(state.player.indexOf(players(0)))
+      return true
+    }
+    false
+  }
+
+  def playerWins(winningPlayer:Int):GameState = {
+    print("winning player " + winningPlayer)
+      controllerState = (controllState.playerWins, state.player(winningPlayer).name)
       // checking if player won the game
       // if not start new round
       notifyObservers
       // for now stop here
       // System.exit(0)
-      return true
-    }
-    false
+      state
   }
 
   def getAllowedPlayerForPlayerSelection: Vector[String] = {

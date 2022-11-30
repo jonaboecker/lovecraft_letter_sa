@@ -389,4 +389,81 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       "Spieler Test hat die Runde gewonnen"
     )
   }
+  "should return the corrct Int for playCard selection" in  {
+    //player mad and card 15
+    var contr = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 15, List(9, 0), true)
+        ),
+        1
+      ),
+      (controllState.standard, ""), 1
+    )
+    contr.checkForCard7or15(2) should === (2)
+
+    //player not mad and handcard 15 bycard >5
+    contr = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 15, List(0), true)
+        ),
+        6
+      ),
+      (controllState.standard, ""), 1
+    )
+    contr.checkForCard7or15(1) should === (2)
+
+    //player not mad and handcard 15 bycard <5
+    contr = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 15, List(0), true)
+        ),
+        3
+      ),
+      (controllState.standard, ""), 1
+    )
+    contr.checkForCard7or15(1) should === (1)
+
+    //player not mad and Othercard 15 bycard >5
+    contr = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 6, List(0), true)
+        ),
+        15
+      ),
+      (controllState.standard, ""), 1
+    )
+    contr.checkForCard7or15(2) should === (1)
+
+    //player not mad and Othercard 15 bycard <5
+    contr = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 3, List(0), true)
+        ),
+        15
+      ),
+      (controllState.standard, ""), 1
+    )
+    contr.checkForCard7or15(2) should === (2)
+  }
+  
 }
