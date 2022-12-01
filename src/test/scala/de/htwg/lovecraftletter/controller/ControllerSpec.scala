@@ -11,7 +11,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
   "A Controller" should {
     "return the correct initial state" in {
       val defaultController =
-        new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -2)
+        new Controller(
+          GameState(0, Nil, Nil, 0),
+          (controllState.standard, ""),
+          -2
+        )
       val result: GameState = defaultController.initialize(
         List(
           Player("Gustav", 0, Nil, true),
@@ -36,7 +40,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController.playerAmount("3") should ===(3)
       defaultController.playerAmount("4") should ===(4)
@@ -55,7 +60,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       val board = Board(3, Vector(1, 1, 0), 1)
       defaultController.StateHandler.getBoard should ===(
@@ -74,7 +80,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       val result = GameState(
         0,
@@ -98,7 +105,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       val result2 = GameState(
         2,
@@ -123,7 +131,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController.getPlayerName should ===("Guschtav")
     }
@@ -138,7 +147,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController.MadHandler.draw should ===(
         GameState(
@@ -164,7 +174,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           0
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController.MadHandler.draw should ===(
         GameState(
@@ -189,7 +200,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           0
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController2.MadHandler.draw should ===(
         GameState(
@@ -200,6 +212,30 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             Player("Guschtav", 1, List(0), true),
             Player("P3", 1, List(0), true)
           ),
+          2
+        )
+      )
+
+      // eliminate player at first cardcheck
+      val defaultController3 = new Controller(
+        GameState(
+          0,
+          List(11, 2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(13, 10, 0), true),
+            Player("Guschtav", 1, List(0), true),
+            Player("P3", 1, List(0), true)
+          ),
+          0
+        ),
+        (controllState.standard, ""),
+        -2
+      )
+      defaultController3.MadHandler.draw should ===(
+        GameState(
+          1,
+          List(3, 4, 5, 1),
+          List(Player("Gustav", 1, List(13, 10, 0), false), Player("Guschtav", 1, List(0), true), Player("P3", 1, List(0), true)),
           2
         )
       )
@@ -215,7 +251,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           2
         ),
-        (controllState.standard, ""), 1
+        (controllState.standard, ""),
+        1
       )
       defaultController.playCard(1) should ===(
         GameState(
@@ -309,7 +346,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController.checkUponWin should ===(true)
       val defaultController2 = new Controller(
@@ -322,7 +360,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ),
-        (controllState.standard, ""), -2
+        (controllState.standard, ""),
+        -2
       )
       defaultController2.checkUponWin should ===(false)
     }
@@ -338,7 +377,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      (controllState.standard, ""), -2
+      (controllState.standard, ""),
+      -2
     )
     defaultController.StateHandler.handle should ===(
       defaultController.StateHandler.getBoard
@@ -353,7 +393,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      (controllState.selectEffect, ""), -2
+      (controllState.selectEffect, ""),
+      -2
     )
     defaultController2.StateHandler.handle should ===(
       defaultController2.StateHandler.selectEffect
@@ -368,7 +409,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      (controllState.tellEliminatedPlayer, "Test"), -2
+      (controllState.tellEliminatedPlayer, "Test"),
+      -2
     )
     defaultController3.StateHandler.handle should ===(
       "Spieler Test wurde eliminiert"
@@ -383,14 +425,15 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      (controllState.playerWins, "Test"), -2
+      (controllState.playerWins, "Test"),
+      -2
     )
     defaultController4.StateHandler.handle should ===(
       "Spieler Test hat die Runde gewonnen"
     )
   }
-  "should return the corrct Int for playCard selection" in  {
-    //player mad and card 15
+  "should return the corrct Int for playCard selection" in {
+    // player mad and card 15
     var contr = Controller(
       GameState(
         1,
@@ -401,11 +444,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         1
       ),
-      (controllState.standard, ""), 1
+      (controllState.standard, ""),
+      1
     )
-    contr.checkForCard7or15(2) should === (2)
+    contr.checkForCard7or15(2) should ===(2)
 
-    //player not mad and handcard 15 bycard >5
+    // player not mad and handcard 15 bycard >5
     contr = Controller(
       GameState(
         1,
@@ -416,11 +460,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         6
       ),
-      (controllState.standard, ""), 1
+      (controllState.standard, ""),
+      1
     )
-    contr.checkForCard7or15(1) should === (2)
+    contr.checkForCard7or15(1) should ===(2)
 
-    //player not mad and handcard 15 bycard <5
+    // player not mad and handcard 15 bycard <5
     contr = Controller(
       GameState(
         1,
@@ -431,11 +476,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         3
       ),
-      (controllState.standard, ""), 1
+      (controllState.standard, ""),
+      1
     )
-    contr.checkForCard7or15(1) should === (1)
+    contr.checkForCard7or15(1) should ===(1)
 
-    //player not mad and Othercard 15 bycard >5
+    // player not mad and Othercard 15 bycard >5
     contr = Controller(
       GameState(
         1,
@@ -446,11 +492,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         15
       ),
-      (controllState.standard, ""), 1
+      (controllState.standard, ""),
+      1
     )
-    contr.checkForCard7or15(2) should === (1)
+    contr.checkForCard7or15(2) should ===(1)
 
-    //player not mad and Othercard 15 bycard <5
+    // player not mad and Othercard 15 bycard <5
     contr = Controller(
       GameState(
         1,
@@ -461,9 +508,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         ),
         15
       ),
-      (controllState.standard, ""), 1
+      (controllState.standard, ""),
+      1
     )
-    contr.checkForCard7or15(2) should === (2)
+    contr.checkForCard7or15(2) should ===(2)
   }
-  
+
 }

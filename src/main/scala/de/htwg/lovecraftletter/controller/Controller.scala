@@ -68,26 +68,43 @@ case class Controller(
   }
 
   def checkForCard7or15(playedCard: Int): Int = {
-    if((state.currentCard == (7|15) || state.player(state.currentPlayer).hand == (7|15)) && !(state.currentCard == (7|15) && state.player(state.currentPlayer).hand == (7|15)) ) {
-        if((state.currentCard == 15 || state.player(state.currentPlayer).hand == 15) && state.player(state.currentPlayer).madCheck() > 0) {
-            return playedCard
-        }
-        if (state.currentCard == (7|15)){
-            state.player(state.currentPlayer).hand match
-                case 5|6|8|13|14|16 => 
-                    return 1
-                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 1 spielen")
-                    notifyObservers
-                    resetControllerState
-                case _ => return playedCard
-        } else if (state.player(state.currentPlayer).hand == (7|15)){
-             state.currentCard match
-                case 5|6|8|13|14|16 => return 2
-                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 2 spielen")
-                    notifyObservers
-                    resetControllerState
-                case _ => return playedCard
-        }
+    if (
+      (state.currentCard == (7 | 15) || state
+        .player(state.currentPlayer)
+        .hand == (7 | 15)) && !(state.currentCard == (7 | 15) && state
+        .player(state.currentPlayer)
+        .hand == (7 | 15))
+    ) {
+      if (
+        (state.currentCard == 15 || state
+          .player(state.currentPlayer)
+          .hand == 15) && state.player(state.currentPlayer).madCheck() > 0
+      ) {
+        return playedCard
+      }
+      if (state.currentCard == (7 | 15)) {
+        state.player(state.currentPlayer).hand match
+          case 5 | 6 | 8 | 13 | 14 | 16 =>
+            return 1
+            controllerState = (
+              controllState.informOverPlayedEffect,
+              "Du  musst Karte 1 spielen"
+            )
+            notifyObservers
+            resetControllerState
+          case _ => return playedCard
+      } else if (state.player(state.currentPlayer).hand == (7 | 15)) {
+        state.currentCard match
+          case 5 | 6 | 8 | 13 | 14 | 16 =>
+            return 2
+            controllerState = (
+              controllState.informOverPlayedEffect,
+              "Du  musst Karte 2 spielen"
+            )
+            notifyObservers
+            resetControllerState
+          case _ => return playedCard
+      }
     }
     playedCard
   }
@@ -106,13 +123,13 @@ case class Controller(
     state
   }
 
-  def undoStep:GameState = {
+  def undoStep: GameState = {
     state = undoManager.undoStep(state)
     notifyObservers
     state
   }
 
-  def redoStep:GameState = {
+  def redoStep: GameState = {
     state = undoManager.redoStep(state)
     notifyObservers
     state
@@ -128,52 +145,78 @@ case class Controller(
   def checkUponWin: Boolean = {
     val players = state.player.filter(_.inGame)
     if (players.length == 1) {
-        //state.player.indexOf(players(0))
+      // state.player.indexOf(players(0))
       playerWins(state.player.indexOf(players(0)))
       return true
     }
     false
   }
 
-  def playerWins(winningPlayer:Int):GameState = {
+  def playerWins(winningPlayer: Int): GameState = {
     print("winning player " + winningPlayer)
-      controllerState = (controllState.playerWins, state.player(winningPlayer).name)
-      // checking if player won the game
-      // if not start new round
-      notifyObservers
-      // for now stop here
-      // System.exit(0)
-      state
+    controllerState =
+      (controllState.playerWins, state.player(winningPlayer).name)
+    // checking if player won the game
+    // if not start new round
+    notifyObservers
+    // for now stop here
+    // System.exit(0)
+    state
   }
 
   def getAllowedPlayerForPlayerSelection: Vector[String] = {
-    //val res = for (x <- 0 until (state.player.length)) yield (x + 1).toString
+    // val res = for (x <- 0 until (state.player.length)) yield (x + 1).toString
     // todo current player should not in Vector
     // todo eliminated Player schould not in Vector
-    val res = rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
+    val res =
+      rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
     print(res)
-    //val res2 = res.toVector.drop(state.currentPlayer)
-    //print(res2)
+    // val res2 = res.toVector.drop(state.currentPlayer)
+    // print(res2)
     res
   }
 
-  def rekGetAllowedPlayerForPlayerSelection(counter:Int, playerList:List[Player], allowedPlayers:Vector[String]):Vector[String] = {
-    if(playerList.length == 0) {
-        return allowedPlayers
+  def rekGetAllowedPlayerForPlayerSelection(
+      counter: Int,
+      playerList: List[Player],
+      allowedPlayers: Vector[String]
+  ): Vector[String] = {
+    if (playerList.length == 0) {
+      return allowedPlayers
     } else {
-        if(playerList.head.inGame && playerList.head != state.player(state.currentPlayer) && state.player(counter - 1).discardPile.head != 4 && state.player(counter - 1).discardPile.head != 12) {
-            var tempAllowedPlayers:Vector[String] = allowedPlayers.appended(counter.toString())
-            return rekGetAllowedPlayerForPlayerSelection(counter + 1, playerList.tail, tempAllowedPlayers)
-        } else {
-            var tempAllowedPlayers:Vector[String] = allowedPlayers
-            return rekGetAllowedPlayerForPlayerSelection(counter + 1, playerList.tail, tempAllowedPlayers)
-        }
+      if (
+        playerList.head.inGame && playerList.head != state.player(
+          state.currentPlayer
+        ) && state.player(counter - 1).discardPile.head != 4 && state
+          .player(counter - 1)
+          .discardPile
+          .head != 12
+      ) {
+        var tempAllowedPlayers: Vector[String] =
+          allowedPlayers.appended(counter.toString())
+        return rekGetAllowedPlayerForPlayerSelection(
+          counter + 1,
+          playerList.tail,
+          tempAllowedPlayers
+        )
+      } else {
+        var tempAllowedPlayers: Vector[String] = allowedPlayers
+        return rekGetAllowedPlayerForPlayerSelection(
+          counter + 1,
+          playerList.tail,
+          tempAllowedPlayers
+        )
+      }
     }
   }
 
   object MadHandler {
     def draw =
-      if (state.player(state.currentPlayer).discardPile.head != 12 && state.player(state.currentPlayer).madCheck() > 0) drawMad
+      if (
+        state.player(state.currentPlayer).discardPile.head != 12 && state
+          .player(state.currentPlayer)
+          .madCheck() > 0
+      ) drawMad
       else drawNormal
 
     def drawNormal = {
@@ -181,17 +224,17 @@ case class Controller(
     }
 
     def drawMad: GameState = {
-      for (
-        x <- 0 until state.player(state.currentPlayer).madCheck()
-        if state.player(state.currentPlayer).inGame
-      ) {
-        drawCard
-        if (state.currentCard > 8) {
-          eliminatePlayer(state.currentPlayer)
-          nextPlayer
-        } else {
-          state = state.playCard
+      val tempCurrentPlayer = state.currentPlayer
+      for (x <- 0 until state.player(tempCurrentPlayer).madCheck()) {
+        if (state.player(tempCurrentPlayer).inGame) {
           drawCard
+          if (state.currentCard > 8) {
+            eliminatePlayer(tempCurrentPlayer)
+            nextPlayer
+          } else {
+            state = state.playCard
+            drawCard
+          }
         }
       }
 
