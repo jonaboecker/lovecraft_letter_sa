@@ -68,43 +68,27 @@ case class Controller(
   }
 
   def checkForCard7or15(playedCard: Int): Int = {
-    if (
-      (state.currentCard == (7 | 15) || state
-        .player(state.currentPlayer)
-        .hand == (7 | 15)) && !(state.currentCard == (7 | 15) && state
-        .player(state.currentPlayer)
-        .hand == (7 | 15))
-    ) {
-      if (
-        (state.currentCard == 15 || state
-          .player(state.currentPlayer)
-          .hand == 15) && state.player(state.currentPlayer).madCheck() > 0
-      ) {
-        return playedCard
-      }
-      if (state.currentCard == (7 | 15)) {
-        state.player(state.currentPlayer).hand match
-          case 5 | 6 | 8 | 13 | 14 | 16 =>
-            return 1
-            controllerState = (
-              controllState.informOverPlayedEffect,
-              "Du  musst Karte 1 spielen"
-            )
-            notifyObservers
-            resetControllerState
-          case _ => return playedCard
-      } else if (state.player(state.currentPlayer).hand == (7 | 15)) {
-        state.currentCard match
-          case 5 | 6 | 8 | 13 | 14 | 16 =>
-            return 2
-            controllerState = (
-              controllState.informOverPlayedEffect,
-              "Du  musst Karte 2 spielen"
-            )
-            notifyObservers
-            resetControllerState
-          case _ => return playedCard
-      }
+    if((state.currentCard == (7|15) || state.player(state.currentPlayer).hand == (7|15)) && !(state.currentCard == (7|15) && state.player(state.currentPlayer).hand == (7|15)) ) {
+        if((state.currentCard == 15 || state.player(state.currentPlayer).hand == 15) && state.player(state.currentPlayer).madCheck() > 0) {
+            return playedCard
+        }
+        if (state.currentCard == (7|15)){
+            state.player(state.currentPlayer).hand match
+                case 5|6|8|13|14|16 =>
+                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 1 spielen")
+                    notifyObservers
+                    resetControllerState
+                    return 1
+                case _ => return playedCard
+        } else if (state.player(state.currentPlayer).hand == (7|15)){
+             state.currentCard match
+                case 5|6|8|13|14|16 =>
+                    controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 2 spielen")
+                    notifyObservers
+                    resetControllerState
+                    return 2
+                case _ => return playedCard
+        }
     }
     playedCard
   }

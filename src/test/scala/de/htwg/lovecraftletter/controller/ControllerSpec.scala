@@ -367,7 +367,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
     }
   }
   "State Handler should return correct string" in {
-    val defaultController = new Controller(
+    var defaultController = Controller(
       GameState(
         1,
         List(2, 3, 4, 5, 1),
@@ -383,7 +383,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
     defaultController.StateHandler.handle should ===(
       defaultController.StateHandler.getBoard
     )
-    val defaultController2 = new Controller(
+
+    defaultController = Controller(
       GameState(
         1,
         List(2, 3, 4, 5, 1),
@@ -396,10 +397,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       (controllState.selectEffect, ""),
       -2
     )
-    defaultController2.StateHandler.handle should ===(
-      defaultController2.StateHandler.selectEffect
+    defaultController.StateHandler.handle should ===(
+      defaultController.StateHandler.selectEffect
     )
-    val defaultController3 = new Controller(
+
+    defaultController = Controller(
       GameState(
         1,
         List(2, 3, 4, 5, 1),
@@ -412,10 +414,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       (controllState.tellEliminatedPlayer, "Test"),
       -2
     )
-    defaultController3.StateHandler.handle should ===(
+    defaultController.StateHandler.handle should ===(
       "Spieler Test wurde eliminiert"
     )
-    val defaultController4 = new Controller(
+
+    defaultController = Controller(
       GameState(
         1,
         List(2, 3, 4, 5, 1),
@@ -428,9 +431,58 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       (controllState.playerWins, "Test"),
       -2
     )
-    defaultController4.StateHandler.handle should ===(
+    defaultController.StateHandler.handle should ===(
       "Spieler Test hat die Runde gewonnen"
     )
+
+    defaultController = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      (controllState.getEffectedPlayer, ""), -2
+    )
+    defaultController.StateHandler.handle should ===(
+      "Waele einen Spieler auf den du deine Aktion anwenden willst"
+    )
+
+    defaultController = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      (controllState.getInvestigatorGuess, ""), -2
+    )
+    defaultController.StateHandler.handle should ===(
+      "Welchen Wert der Handkarte raetst du (0|2-8)"
+    )
+
+    defaultController = Controller(
+      GameState(
+        1,
+        List(2, 3, 4, 5, 1),
+        List(
+          Player("Gustav", 1, List(0), true),
+          Player("Guschtav", 1, List(0), false)
+        ),
+        1
+      ),
+      (controllState.informOverPlayedEffect, "test"), -2
+    )
+    defaultController.StateHandler.handle should ===(
+      "test"
+    )
+
   }
   "should return the corrct Int for playCard selection" in {
     // player mad and card 15
