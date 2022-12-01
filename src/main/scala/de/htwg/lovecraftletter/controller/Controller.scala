@@ -93,9 +93,13 @@ case class Controller(
     playedCard
   }
 
-  def playCard(playedCard: Int): GameState = {
-    undoManager.doStep(state)
-    val card = checkForCard7or15(playedCard)
+  def makeTurn: GameState = {
+    undoManager.doStep(state, PlayCommand(this))
+    state
+  }
+
+  def playCard: GameState = {
+    val card = checkForCard7or15(userInput)
     card match
       case 1 => MadHandler.play // todo change state to
       case 2 =>
@@ -137,7 +141,6 @@ case class Controller(
   }
 
   def playerWins(winningPlayer: Int): GameState = {
-    print("winning player " + winningPlayer)
     controllerState =
       (controllState.playerWins, state.player(winningPlayer).name)
     // checking if player won the game

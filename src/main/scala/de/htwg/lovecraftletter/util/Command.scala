@@ -8,8 +8,9 @@ trait Command[T]:
 class UndoManager[T]:
   private var undoStack: List[T] = Nil
   private var redoStack: List[T] = Nil
-  def doStep(t: T) =
+  def doStep(t: T, command: Command[T]) =
     undoStack = t :: undoStack
+    command.doStep(t)
   def undoStep(t: T): T =
     undoStack match {
       case Nil => t

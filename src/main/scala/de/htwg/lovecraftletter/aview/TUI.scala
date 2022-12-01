@@ -79,9 +79,11 @@ final case class TUI(controller: Controller) extends Observer {
     val input = readLine
     input match
       case "1" =>
-        controller.playCard(1)
+        controller.userInput = 1
+        controller.makeTurn
       case "2" =>
-        controller.playCard(2)
+        controller.userInput = 2
+        controller.makeTurn
       case "q" | "Q" => return
       case "undoStep" => controller.undoStep
       case "redoStep" => controller.redoStep

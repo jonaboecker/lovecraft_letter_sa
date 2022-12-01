@@ -254,7 +254,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         (controllState.standard, ""),
         1
       )
-      defaultController.playCard(1) should ===(
+      defaultController.playCard should ===(
         GameState(
           0,
           List(3, 4, 5, 1),
@@ -276,8 +276,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         1
       )
       val defaultController2 =
-        Controller(defaultState2, (controllState.standard, ""), 1)
-      defaultController2.playCard(2) should ===(
+        Controller(defaultState2, (controllState.standard, ""), 2)
+      defaultController2.playCard should ===(
         GameState(
           0,
           List(3, 4, 5, 1),
@@ -300,7 +300,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       val defaultController3 =
         Controller(defaultState3, (controllState.standard, ""), 1)
-      defaultController3.playCard(1) should ===(
+      defaultController3.playCard should ===(
         GameState(
           0,
           List(3, 4, 5, 1),
@@ -323,7 +323,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       val defaultController4 =
         Controller(defaultState4, (controllState.standard, ""), 1)
-      defaultController4.playCard(1) should ===(
+      defaultController4.playCard should ===(
         GameState(
           0,
           List(3, 4, 5, 1),
@@ -335,6 +335,62 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         )
       )
     }
+
+    "return correct state for undoStep and redoStep" in {
+      var defaultController = new Controller(
+        GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          1
+        ),
+        (controllState.standard, ""),
+        1
+      )
+      defaultController.undoStep should ===(GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          1
+        ))
+
+      defaultController.makeTurn
+      defaultController.state = GameState(
+          1,
+          List(2, 3, 5, 1),
+          List(
+            Player("Gustav", 1, List(5, 0), true),
+            Player("Guschtav", 1, List(7, 0), true)
+          ),
+          1
+        )
+      defaultController.undoStep should ===(GameState(
+          1,
+          List(2, 3, 4, 5, 1),
+          List(
+            Player("Gustav", 1, List(0), true),
+            Player("Guschtav", 1, List(0), true)
+          ),
+          1
+        ))
+
+      defaultController.redoStep should ===(GameState(
+          1,
+          List(2, 3, 5, 1),
+          List(
+            Player("Gustav", 1, List(5, 0), true),
+            Player("Guschtav", 1, List(7, 0), true)
+          ),
+          1
+        ))
+    }
+
     "return correct Boolean for checkUponWin" in {
       val defaultController = new Controller(
         GameState(
