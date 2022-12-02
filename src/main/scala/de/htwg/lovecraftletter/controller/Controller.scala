@@ -22,7 +22,13 @@ case class Controller(
 ) extends Observable {
   val undoManager = new UndoManager[GameState]
 
-  val drawPileO = new DrawPile
+  val drawPile:Option[DrawPile] = Some(DrawPile())
+
+  val drawPileO = drawPile match {
+  case Some(b) => b
+  case None => new DrawPile
+ }
+
 
   def initialize(playerList: List[Player]): GameState = {
     state.currentPlayer = 0;
