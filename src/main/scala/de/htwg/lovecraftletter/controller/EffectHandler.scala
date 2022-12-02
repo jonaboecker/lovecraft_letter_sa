@@ -4,6 +4,8 @@ package controller
 import model._
 import util.Observable
 
+import scala.util._
+
 class EffectHandler(
     val contr: Controller,
     var state: GameState,
@@ -24,27 +26,32 @@ class EffectHandler(
         state
       case 5 | 13 => discardAndDraw
       case 6 | 14 => swapHandcards
-      case 7 | 15 => state
-      case 8 | 16 => state
+      case 7 | 15 => state //implemented in controller
+      case 8 | 16 | 17 => contr.eliminatePlayer(state.currentPlayer)
 
   def strategyMad: GameState =
     state.player(state.currentPlayer).discardPile.head match
-      case 9  => state
-      case 10 => state
-      case 11 => state
+      case 9  => guessTeammateHandcard
+      case 10 => showTeammateHandcard
+      case 11 => eliminateMadPlayer
       case 12 => 
         standardOutput("Du bist bis zur naechsten Runde geschuetzt")
         state
-      case 13 => state
-      case 14 => state
-      case 15 => state
-      case 16 => state
+      case 13 => playMiGoMad
+      case 14 => playniegrhaasdfsaj
+      case 15 => playTrapezoeder
+      case 16 => playCthulu
+      case 17 => contr.eliminatePlayer(state.currentPlayer)
 
   def guessTeammateHandcard: GameState = {
     val choosedPlayer: Int = choosePlayer
     if (choosedPlayer == -1) return state
-    // println(choosedPlayer)
-    // println(state.player(choosedPlayer).hand)
+    if(selectedEffect == 2) { //if mad effect
+        if(state.player(choosedPlayer).hand == 1) {
+            state = contr.eliminatePlayer(choosedPlayer)
+        }
+        return state
+    }
     contr.controllerState = (controllState.getInvestigatorGuess, "")
     contr.notifyObservers
     contr.resetControllerState
@@ -74,6 +81,10 @@ class EffectHandler(
       0
     ).toString
     standardOutput(output)
+    if(selectedEffect == 2) { //madcard played
+        standardOutput("Du darfst nochmal ziehen")
+        state = contr.playAnotherCard
+    }
     state
   }
 
@@ -125,6 +136,50 @@ class EffectHandler(
     val tempCard:Int = state.player(state.currentPlayer).hand
     state.player = state.player.updated(state.currentPlayer, state.player(state.currentPlayer).changeHand(state.player(choosedPlayer).hand))
     state.player = state.player.updated(choosedPlayer, state.player(choosedPlayer).changeHand(tempCard))
+    state
+  }
+
+  def eliminateMadPlayer: GameState = {
+    val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
+    if(state.player(choosedPlayer).madCheck() == 0) {
+        state = contr.eliminatePlayer(choosedPlayer)
+    }
+    state
+  }
+
+  def playMiGoMad: GameState = {
+    val choosedPlayer: Int = choosePlayer
+    if (choosedPlayer == -1) return state
+    state.drawPile = state.player(choosedPlayer).hand :: state.drawPile
+    state.player = state.player.updated(choosedPlayer, state.player(choosedPlayer).changeHand(17))
+    standardOutput("Du darfst nochmal ziehen")
+    state = contr.playAnotherCard
+    state
+  }
+
+  def playniegrhaasdfsaj: GameState = {
+    val cards = for(p <- state.player) yield (p.hand)
+    val cardsVec:Vector[Int] = Random.shuffle(cards.toVector)
+    for(i <- 0 until state.player.length) {
+        state.player = state.player.updated(i, state.player(i).changeHand(cardsVec(i)))
+    }
+    state
+  }
+
+  def playTrapezoeder: GameState = {
+    state.player(state.currentPlayer).hand match 
+        case 5|6|7|8|13|14|16 => state = contr.playerWins(state.currentPlayer)
+        case _ =>
+    state
+  }
+
+  def playCthulu: GameState = {
+    if(state.player(state.currentPlayer).madCheck() > 2) {
+        state = contr.playerWins(state.currentPlayer)
+    } else {
+       state = contr.eliminatePlayer(state.currentPlayer) 
+    }
     state
   }
 

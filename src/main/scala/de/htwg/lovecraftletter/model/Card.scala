@@ -109,7 +109,7 @@ case class Card() {
           "6",
           "1",
           "Tausche deine Handkarte mit der eines Mitspielers.",
-          "Nimm alle Handkarten der Mitspieler. Schaue sie an und gib jedem 1 Karte deiner Wahl zurueck."
+          "Nimm alle Handkarten der Mitspieler. Mische sie und gib jedem Spieler 1 zufällige Karte zurueck."
         )
     case Der_leuchtende_Trapezoeder
         extends cards(

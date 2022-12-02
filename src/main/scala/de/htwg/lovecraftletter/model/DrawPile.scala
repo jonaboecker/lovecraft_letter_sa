@@ -52,20 +52,3 @@ case class DrawPile() {
     }
   }
 }
-
-/* class PackT[T](val bottles:List[T]) {
- def map(f:T => T) = bottles.map(bottle => f(bottle))
- override def toString="UUUU"
-} */
-
-// Option already exists. This is a sketch of an implementation.
-/* trait Option[DrawPile] {
-def map(f:DrawPile => DrawPile):Option[DrawPile]
-}
-case class Some[DrawPile](val b:DrawPile) extends Option[DrawPile] {
-def map(f:DrawPile => DrawPile) = new Some(f(b))
-}
-case class None[DrawPile]() extends Option[DrawPile] {
-def map(f:DrawPile => DrawPile) = new None
-} */
-

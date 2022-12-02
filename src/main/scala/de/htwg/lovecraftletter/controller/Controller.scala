@@ -13,6 +13,7 @@ enum controllState {
   case getEffectedPlayer
   case getInvestigatorGuess
   case informOverPlayedEffect
+  case getInputToPlayAnotherCard
 }
 
 case class Controller(
@@ -114,6 +115,22 @@ case class Controller(
     // handle discarded card
     nextPlayer
     notifyObservers
+    state
+  }
+
+  def playAnotherCard: GameState ={
+    state = drawCard
+    notifyObservers
+    controllerState = (controllState.getInputToPlayAnotherCard, "")
+    notifyObservers
+    resetControllerState
+    val card = checkForCard7or15(userInput)
+    card match
+      case 1 => MadHandler.play // todo change state to
+      case 2 =>
+        state = state.swapHandAndCurrent
+        MadHandler.play
+    // handle discarded card
     state
   }
 
@@ -279,6 +296,8 @@ case class Controller(
         case controllState.getInvestigatorGuess =>
           "Welchen Wert der Handkarte raetst du (0|2-8)"
         case controllState.informOverPlayedEffect => controllerState(1)
+        case controllState.getInputToPlayAnotherCard =>
+          "Welche Karte moechtest du spilelen) (1|2)"
     }
 
     def getBoard = {
