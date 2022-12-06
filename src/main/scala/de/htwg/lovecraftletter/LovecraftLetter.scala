@@ -1,6 +1,6 @@
 package de.htwg.lovecraftletter
 
-import aview.TUI
+import aview._
 import model.GameState
 import controller._
 
@@ -13,6 +13,7 @@ import controller._
   val controller: Controller =
     new Controller(gamestate, (controllState.standard, ""), -999)
   val tui = TUI(controller)
+  val gui = GUI(controller)
   tui.runLL
   // val tempVec = Vector(1, 1, 1)
   // print(new Board(tempVec))

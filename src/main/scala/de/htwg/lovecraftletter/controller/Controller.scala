@@ -297,7 +297,7 @@ case class Controller(
           "Welchen Wert der Handkarte raetst du (0|2-8)"
         case controllState.informOverPlayedEffect => controllerState(1)
         case controllState.getInputToPlayAnotherCard =>
-          "Welche Karte moechtest du spilelen) (1|2)"
+          "Welche Karte moechtest du spielen? (1|2)"
     }
 
     def getBoard = {

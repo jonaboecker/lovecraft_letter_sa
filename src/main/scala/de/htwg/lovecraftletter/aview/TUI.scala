@@ -59,8 +59,6 @@ final case class TUI(controller: Controller) extends Observer {
       case controllState.getInvestigatorGuess =>
         controller.userInput = getInput(
           Vector("0", "2", "3", "4", "5", "6", "7", "8")
-          // controller.effectHandler.setUserInput(
-          //  getInput(Vector("0", "2", "3", "4", "5", "6", "7", "8"))
         )
       case controllState.getInputToPlayAnotherCard => getInput(Vector("1", "2"))
       case _ => controller.controllerState = (controllState.standard, "")
