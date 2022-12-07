@@ -12,8 +12,8 @@ import controller._
   val gamestate = new GameState(0, Nil, Nil, 0)
   val controller: Controller =
     new Controller(gamestate, (controllState.standard, ""), -999)
-  val tui = TUI(controller)
   val gui = GUI(controller)
+  val tui = TUI(controller)
   tui.runLL
   // val tempVec = Vector(1, 1, 1)
   // print(new Board(tempVec))

@@ -6,7 +6,8 @@ import util.Observer
 import model._
 
 import scala.swing._
-//import scala.swing.event._
+import scala.swing.event._
+import scala.swing.ListView._
 
 class GUI(controller: Controller) extends Frame with Observer {
     controller.add(this)
@@ -19,7 +20,11 @@ class GUI(controller: Controller) extends Frame with Observer {
     effectTA.font =(new Font("Monospaced", 0,16))
     effectTA.editable = false
 
-    var inputCO = ListView(Vector("1", "2"))
+    var inputCO = ListView(Vector("1", "2"))    
+    // listenTo(inputCO.selection)
+    // reactions += {
+    //   case SelectionChanged(inputCO) => println(inputCO.selection.items(0))
+    // }
 
     title = "Lovecraft Letter"
     menuBar = new MenuBar{
@@ -33,13 +38,18 @@ class GUI(controller: Controller) extends Frame with Observer {
             contents += new MenuItem(Action("Rueckgaengig Rueckgaengig machen") {
                 controller.redoStep
             })
+            contents += MenuItem(Action("mach mal") {
+                handle
+            })
         }
     }
+
     contents = new BorderPanel {
         //add(new Label("Willkommen bei Lovecraft Letter"), BorderPanel.Position.North)
         add(boardTA, BorderPanel.Position.North)
         add(effectTA, BorderPanel.Position.Center)
         add(inputCO, BorderPanel.Position.South)
+
     }
 
     pack()
@@ -69,6 +79,19 @@ class GUI(controller: Controller) extends Frame with Observer {
                 //todo: Passt das so in der TUI?
                 //getInput(Vector("1", "2"))
             case _ => controller.controllerState = (controllState.standard, "")
+    }
+
+    def handle = {
+        if(controller.controllerState == (controllState.standard,"")) {
+            inputCO.selection.items(0) match
+                case "1" =>
+                    controller.userInput = 1
+                    controller.makeTurn
+                case "2" =>
+                    controller.userInput = 2
+                    controller.makeTurn
+        }
+        //println(inputCO.selection.items)
     }
 
     def show(output:String) = {
