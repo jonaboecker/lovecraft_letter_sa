@@ -82,15 +82,33 @@ class GUI(controller: Controller) extends Frame with Observer {
     }
 
     def handle = {
-        if(controller.controllerState == (controllState.standard,"")) {
-            inputCO.selection.items(0) match
-                case "1" =>
-                    controller.userInput = 1
-                    controller.makeTurn
-                case "2" =>
-                    controller.userInput = 2
-                    controller.makeTurn
-        }
+        controller.controllerState(0) match
+                case controllState.standard =>
+                    inputCO.selection.items(0) match
+                        case "1" =>
+                            controller.userInput = 1
+                            controller.makeTurn
+                        case "2" =>
+                            controller.userInput = 2
+                            controller.makeTurn
+                case controllState.selectEffect =>
+                    controller.playEffect(inputCO.selection.items(0).toInt)
+                case controllState.getEffectedPlayer =>
+                    controller.playerChoosed(inputCO.selection.items(0).toInt)
+                case controllState.getInvestigatorGuess =>
+                    controller.investgatorGuessed(inputCO.selection.items(0).toInt)
+                case controllState.getInputToPlayAnotherCard => 
+                    controller.playAnotherCard2(inputCO.selection.items(0).toInt)
+                case _ => controller.controllerState = (controllState.standard, "")
+        // if(controller.controllerState == (controllState.standard,"")) {
+        //     inputCO.selection.items(0) match
+        //         case "1" =>
+        //             controller.userInput = 1
+        //             controller.makeTurn
+        //         case "2" =>
+        //             controller.userInput = 2
+        //             controller.makeTurn
+        // }
         //println(inputCO.selection.items)
     }
 
