@@ -74,7 +74,7 @@ final case class TUI(controller: Controller) extends Observer {
             case "undoStep" => controller.undoStep
             case "redoStep" => controller.redoStep
             case _ =>
-        show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
+                show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
     } else {
         if(!controller.allowedInput.contains(input)) {
             show("Ungueltige Eingabe, versuche es erneut.")
@@ -83,11 +83,11 @@ final case class TUI(controller: Controller) extends Observer {
                 case controllState.selectEffect =>
                     controller.playEffect(input.toInt)
                 case controllState.getEffectedPlayer =>
-                    controller.userInput = input.toInt
+                    controller.playerChoosed(input.toInt)
                 case controllState.getInvestigatorGuess =>
-                    controller.userInput = input.toInt
+                    controller.investgatorGuessed(input.toInt)
                 case controllState.getInputToPlayAnotherCard => 
-                    controller.userInput = input.toInt
+                    controller.playAnotherCard2(input.toInt)
                 case _ => controller.controllerState = (controllState.standard, "")
         }    
     }

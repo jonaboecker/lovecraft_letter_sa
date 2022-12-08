@@ -23,6 +23,7 @@ case class Controller(
 ) extends Observable {
   val undoManager = new UndoManager[GameState]
   var allowedInput = Vector("1", "2")
+  var effectHandlerSelection:Vector[Int] = Vector(-999)
 
   val drawPile:Option[DrawPile] = Some(DrawPile())
 
@@ -114,8 +115,8 @@ case class Controller(
         state = state.swapHandAndCurrent
         MadHandler.play
     // handle discarded card
-    nextPlayer
-    notifyObservers
+    /* nextPlayer
+    notifyObservers */
     state
   }
 
@@ -124,8 +125,12 @@ case class Controller(
     notifyObservers
     controllerState = (controllState.getInputToPlayAnotherCard, "")
     notifyObservers
+    state
+  }
+
+  def playAnotherCard2(otherCard: Int): GameState = {
     resetControllerState
-    val card = checkForCard7or15(userInput)
+    val card = checkForCard7or15(otherCard)
     card match
       case 1 => MadHandler.play // todo change state to
       case 2 =>
@@ -149,9 +154,24 @@ case class Controller(
 
   def playEffect(selectedEffect: Int): GameState = {
     resetControllerState
-    state = EffectHandler(this, state, selectedEffect).strategy
+    effectHandlerSelection = Vector(selectedEffect)
+    state = EffectHandler(this, state, effectHandlerSelection).initializeEffectHandler
     state
     // println("play Effect")
+  }
+
+  def playerChoosed(choosedPlayer: Int): GameState = {
+    resetControllerState
+    effectHandlerSelection = Vector(effectHandlerSelection(0), choosedPlayer - 1)
+    state = EffectHandler(this, state, effectHandlerSelection).strategy
+    state
+  }
+
+  def investgatorGuessed(guess: Int): GameState = {
+    resetControllerState
+    effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
+    state = EffectHandler(this, state, effectHandlerSelection).guessTeammateHandcard2
+    state
   }
 
   def checkUponWin: Boolean = {
@@ -181,7 +201,7 @@ case class Controller(
     // todo eliminated Player schould not in Vector
     val res =
       rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
-    print(res)
+    //print(res)
     // val res2 = res.toVector.drop(state.currentPlayer)
     // print(res2)
     res
@@ -263,9 +283,8 @@ case class Controller(
 
     def playMad = {
       if (state.currentCard > 8) {
-        controllerState = (controllState.selectEffect, "")
         state = state.playCard
-        notifyObservers
+        playEffect(2)
       } else {
         state = state.playCard
         playEffect(1)
@@ -294,7 +313,7 @@ case class Controller(
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
         case controllState.getEffectedPlayer =>
           allowedInput = getAllowedPlayerForPlayerSelection
-          "Waele einen Spieler auf den du deine Aktion anwenden willst"
+          "Waele einen Spieler auf den du deine Aktion anwenden willst " + allowedInput.toString()
         case controllState.getInvestigatorGuess =>
           allowedInput = Vector("0", "2", "3", "4", "5", "6", "7", "8")
           "Welchen Wert der Handkarte raetst du (0|2-8)"
