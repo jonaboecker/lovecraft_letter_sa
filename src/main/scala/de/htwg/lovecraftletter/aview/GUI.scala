@@ -78,7 +78,7 @@ class GUI(controller: Controller) extends Frame with Observer {
                 inputCO.listData = Vector("1", "2")
                 //todo: Passt das so in der TUI?
                 //getInput(Vector("1", "2"))
-            case _ => controller.controllerState = (controllState.standard, "")
+            case _ => 
     }
 
     def handle = {

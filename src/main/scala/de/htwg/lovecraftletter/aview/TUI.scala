@@ -48,46 +48,52 @@ final case class TUI(controller: Controller) extends Observer {
 
   override def update = {
     show(controller.StateHandler.handle)
-    controller.controllerState(0) match
-      case controllState.standard =>
-      case controllState.selectEffect =>
-        controller.playEffect(getInput(Vector("1", "2")))
-      case controllState.getEffectedPlayer =>
-        controller.userInput = getInput(
-          controller.getAllowedPlayerForPlayerSelection
-        )
-      case controllState.getInvestigatorGuess =>
-        controller.userInput = getInput(
-          Vector("0", "2", "3", "4", "5", "6", "7", "8")
-        )
-      case controllState.getInputToPlayAnotherCard => getInput(Vector("1", "2"))
-      case _ => controller.controllerState = (controllState.standard, "")
   }
 
-  def getInput(allowed: Vector[String]): Int = {
-    val input = readLine
-    if (!allowed.contains(input)) {
-      show("Ungueltige Eingabe, versuche es erneut.")
-      getInput(allowed)
-    } else {
-      input.toInt
-    }
-  }
+//   def getInput(allowed: Vector[String]): Int = {
+//     val input = readLine
+//     if (!allowed.contains(input)) {
+//       show("Ungueltige Eingabe, versuche es erneut.")
+//       getInput(allowed)
+//     } else {
+//       input.toInt
+//     }
+//   }
 
   def getInputAndPrintLoop: Unit = {
     val input = readLine
-    input match
-      case "1" =>
-        controller.userInput = 1
-        controller.makeTurn
-      case "2" =>
-        controller.userInput = 2
-        controller.makeTurn
-      case "q" | "Q" => return
-      case "undoStep" => controller.undoStep
-      case "redoStep" => controller.redoStep
-      case _ =>
+    if(controller.controllerState == (controllState.standard, "")) {
+        input match
+            case "1" =>
+                controller.userInput = 1
+                controller.makeTurn
+            case "2" =>
+                controller.userInput = 2
+                controller.makeTurn
+            case "q" | "Q" => return
+            case "undoStep" => controller.undoStep
+            case "redoStep" => controller.redoStep
+            case _ =>
         show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
+    } else {
+        if(!controller.allowedInput.contains(input)) {
+            show("Ungueltige Eingabe, versuche es erneut.")
+        } else {
+            controller.controllerState(0) match
+                case controllState.selectEffect =>
+                    controller.playEffect(input.toInt)
+                case controllState.getEffectedPlayer =>
+                    controller.userInput = input.toInt
+                case controllState.getInvestigatorGuess =>
+                    controller.userInput = input.toInt
+                case controllState.getInputToPlayAnotherCard => 
+                    controller.userInput = input.toInt
+                case _ => controller.controllerState = (controllState.standard, "")
+        }    
+    }
     getInputAndPrintLoop
+
+    
+    
   }
 }

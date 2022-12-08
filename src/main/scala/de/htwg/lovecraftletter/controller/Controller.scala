@@ -22,6 +22,7 @@ case class Controller(
     var userInput: Int
 ) extends Observable {
   val undoManager = new UndoManager[GameState]
+  var allowedInput = Vector("1", "2")
 
   val drawPile:Option[DrawPile] = Some(DrawPile())
 
@@ -292,11 +293,14 @@ case class Controller(
         case controllState.playerWins =>
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
         case controllState.getEffectedPlayer =>
+          allowedInput = getAllowedPlayerForPlayerSelection
           "Waele einen Spieler auf den du deine Aktion anwenden willst"
         case controllState.getInvestigatorGuess =>
+          allowedInput = Vector("0", "2", "3", "4", "5", "6", "7", "8")
           "Welchen Wert der Handkarte raetst du (0|2-8)"
         case controllState.informOverPlayedEffect => controllerState(1)
         case controllState.getInputToPlayAnotherCard =>
+          allowedInput = Vector("1", "2")
           "Welche Karte moechtest du spielen? (1|2)"
     }
 
@@ -316,6 +320,7 @@ case class Controller(
     }
 
     def selectEffect = {
+      allowedInput = Vector("1", "2")
       Board(
         1,
         Vector(state.player(state.currentPlayer).discardPile.head),
