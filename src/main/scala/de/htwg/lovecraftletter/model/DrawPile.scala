@@ -21,7 +21,7 @@ case class DrawPile() {
         case Failure(e) =>
             //todo start new round
             println("Nachziehstapel ist leer")
-            0
+            -1
     }
     val tailProblem = Try(drawPile.tail)
     val tail = tailProblem match {

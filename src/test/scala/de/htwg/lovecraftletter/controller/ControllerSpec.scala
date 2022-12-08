@@ -206,13 +206,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       defaultController2.MadHandler.draw should ===(
         GameState(
           1,
-          List(3, 4, 5, 1),
+          List(4, 5, 1),
           List(
             Player("Gustav", 1, List(10, 0), false),
             Player("Guschtav", 1, List(0), true),
             Player("P3", 1, List(0), true)
           ),
-          2
+          3
         )
       )
 
@@ -234,9 +234,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       defaultController3.MadHandler.draw should ===(
         GameState(
           1,
-          List(3, 4, 5, 1),
+          List(4, 5, 1),
           List(Player("Gustav", 1, List(13, 10, 0), false), Player("Guschtav", 1, List(0), true), Player("P3", 1, List(0), true)),
-          2
+          3
         )
       )
     }
@@ -256,13 +256,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       )
       defaultController.playCard should ===(
         GameState(
-          0,
-          List(3, 4, 5, 1),
+          1,
+          List(2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(0), true),
             Player("Guschtav", 1, List(2, 0), true)
           ),
-          2
+          0
         )
       )
 
@@ -279,13 +279,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         Controller(defaultState2, (controllState.standard, ""), 2)
       defaultController2.playCard should ===(
         GameState(
-          0,
-          List(3, 4, 5, 1),
+          1,
+          List(2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(0), true),
             Player("Guschtav", 1, List(2, 0), true)
           ),
-          2
+          0
         )
       )
 
@@ -302,13 +302,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         Controller(defaultState3, (controllState.standard, ""), 1)
       defaultController3.playCard should ===(
         GameState(
-          0,
-          List(3, 4, 5, 1),
+          1,
+          List(2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(0), true),
             Player("Guschtav", 5, List(10, 9, 0), true)
           ),
-          2
+          0
         )
       )
 
@@ -325,13 +325,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         Controller(defaultState4, (controllState.standard, ""), 1)
       defaultController4.playCard should ===(
         GameState(
-          0,
-          List(3, 4, 5, 1),
+          1,
+          List(2, 3, 4, 5, 1),
           List(
             Player("Gustav", 1, List(0), true),
             Player("Guschtav", 5, List(2, 9, 0), true)
           ),
-          2
+          0
         )
       )
     }
@@ -504,7 +504,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       (controllState.getEffectedPlayer, ""), -2
     )
     defaultController.StateHandler.handle should ===(
-      "Waele einen Spieler auf den du deine Aktion anwenden willst"
+      "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1)"
     )
 
     defaultController = Controller(

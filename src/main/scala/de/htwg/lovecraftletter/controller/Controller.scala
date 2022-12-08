@@ -264,10 +264,11 @@ case class Controller(
             nextPlayer
           } else {
             state = state.playCard
-            drawCard
+            //drawCard
           }
         }
       }
+      drawCard
 
       state
     }
@@ -313,7 +314,7 @@ case class Controller(
           "Spieler " + controllerState(1) + " hat die Runde gewonnen"
         case controllState.getEffectedPlayer =>
           allowedInput = getAllowedPlayerForPlayerSelection
-          "Waele einen Spieler auf den du deine Aktion anwenden willst " + allowedInput.toString()
+          "Waehle einen Spieler auf den du deine Aktion anwenden willst " + allowedInput.toString()
         case controllState.getInvestigatorGuess =>
           allowedInput = Vector("0", "2", "3", "4", "5", "6", "7", "8")
           "Welchen Wert der Handkarte raetst du (0|2-8)"

@@ -61,7 +61,7 @@ class EffectHandler(
       case 15 => playTrapezoeder
       case 16 => playCthulu
       case 17 => 
-        contr.eliminatePlayer(state.currentPlayer)
+        state = contr.eliminatePlayer(state.currentPlayer)
         exit
 
   def guessTeammateHandcard: GameState = {
@@ -69,7 +69,7 @@ class EffectHandler(
         if(state.player(selection(1)).hand == 1) {
             state = contr.eliminatePlayer(selection(1))
         }
-        return state
+        return exit
     }
     contr.controllerState = (controllState.getInvestigatorGuess, "")
     contr.notifyObservers
