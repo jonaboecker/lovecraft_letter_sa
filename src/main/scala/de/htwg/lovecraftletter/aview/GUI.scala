@@ -12,7 +12,7 @@ import scala.swing.ListView._
 class GUI(controller: Controller) extends Frame with Observer {
     controller.add(this)
 
-    val boardTA = TextArea(23, 82)
+    val boardTA = TextArea(21, 82)
     boardTA.font =(new Font("Monospaced", 0,14))
     boardTA.editable = false
 
@@ -20,7 +20,8 @@ class GUI(controller: Controller) extends Frame with Observer {
     effectTA.font =(new Font("Monospaced", 0,16))
     effectTA.editable = false
 
-    var inputCO = ListView(Vector("1", "2"))    
+    var inputCO = ListView(Vector("1", "2", "1", "2", "1", "2", "1", "2"))
+    //inputCO.size
     // listenTo(inputCO.selection)
     // reactions += {
     //   case SelectionChanged(inputCO) => println(inputCO.selection.items(0))
@@ -53,6 +54,7 @@ class GUI(controller: Controller) extends Frame with Observer {
     }
 
     pack()
+    inputCO.listData = Vector()
     centerOnScreen()
     open()
 
@@ -78,7 +80,7 @@ class GUI(controller: Controller) extends Frame with Observer {
                 inputCO.listData = Vector("1", "2")
                 //todo: Passt das so in der TUI?
                 //getInput(Vector("1", "2"))
-            case _ => 
+            case _ =>
     }
 
     def handle = {
@@ -97,7 +99,7 @@ class GUI(controller: Controller) extends Frame with Observer {
                     controller.playerChoosed(inputCO.selection.items(0).toInt)
                 case controllState.getInvestigatorGuess =>
                     controller.investgatorGuessed(inputCO.selection.items(0).toInt)
-                case controllState.getInputToPlayAnotherCard => 
+                case controllState.getInputToPlayAnotherCard =>
                     controller.playAnotherCard2(inputCO.selection.items(0).toInt)
                 case _ => controller.controllerState = (controllState.standard, "")
         // if(controller.controllerState == (controllState.standard,"")) {
@@ -114,12 +116,14 @@ class GUI(controller: Controller) extends Frame with Observer {
 
     def show(output:String) = {
         if(controller.controllerState == (controllState.standard,"")) {
-            boardTA.text = output
+            boardTA.text = output.dropRight(41)
             effectTA.text = "Welche Karte moechtest du spielen? (1|2)" + "correct"
             inputCO.listData = Vector("1", "2")
+        } else if (controller.controllerState(0) == controllState.informOverPlayedEffect || controller.controllerState(0) == controllState.playerWins || controller.controllerState(0) == controllState.tellEliminatedPlayer) {
+            Dialog.showMessage(this, controller.StateHandler.handle)
         } else {
             effectTA.text = output
-        } 
+        }
     }
 
 }

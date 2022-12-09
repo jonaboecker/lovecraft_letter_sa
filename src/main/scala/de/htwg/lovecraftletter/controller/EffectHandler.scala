@@ -14,9 +14,10 @@ class EffectHandler(
 ) {
   def initializeEffectHandler:GameState = {
     state.player(state.currentPlayer).discardPile.head match
-        case 1|2|3|5|6|9|10|11|13|14 => 
+        case 1|2|3|5|6|9|10|11|13|14 =>
             if(contr.getAllowedPlayerForPlayerSelection.isEmpty) {
                 standardOutput("Es kann kein Gegner ausgewaehlt werden")
+                return exit
             } else {
                 contr.controllerState = (controllState.getEffectedPlayer, "")
                 contr.notifyObservers
@@ -34,16 +35,16 @@ class EffectHandler(
       case 1 | 9  => guessTeammateHandcard
       case 2 | 10 => showTeammateHandcard
       case 3 | 11 => compareTeammateHandcard
-      case 4 | 12 => 
+      case 4 | 12 =>
         standardOutput("Du bist bis zu deinem naechsten Zug geschuetzt")
         exit
         state
       case 5 | 13 => discardAndDraw
       case 6 | 14 => swapHandcards
-      case 7 | 15 => 
+      case 7 | 15 =>
         exit
         state //implemented in controller
-      case 8 | 16 | 17 => 
+      case 8 | 16 | 17 =>
         contr.eliminatePlayer(state.currentPlayer)
         exit
 
@@ -52,7 +53,7 @@ class EffectHandler(
       case 9  => guessTeammateHandcard
       case 10 => showTeammateHandcard
       case 11 => eliminateMadPlayer
-      case 12 => 
+      case 12 =>
         standardOutput("Du bist bis zur naechsten Runde geschuetzt")
         exit
         state
@@ -60,7 +61,7 @@ class EffectHandler(
       case 14 => playniegrhaasdfsaj
       case 15 => playTrapezoeder
       case 16 => playCthulu
-      case 17 => 
+      case 17 =>
         state = contr.eliminatePlayer(state.currentPlayer)
         exit
 
@@ -178,7 +179,7 @@ class EffectHandler(
   }
 
   def playTrapezoeder: GameState = {
-    state.player(state.currentPlayer).hand match 
+    state.player(state.currentPlayer).hand match
         case 5|6|7|8|13|14|16 => state = contr.playerWins(state.currentPlayer)
         case _ =>
     exit
@@ -188,7 +189,7 @@ class EffectHandler(
     if(state.player(state.currentPlayer).madCheck() > 2) {
         state = contr.playerWins(state.currentPlayer)
     } else {
-       state = contr.eliminatePlayer(state.currentPlayer) 
+       state = contr.eliminatePlayer(state.currentPlayer)
     }
     exit
   }
