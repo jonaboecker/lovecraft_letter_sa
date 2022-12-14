@@ -1,7 +1,12 @@
 package de.htwg.lovecraftletter
 package controller
 
-import model._
+import model.BoardInterface
+import model.Board
+import model.GameStateInterface
+import model.GameState
+import model.DrawPileInterface
+import model.DrawPile
 import util.Observable
 
 import scala.util._

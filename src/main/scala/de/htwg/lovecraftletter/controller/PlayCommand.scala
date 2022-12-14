@@ -2,7 +2,7 @@ package de.htwg.lovecraftletter
 package controller
 
 import util._
-import model._
+import model.GameState
 
 class PlayCommand(contr: Controller) extends Command[GameState]{
     def doStep(state: GameState): GameState = contr.playCard

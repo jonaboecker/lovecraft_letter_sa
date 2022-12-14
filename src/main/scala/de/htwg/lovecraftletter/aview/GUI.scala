@@ -1,15 +1,16 @@
 package de.htwg.lovecraftletter
 package aview
 
-import controller._
+import controller.ControllerInterface
+import controller.controllState
 import util.Observer
-import model._
 
 import scala.swing._
 import scala.swing.event._
 import scala.swing.ListView._
+import de.htwg.lovecraftletter.controller.controllState
 
-class GUI(controller: Controller) extends Frame with Observer {
+class GUI(controller: ControllerInterface) extends Frame with Observer {
     controller.add(this)
 
     val boardTA = TextArea(21, 82)
@@ -60,8 +61,8 @@ class GUI(controller: Controller) extends Frame with Observer {
 
 
     override def update = {
-        show(controller.StateHandler.handle)
-        controller.controllerState(0) match
+        show(controller.handle)
+        controller.getVarControllerState(0) match
             case controllState.standard =>
             case controllState.selectEffect =>
                 inputCO.listData = Vector("1", "2")
@@ -84,14 +85,14 @@ class GUI(controller: Controller) extends Frame with Observer {
     }
 
     def handle = {
-        controller.controllerState(0) match
+        controller.getVarControllerState(0) match
                 case controllState.standard =>
                     inputCO.selection.items(0) match
                         case "1" =>
-                            controller.userInput = 1
+                            controller.setVarUserInput(1)
                             controller.makeTurn
                         case "2" =>
-                            controller.userInput = 2
+                            controller.setVarUserInput(2)
                             controller.makeTurn
                 case controllState.selectEffect =>
                     controller.playEffect(inputCO.selection.items(0).toInt)
@@ -101,7 +102,8 @@ class GUI(controller: Controller) extends Frame with Observer {
                     controller.investgatorGuessed(inputCO.selection.items(0).toInt)
                 case controllState.getInputToPlayAnotherCard =>
                     controller.playAnotherCard2(inputCO.selection.items(0).toInt)
-                case _ => controller.controllerState = (controllState.standard, "")
+                //case controllState.playerWins =>
+                case _ => controller.resetControllerState
         // if(controller.controllerState == (controllState.standard,"")) {
         //     inputCO.selection.items(0) match
         //         case "1" =>
@@ -115,12 +117,12 @@ class GUI(controller: Controller) extends Frame with Observer {
     }
 
     def show(output:String) = {
-        if(controller.controllerState == (controllState.standard,"")) {
+        if(controller.getVarControllerState == (controllState.standard,"")) {
             boardTA.text = output.dropRight(41)
             effectTA.text = "Welche Karte moechtest du spielen? (1|2)" + "correct"
             inputCO.listData = Vector("1", "2")
-        } else if (controller.controllerState(0) == controllState.informOverPlayedEffect || controller.controllerState(0) == controllState.playerWins || controller.controllerState(0) == controllState.tellEliminatedPlayer) {
-            Dialog.showMessage(this, controller.StateHandler.handle)
+        } else if (controller.getVarControllerState(0) == controllState.informOverPlayedEffect || controller.getVarControllerState(0) == controllState.playerWins || controller.getVarControllerState(0) == controllState.tellEliminatedPlayer) {
+            Dialog.showMessage(this, controller.handle)
         } else {
             effectTA.text = output
         }

@@ -1,13 +1,15 @@
 package de.htwg.lovecraftletter
 package aview
 
-import controller._
+import controller.ControllerInterface
+import controller.controllState
 import util.Observer
-import model._
+
+import model.Player
 
 import scala.io.StdIn.readLine
 
-final case class TUI(controller: Controller) extends Observer {
+final case class TUI(controller: ControllerInterface) extends Observer {
   controller.add(this)
 
   def runLL = {
@@ -47,7 +49,10 @@ final case class TUI(controller: Controller) extends Observer {
   }
 
   override def update = {
-    show(controller.StateHandler.handle)
+    show(controller.handle)
+    if(controller.getVarControllerState(0) == controllState.playerWins) {
+        sys.exit(0)
+    }
   }
 
 //   def getInput(allowed: Vector[String]): Int = {
@@ -62,13 +67,13 @@ final case class TUI(controller: Controller) extends Observer {
 
   def getInputAndPrintLoop: Unit = {
     val input = readLine
-    if(controller.controllerState == (controllState.standard, "")) {
+    if(controller.getVarControllerState == (controllState.standard, "")) {
         input match
             case "1" =>
-                controller.userInput = 1
+                controller.setVarUserInput(1)
                 controller.makeTurn
             case "2" =>
-                controller.userInput = 2
+                controller.setVarUserInput(2)
                 controller.makeTurn
             case "q" | "Q" => return
             case "undoStep" => controller.undoStep
@@ -76,24 +81,24 @@ final case class TUI(controller: Controller) extends Observer {
             case _ =>
                 show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
     } else {
-        if(!controller.allowedInput.contains(input)) {
+        if(!controller.getVarAllowedInput.contains(input)) {
             show("Ungueltige Eingabe, versuche es erneut.")
         } else {
-            controller.controllerState(0) match
+            controller.getVarControllerState(0) match
                 case controllState.selectEffect =>
                     controller.playEffect(input.toInt)
                 case controllState.getEffectedPlayer =>
                     controller.playerChoosed(input.toInt)
                 case controllState.getInvestigatorGuess =>
                     controller.investgatorGuessed(input.toInt)
-                case controllState.getInputToPlayAnotherCard => 
+                case controllState.getInputToPlayAnotherCard =>
                     controller.playAnotherCard2(input.toInt)
-                case _ => controller.controllerState = (controllState.standard, "")
-        }    
+                case _ => controller.resetControllerState
+        }
     }
     getInputAndPrintLoop
 
-    
-    
+
+
   }
 }
