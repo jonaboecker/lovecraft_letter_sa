@@ -5,7 +5,8 @@ import controller.ControllerInterface
 import controller.controllState
 import util.Observer
 
-import model.Player
+import model.PlayerInterface
+import model.PlayerImpl.Player
 
 import scala.io.StdIn.readLine
 
@@ -13,29 +14,29 @@ final case class TUI(controller: ControllerInterface) extends Observer {
   controller.add(this)
 
   def runLL = {
-    val playerList: List[Player] = createPlayers
+    val playerList: List[PlayerInterface] = createPlayers
     show("Viel Spass beim spielen")
     controller.initialize(playerList)
     getInputAndPrintLoop
   }
 
-  def createPlayers: List[Player] = {
+  def createPlayers: List[PlayerInterface] = {
     show("Bitte Spieleranzahl zwischen 3 und 6 angeben")
-    val playerList: List[Player] =
+    val playerList: List[PlayerInterface] =
       rekCreatePlayers(Nil, controller.playerAmount(readLine))
     playerList
   }
 
   def rekCreatePlayers(
-      playerList: List[Player],
+      playerList: List[PlayerInterface],
       playerAmount: Int
-  ): List[Player] = {
+  ): List[PlayerInterface] = {
     if (playerAmount == 0) {
       createPlayers
     } else {
       printf("Bitte Namen fuer Spieler %d angeben\n", playerList.length + 1)
       val input = readLine
-      val updatedList = Player(input, 0, Nil, true) :: playerList
+      val updatedList = new Player(input, 0, Nil, true) :: playerList
       if (updatedList.length != playerAmount) {
         rekCreatePlayers(updatedList, playerAmount)
       } else {
@@ -85,8 +86,6 @@ final case class TUI(controller: ControllerInterface) extends Observer {
             show("Ungueltige Eingabe, versuche es erneut.")
         } else {
             controller.getVarControllerState(0) match
-                case controllState.selectEffect =>
-                    controller.playEffect(input.toInt)
                 case controllState.getEffectedPlayer =>
                     controller.playerChoosed(input.toInt)
                 case controllState.getInvestigatorGuess =>

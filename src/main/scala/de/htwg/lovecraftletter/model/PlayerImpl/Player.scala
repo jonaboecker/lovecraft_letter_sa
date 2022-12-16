@@ -1,11 +1,14 @@
-package de.htwg.lovecraftletter.model
+package de.htwg.lovecraftletter.model.PlayerImpl
+
+import de.htwg.lovecraftletter.model.PlayerInterface
 
 case class Player(
-                   name: String,
-                   hand: Int,
-                   discardPile: List[Int],
-                   inGame: Boolean
-                 ) extends PlayerInterface {
+                   override val name: String,
+                   override val hand: Int,
+                   override val discardPile: List[Int],
+                   override val inGame: Boolean
+                 ) extends PlayerInterface (name, hand, discardPile, inGame) {
+
   override def updateCardAndDiscardPile(card: Int, newDiscardPile: List[Int]): Player = {
     copy(hand = card, discardPile = newDiscardPile, inGame)
   }

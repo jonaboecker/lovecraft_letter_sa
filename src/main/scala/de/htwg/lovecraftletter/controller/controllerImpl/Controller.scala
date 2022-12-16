@@ -1,29 +1,30 @@
 package de.htwg.lovecraftletter
 package controller
+package controllerImpl
 
 import model.BoardInterface
-import model.Board
+import model.BoardImpl.Board
 import model.GameStateInterface
-import model.GameState
+//import model.GameState
 import model.PlayerInterface
-import model.Player
+//import model.Player
 import model.DrawPileInterface
-import model.DrawPile
+import model._
 import util._
 import scala.util.control.Breaks._
 
 
 
 case class Controller(
-                       var state: GameState,
+                       var state: GameStateInterface,
                        var controllerState: (controllState, String),
                        var userInput: Int
                      ) extends ControllerInterface {
-  val undoManager = new UndoManager[GameState]
+  val undoManager = new UndoManager[GameStateInterface]
   var allowedInput = Vector("1", "2")
   var effectHandlerSelection:Vector[Int] = Vector(-999)
 
-  val drawPile:Option[DrawPile] = Some(DrawPile())
+  val drawPile:Option[DrawPileInterface] = Some(new DrawPile())
 
   val drawPileO = drawPile match {
     case Some(b) => b
@@ -31,20 +32,22 @@ case class Controller(
   }
 
   override def setVarUserInput(input: Int) = userInput = input;
+
+  override def setVarControllerState(cs: controllState, s: String) = controllerState = (cs, s);
   override def getVarControllerState = controllerState;
 
   override def getVarAllowedInput = allowedInput;
 
-  override def initialize(playerList: List[Player]): GameState = {
-    state.currentPlayer = 0;
-    state.drawPile = drawPileO.newPile
-    state.player = playerList
+  override def initialize(playerList: List[PlayerInterface]): GameStateInterface = {
+    state = state.updateCurrentPlayer(0)
+    state = state.updateDrawPile(drawPileO.newPile)
+    state = state.updatePlayer(playerList)
     for (i <- 0 until playerList.length) {
       val (newDrawPile: List[Int], hand: Int) =
         drawPileO.drawAndGet(state.drawPile)
-      state.drawPile = newDrawPile
+      state = state.updateDrawPile(newDrawPile)
       val player = state.player(i).updateCardAndDiscardPile(hand, List(0))
-      state.player = state.player.updated(i, player)
+      state = state.updatePlayer(state.player.updated(i, player))
     }
     drawCard
     notifyObservers
@@ -73,7 +76,7 @@ case class Controller(
     state.player(state.currentPlayer).name
   }
 
-  override def drawCard: GameState = {
+  override def drawCard: GameStateInterface = {
     state = state.drawCard
     state
   }
@@ -104,12 +107,12 @@ case class Controller(
     playedCard
   }
 
-  override def makeTurn: GameState = {
+  override def makeTurn: GameStateInterface = {
     undoManager.doStep(state, PlayCommand(this))
     state
   }
 
-  override def playCard: GameState = {
+  override def playCard: GameStateInterface = {
     val card = checkForCard7or15(userInput)
     card match
       case 1 => MadHandler.play // todo change state to
@@ -122,7 +125,7 @@ case class Controller(
     state
   }
 
-  override def playAnotherCard: GameState ={
+  override def playAnotherCard: GameStateInterface ={
     state = drawCard
     notifyObservers
     controllerState = (controllState.getInputToPlayAnotherCard, "")
@@ -130,7 +133,7 @@ case class Controller(
     state
   }
 
-  override def playAnotherCard2(otherCard: Int): GameState = {
+  override def playAnotherCard2(otherCard: Int): GameStateInterface = {
     resetControllerState
     val card = checkForCard7or15(otherCard)
     card match
@@ -142,19 +145,19 @@ case class Controller(
     state
   }
 
-  override def undoStep: GameState = {
+  override def undoStep: GameStateInterface = {
     state = undoManager.undoStep(state)
     notifyObservers
     state
   }
 
-  override def redoStep: GameState = {
+  override def redoStep: GameStateInterface = {
     state = undoManager.redoStep(state)
     notifyObservers
     state
   }
 
-  override def playEffect(selectedEffect: Int): GameState = {
+  override def playEffect(selectedEffect: Int): GameStateInterface = {
     resetControllerState
     effectHandlerSelection = Vector(selectedEffect)
     state = EffectHandler(this, state, effectHandlerSelection).initializeEffectHandler
@@ -162,14 +165,14 @@ case class Controller(
     // println("play Effect")
   }
 
-  override def playerChoosed(choosedPlayer: Int): GameState = {
+  override def playerChoosed(choosedPlayer: Int): GameStateInterface = {
     resetControllerState
     effectHandlerSelection = Vector(effectHandlerSelection(0), choosedPlayer - 1)
     state = EffectHandler(this, state, effectHandlerSelection).strategy
     state
   }
 
-  override def investgatorGuessed(guess: Int): GameState = {
+  override def investgatorGuessed(guess: Int): GameStateInterface = {
     resetControllerState
     effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
     state = EffectHandler(this, state, effectHandlerSelection).guessTeammateHandcard2
@@ -186,7 +189,7 @@ case class Controller(
     false
   }
 
-  override def playerWins(winningPlayer: Int): GameState = {
+  override def playerWins(winningPlayer: Int): GameStateInterface = {
     controllerState =
       (controllState.playerWins, state.player(winningPlayer).name)
     // checking if player won the game
@@ -211,7 +214,7 @@ case class Controller(
 
   override def rekGetAllowedPlayerForPlayerSelection(
                                                       counter: Int,
-                                                      playerList: List[Player],
+                                                      playerList: List[PlayerInterface],
                                                       allowedPlayers: Vector[String]
                                                     ): Vector[String] = {
     if (playerList.length == 0) {
@@ -256,7 +259,7 @@ case class Controller(
       drawCard
     }
 
-    def drawMad: GameState = {
+    def drawMad: GameStateInterface = {
       val tempCurrentPlayer = state.currentPlayer
       for (x <- 0 until state.player(tempCurrentPlayer).madCheck()) {
         if (state.player(tempCurrentPlayer).inGame) {
@@ -295,7 +298,7 @@ case class Controller(
     }
   }
 
-  override def eliminatePlayer(player: Int): GameState = {
+  override def eliminatePlayer(player: Int): GameStateInterface = {
     state = state.eliminatePlayer(player)
     controllerState =
       (controllState.tellEliminatedPlayer, state.player(player).name)
@@ -311,7 +314,7 @@ case class Controller(
     def handle = {
       controllerState(0) match
         case controllState.standard     => getBoard
-        case controllState.selectEffect => selectEffect
+        //case controllState.selectEffect => selectEffect
         case controllState.tellEliminatedPlayer =>
           "Spieler " + controllerState(1) + " wurde eliminiert"
         case controllState.playerWins =>
@@ -330,18 +333,14 @@ case class Controller(
 
     def getBoard = {
       val currentPlayer = state.player(state.currentPlayer)
-      val board = Board(
-        3,
-        Vector(
+      val board = Board(3, Vector(
           state.currentCard,
           currentPlayer.hand,
           currentPlayer.discardPile.head
-        ),
-        1
-      )
+        ), 1)
 
       "\n" + getPlayerName + " ist an der Reihe" + isCurrentPlayerMad + "\n" +
-        board.toString + "\nWelche Karte möchtest du spielen? (1|2)"
+        board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
     }
 
     def isCurrentPlayerMad: String = {
@@ -351,15 +350,15 @@ case class Controller(
       ""
     }
 
-    def selectEffect = {
-      allowedInput = Vector("1", "2")
-      Board(
-        1,
-        Vector(state.player(state.currentPlayer).discardPile.head),
-        0
-      ).toString +
-        "\nWelchen Effekt moechtest du spielen? (1|2)"
-    }
+    // def selectEffect = {
+    //   allowedInput = Vector("1", "2")
+    //   BoardInterface(
+    //     1,
+    //     Vector(state.player(state.currentPlayer).discardPile.head),
+    //     0
+    //   ).toString +
+    //     "\nWelchen Effekt moechtest du spielen? (1|2)"
+    // }
   }
 
   override def resetControllerState = {

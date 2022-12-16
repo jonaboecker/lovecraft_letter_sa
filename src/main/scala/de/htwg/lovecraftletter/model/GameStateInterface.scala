@@ -1,14 +1,37 @@
 package de.htwg.lovecraftletter.model
 
-trait GameStateInterface {
+import GameStateImpl._
 
-  def nextPlayer: GameState
+trait GameStateInterface(
+                            val currentPlayer: Int,
+                            val drawPile: List[Int],
+                            val player: List[PlayerInterface],
+                            val currentCard: Int
+                        )  {
 
-  def drawCard: GameState
+  def updateCurrentPlayer(ncp: Int):GameStateInterface = {
+    return new GameState(ncp, drawPile, player, currentCard)
+  }
 
-  def playCard: GameState
+  def updateDrawPile(ndp: List[Int]):GameStateInterface = {
+    return new GameState(currentPlayer, ndp, player, currentCard)
+  }
 
-  def swapHandAndCurrent: GameState
+  def updatePlayer(np: List[PlayerInterface]):GameStateInterface = {
+    return new GameState(currentPlayer, drawPile, np, currentCard)
+  }
 
-  def eliminatePlayer(toEliminatePlayer: Int): GameState
+  def updateCurrentCard(ncc: Int):GameStateInterface = {
+    return new GameState(currentPlayer, drawPile, player, ncc)
+  }
+
+  def nextPlayer: GameStateInterface
+
+  def drawCard: GameStateInterface
+
+  def playCard: GameStateInterface
+
+  def swapHandAndCurrent: GameStateInterface
+
+  def eliminatePlayer(toEliminatePlayer: Int): GameStateInterface
 }

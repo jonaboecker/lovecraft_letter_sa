@@ -1,14 +1,19 @@
 package de.htwg.lovecraftletter.model
 
-trait PlayerInterface {
+trait PlayerInterface(
+                   val name: String,
+                   val hand: Int,
+                   val discardPile: List[Int],
+                   val inGame: Boolean
+                 ) {
 
-  def updateCardAndDiscardPile(card: Int, newDiscardPile: List[Int]): Player
+  def updateCardAndDiscardPile(card: Int, newDiscardPile: List[Int]): PlayerInterface
 
-  def discardCard(card: Int): Player
+  def discardCard(card: Int): PlayerInterface
 
-  def changeHand(card: Int): Player
+  def changeHand(card: Int): PlayerInterface
 
-  def eliminatePlayer(): Player
+  def eliminatePlayer(): PlayerInterface
 
   def madCheck(): Int
 }

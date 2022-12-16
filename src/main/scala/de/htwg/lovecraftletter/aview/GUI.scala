@@ -64,23 +64,12 @@ class GUI(controller: ControllerInterface) extends Frame with Observer {
         show(controller.handle)
         controller.getVarControllerState(0) match
             case controllState.standard =>
-            case controllState.selectEffect =>
-                inputCO.listData = Vector("1", "2")
-                //controller.playEffect(getInput(Vector("1", "2")))
             case controllState.getEffectedPlayer =>
                 inputCO.listData = controller.getAllowedPlayerForPlayerSelection
-                //controller.userInput = getInput(
-                //    controller.getAllowedPlayerForPlayerSelection
-                //)
             case controllState.getInvestigatorGuess =>
                 inputCO.listData = Vector("0", "2", "3", "4", "5", "6", "7", "8")
-                //controller.userInput = getInput(
-                //  Vector("0", "2", "3", "4", "5", "6", "7", "8")
-                //)
             case controllState.getInputToPlayAnotherCard =>
                 inputCO.listData = Vector("1", "2")
-                //todo: Passt das so in der TUI?
-                //getInput(Vector("1", "2"))
             case _ =>
     }
 
@@ -94,8 +83,6 @@ class GUI(controller: ControllerInterface) extends Frame with Observer {
                         case "2" =>
                             controller.setVarUserInput(2)
                             controller.makeTurn
-                case controllState.selectEffect =>
-                    controller.playEffect(inputCO.selection.items(0).toInt)
                 case controllState.getEffectedPlayer =>
                     controller.playerChoosed(inputCO.selection.items(0).toInt)
                 case controllState.getInvestigatorGuess =>
@@ -119,7 +106,7 @@ class GUI(controller: ControllerInterface) extends Frame with Observer {
     def show(output:String) = {
         if(controller.getVarControllerState == (controllState.standard,"")) {
             boardTA.text = output.dropRight(41)
-            effectTA.text = "Welche Karte moechtest du spielen? (1|2)" + "correct"
+            effectTA.text = "Welche Karte moechtest du spielen? (1|2)"
             inputCO.listData = Vector("1", "2")
         } else if (controller.getVarControllerState(0) == controllState.informOverPlayedEffect || controller.getVarControllerState(0) == controllState.playerWins || controller.getVarControllerState(0) == controllState.tellEliminatedPlayer) {
             Dialog.showMessage(this, controller.handle)

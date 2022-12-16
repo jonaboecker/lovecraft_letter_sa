@@ -1,8 +1,11 @@
 package de.htwg.lovecraftletter
 
 import aview._
-import model.GameState
-import controller._
+import model.GameStateInterface
+import model.GameStateImpl._
+import controller.ControllerInterface
+import controller.controllState
+import controller.controllerImpl._
 
 //val eol = sys.props("line.separator")
 //def bar() = (("+" + "-" * 5) * 5) + "+" + eol

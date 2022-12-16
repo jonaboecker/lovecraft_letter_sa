@@ -1,11 +1,11 @@
 package de.htwg.lovecraftletter.controller
 
-import de.htwg.lovecraftletter.model.{GameState, Player}
+import de.htwg.lovecraftletter.model.{GameStateInterface, PlayerInterface}
 import de.htwg.lovecraftletter.util.Observable
+import de.htwg.lovecraftletter.model.GameStateInterface
 
 enum controllState {
   case standard
-  case selectEffect
   case tellEliminatedPlayer
   case playerWins
   case getEffectedPlayer
@@ -18,53 +18,55 @@ trait ControllerInterface extends Observable{
 
   def setVarUserInput(input: Int): Unit
 
+  def setVarControllerState(cs: controllState, s: String): Unit
+
   def getVarControllerState: (controllState, String)
 
   def getVarAllowedInput: Vector[String]
 
-  def initialize(playerList: List[Player]): GameState
+  def initialize(playerList: List[PlayerInterface]): GameStateInterface
 
   def playerAmount(input: String): Int
 
-  def nextPlayer: GameState
+  def nextPlayer: GameStateInterface
 
   def getPlayerName: String
 
-  def drawCard: GameState
+  def drawCard: GameStateInterface
 
   def checkForCard7or15(playedCard: Int): Int
 
-  def makeTurn: GameState
+  def makeTurn: GameStateInterface
 
-  def playCard: GameState
+  def playCard: GameStateInterface
 
-  def playAnotherCard: GameState
+  def playAnotherCard: GameStateInterface
 
-  def playAnotherCard2(otherCard: Int): GameState
+  def playAnotherCard2(otherCard: Int): GameStateInterface
 
-  def undoStep: GameState
+  def undoStep: GameStateInterface
 
-  def redoStep: GameState
+  def redoStep: GameStateInterface
 
-  def playEffect(selectedEffect: Int): GameState
+  def playEffect(selectedEffect: Int): GameStateInterface
 
-  def playerChoosed(choosedPlayer: Int): GameState
+  def playerChoosed(choosedPlayer: Int): GameStateInterface
 
-  def investgatorGuessed(guess: Int): GameState
+  def investgatorGuessed(guess: Int): GameStateInterface
 
   def checkUponWin: Boolean
 
-  def playerWins(winningPlayer: Int): GameState
+  def playerWins(winningPlayer: Int): GameStateInterface
 
   def getAllowedPlayerForPlayerSelection: Vector[String]
 
   def rekGetAllowedPlayerForPlayerSelection(
                                              counter: Int,
-                                             playerList: List[Player],
+                                             playerList: List[PlayerInterface],
                                              allowedPlayers: Vector[String]
                                            ): Vector[String]
 
-  def eliminatePlayer(player: Int): GameState
+  def eliminatePlayer(player: Int): GameStateInterface
 
   def handle: String
 

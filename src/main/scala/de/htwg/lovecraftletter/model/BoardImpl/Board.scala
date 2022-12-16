@@ -1,7 +1,9 @@
-package de.htwg.lovecraftletter.model
+package de.htwg.lovecraftletter.model.BoardImpl
+
+import de.htwg.lovecraftletter.model.BoardInterface
 
 
-abstract class Board(val indices: Vector[Int], val head: Int) extends BoardInterface {
+abstract class Board(override val indices: Vector[Int], override val head: Int) extends BoardInterface (indices, head) {
     override val eol = sys.props("line.separator")
     override val cardWith = 24
     override val cardHeight = 13
@@ -94,7 +96,7 @@ object Board {
     }
 
 
-    def apply(cardAmmount:Int, indices: Vector[Int], head: Int):Board = {
+    def apply(cardAmmount:Int, indices: Vector[Int], head: Int):BoardInterface = {
         cardAmmount match {
             case 1 => new OneCardBoard(indices, head)
             //case 2 => new TwoCardBoard(indices, head)

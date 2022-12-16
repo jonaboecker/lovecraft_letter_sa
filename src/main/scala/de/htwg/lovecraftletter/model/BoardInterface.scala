@@ -1,6 +1,8 @@
 package de.htwg.lovecraftletter.model
 
-trait BoardInterface {
+import de.htwg.lovecraftletter.model.BoardImpl._
+
+trait BoardInterface (val indices: Vector[Int], val head: Int) {
 
   val eol: String
   val cardWith: Int
