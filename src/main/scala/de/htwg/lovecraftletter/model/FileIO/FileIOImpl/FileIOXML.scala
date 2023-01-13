@@ -7,20 +7,48 @@ import java.io._
 import scala.xml._
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import de.htwg.lovecraftletter.model.GameStateImpl._
+import de.htwg.lovecraftletter.model.PlayerImpl._
 
 class FileIOXML extends FileIOInterface{
-  override def load(gameState: GameStateInterface): GameStateInterface = {
+  override def load(oldGameState: GameStateInterface): GameStateInterface = {
     //select safeGame File
     var chooser = new JFileChooser()
-    chooser.setCurrentDirectory(new java.io.File("src/main/savegames/"))
+    chooser.setCurrentDirectory(new java.io.File("src\\savegames\\"))
     chooser.setDialogTitle("SaveGame laden")
     // Set shown file filter to JSON files only
     //chooser.extensionFilters.addAll(
     //  new ExtensionFilter("JSON Files", "*.json")
     //)
-    val seletedFile = chooser.showOpenDialog(null)
+    chooser.showOpenDialog(null)
+    val selectedFile = chooser.getSelectedFile().getAbsolutePath()
+    if (selectedFile == null) {
+        return oldGameState
+    }
+    val source = scala.io.Source.fromFile(selectedFile)
+    val xml = XML.loadString(source.mkString)
+    val currentPlayer = (xml \ "currentPlayer").text.toInt
+    val drawPile: List[Int] = (xml \ "drawPile").text.trim.split("t").map(_.toInt).toList
+    val player: List[Player] = loadPlayer(xml)
+    val currentCard = (xml \ "currentCard").text.toInt
+    val gameState = GameState(currentPlayer, drawPile, player, currentCard)
+    gameState
+  }
 
-    return gameState
+  def loadPlayer(xml: Node): List[Player] = {
+    val names = xml \\ "gameState" \\ "player" \\ "value" \\ "name" flatMap(_.child)
+    val hands = xml \\ "gameState" \\ "player" \\ "value" \\ "hand" flatMap(_.child)
+    val discardPiles = xml \\ "gameState" \\ "player" \\ "value" \\ "discardPile" flatMap(_.child)
+    val inGames = xml \\ "gameState" \\ "player" \\ "value" \\ "inGame" flatMap(_.child)
+    var playerList: List[Player] = Nil
+    for (x <- 0 until names.length) {
+        playerList = Player(names(x).text.trim, hands(x).text.trim.toInt, getDiscardPile(discardPiles(x)), inGames(x).text.trim.toBoolean)::playerList
+    }
+    playerList.reverse
+  }
+
+  def getDiscardPile(dcp: Node): List[Int] = {
+    dcp.text.trim.split("t").map(_.toInt).toList
   }
 
   override def save(gameState: GameStateInterface): Unit = {
@@ -38,8 +66,9 @@ class FileIOXML extends FileIOInterface{
         <currentPlayer>{gameState.currentPlayer}</currentPlayer>
         <drawPile>
             { for (x <- 0 until gameState.drawPile.length)
-                yield <value>{ gameState.drawPile(x) }</value> }
+                yield {gameState.drawPile(x) + "t"}}
         </drawPile>
+        <amountPlayer>{gameState.player.length}</amountPlayer>
         <player>
             { for (x <- 0 until gameState.player.length)
                 yield playerToXML(gameState.player(x)) }
@@ -54,7 +83,7 @@ class FileIOXML extends FileIOInterface{
         <hand>{player.hand}</hand>
         <discardPile>
             { for (x <- 0 until player.discardPile.length)
-                yield <value>{ player.discardPile(x) }</value> }
+                yield { player.discardPile(x) + "t"}}
         </discardPile>
         <inGame>{player.inGame}</inGame>
     </value>

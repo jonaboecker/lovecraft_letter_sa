@@ -371,4 +371,10 @@ case class Controller(
     //val fileIO = FileIOInterface()
     fileIO.save(state)
   }
+
+  override def load(using fileIO: FileIOInterface) = {
+    //val fileIO = FileIOInterface()
+    state = fileIO.load(state)
+    notifyObservers
+  }
 }

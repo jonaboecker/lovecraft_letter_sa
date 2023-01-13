@@ -84,6 +84,7 @@ final class TUI(using controller: ControllerInterface) extends Observer {
             case "save" =>
                 controller.save
                 show("speichern erfolgreich")
+            case "load" => controller.load
             case _ =>
                 show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
     } else {

@@ -74,4 +74,6 @@ trait ControllerInterface extends Observable{
   def resetControllerState: Unit
 
   def save(using fileIO: FileIOInterface): Unit
+
+  def load(using fileIO: FileIOInterface): Unit
 }

@@ -10,6 +10,7 @@ lazy val root = project
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test",
     libraryDependencies += "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
+    libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.0.1"
   )
   .enablePlugins(JacocoCoverallsPlugin)
