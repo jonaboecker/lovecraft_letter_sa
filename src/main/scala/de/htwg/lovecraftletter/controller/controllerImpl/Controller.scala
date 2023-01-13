@@ -13,6 +13,8 @@ import model.DrawPileImpl.DrawPile
 import model._
 import util._
 import scala.util.control.Breaks._
+import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
+import de.htwg.lovecraftletter.LovecraftLetterModule.{given}
 
 
 case class Controller(
@@ -363,5 +365,10 @@ case class Controller(
 
   override def resetControllerState = {
     controllerState = (controllState.standard, "")
+  }
+
+  override def save(using fileIO: FileIOInterface) = {
+    //val fileIO = FileIOInterface()
+    fileIO.save(state)
   }
 }

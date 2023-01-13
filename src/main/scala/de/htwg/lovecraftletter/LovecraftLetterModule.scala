@@ -13,8 +13,11 @@ import de.htwg.lovecraftletter.model.DrawPileImpl.DrawPile
 import de.htwg.lovecraftletter.model.BoardImpl.Board
 import de.htwg.lovecraftletter.model.PlayerImpl.Player
 import de.htwg.lovecraftletter.model._
+import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
+import de.htwg.lovecraftletter.model.FileIO.FileIOImpl._
 
 object LovecraftLetterModule {
   given ControllerInterface = Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
+  given FileIOInterface = FileIOXML()
   //given DrawPileInterface = DrawPile()
 }

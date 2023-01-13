@@ -42,3 +42,4 @@ null/
 .scala_dependencies
 .cache-main
 .scalafmt.conf
+src/savegames/

@@ -1,6 +1,7 @@
 package de.htwg.lovecraftletter.controller
 
 import de.htwg.lovecraftletter.model.{GameStateInterface, PlayerInterface}
+import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
 import de.htwg.lovecraftletter.util.Observable
 import de.htwg.lovecraftletter.model.GameStateInterface
 
@@ -71,4 +72,6 @@ trait ControllerInterface extends Observable{
   def handle: String
 
   def resetControllerState: Unit
+
+  def save(using fileIO: FileIOInterface): Unit
 }

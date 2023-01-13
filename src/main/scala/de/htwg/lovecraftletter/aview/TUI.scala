@@ -81,6 +81,9 @@ final class TUI(using controller: ControllerInterface) extends Observer {
             case "q" | "Q" => return
             case "undoStep" => controller.undoStep
             case "redoStep" => controller.redoStep
+            case "save" =>
+                controller.save
+                show("speichern erfolgreich")
             case _ =>
                 show("1 oder 2 einzugeben ist doch wirklich nicht schwierig oder?")
     } else {
