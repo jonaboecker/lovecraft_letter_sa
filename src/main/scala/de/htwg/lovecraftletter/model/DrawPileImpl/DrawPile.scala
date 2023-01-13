@@ -1,5 +1,6 @@
 package de.htwg.lovecraftletter
 package model
+package DrawPileImpl
 
 import scala.util.Random
 

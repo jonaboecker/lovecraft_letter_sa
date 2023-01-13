@@ -8,9 +8,11 @@ import util.Observer
 import model.PlayerInterface
 import model.PlayerImpl.Player
 
+import LovecraftLetterModule.{given}
+
 import scala.io.StdIn.readLine
 
-final case class TUI(controller: ControllerInterface) extends Observer {
+final class TUI(using controller: ControllerInterface) extends Observer {
   controller.add(this)
 
   def runLL = {

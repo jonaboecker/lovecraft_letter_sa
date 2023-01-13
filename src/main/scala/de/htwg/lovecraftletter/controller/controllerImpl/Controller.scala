@@ -9,10 +9,10 @@ import model.GameStateInterface
 import model.PlayerInterface
 //import model.Player
 import model.DrawPileInterface
+import model.DrawPileImpl.DrawPile
 import model._
 import util._
 import scala.util.control.Breaks._
-
 
 
 case class Controller(

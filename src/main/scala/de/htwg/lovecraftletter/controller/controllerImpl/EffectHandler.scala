@@ -5,6 +5,7 @@ package controllerImpl
 import model.BoardImpl.Board
 import model.GameStateInterface
 import model.GameStateImpl.GameState
+import model.DrawPileImpl.DrawPile
 import model._
 import util.Observable
 

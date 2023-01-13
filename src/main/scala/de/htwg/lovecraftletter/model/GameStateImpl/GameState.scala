@@ -1,6 +1,8 @@
-package de.htwg.lovecraftletter.model.GameStateImpl
+package de.htwg.lovecraftletter
+package model.GameStateImpl
 
 import de.htwg.lovecraftletter.model._
+import model.DrawPileImpl.DrawPile
 
 final case class GameState(override val currentPlayer: Int, override val drawPile: List[Int], override val player: List[PlayerInterface], override val currentCard: Int)
      extends GameStateInterface (currentPlayer, drawPile, player, currentCard){

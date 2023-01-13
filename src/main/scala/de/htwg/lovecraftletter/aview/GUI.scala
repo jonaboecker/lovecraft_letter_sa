@@ -10,7 +10,9 @@ import scala.swing.event._
 import scala.swing.ListView._
 import de.htwg.lovecraftletter.controller.controllState
 
-class GUI(controller: ControllerInterface) extends Frame with Observer {
+import LovecraftLetterModule.{given}
+
+class GUI(using controller: ControllerInterface) extends Frame with Observer {
     controller.add(this)
 
     val boardTA = TextArea(21, 82)
