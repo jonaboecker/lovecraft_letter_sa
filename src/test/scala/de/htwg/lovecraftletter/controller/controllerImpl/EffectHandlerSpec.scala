@@ -1,7 +1,12 @@
 package de.htwg.lovecraftletter
 package controller
+package controllerImpl
 
 import model._
+import model.BoardImpl._
+import model.GameStateImpl._
+import model.PlayerImpl._
+import model.DrawPileImpl._
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers

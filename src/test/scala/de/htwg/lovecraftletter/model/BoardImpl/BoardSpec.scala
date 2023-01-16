@@ -1,4 +1,4 @@
-package de.htwg.lovecraftletter.model
+package de.htwg.lovecraftletter.model.BoardImpl
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers

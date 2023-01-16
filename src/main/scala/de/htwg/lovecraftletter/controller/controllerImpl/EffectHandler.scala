@@ -44,13 +44,14 @@ class EffectHandler(
         standardOutput("Du bist bis zu deinem naechsten Zug geschuetzt")
         exit
         state
-      case 5 | 13 => discardAndDraw
+      case 5 | 13 =>
+        discardAndDraw
       case 6 | 14 => swapHandcards
       case 7 | 15 =>
         exit
         state //implemented in controller
       case 8 | 16 | 17 =>
-        contr.eliminatePlayer(state.currentPlayer)
+        state = contr.eliminatePlayer(state.currentPlayer)
         exit
 
   def strategyMad: GameStateInterface =
@@ -134,6 +135,7 @@ class EffectHandler(
     state =  state.updateDrawPile(tempDrawPile)
     state =  state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(tempCard)))
     //if necrominikom oder kathulu -> ausscheiden oder gewinnen
+    contr.setVarState(state) //sync gamestate
     if(state.player(selection(1)).discardPile.head == 8) {
         standardOutput("Necronomicon abgelegt")
         state = contr.eliminatePlayer(selection(1))
@@ -151,8 +153,8 @@ class EffectHandler(
 
   def swapHandcards: GameStateInterface = {
     val tempCard:Int = state.player(state.currentPlayer).hand
-    state.updatePlayer(state.player.updated(state.currentPlayer, state.player(state.currentPlayer).changeHand(state.player(selection(1)).hand)))
-    state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(tempCard)))
+    state = state.updatePlayer(state.player.updated(state.currentPlayer, state.player(state.currentPlayer).changeHand(state.player(selection(1)).hand)))
+    state = state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(tempCard)))
     exit
   }
 
@@ -167,6 +169,7 @@ class EffectHandler(
     state = state.updateDrawPile(state.player(selection(1)).hand :: state.drawPile)
     state = state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(17)))
     standardOutput("Du darfst nochmal ziehen")
+    contr.setVarState(state) //sync gamestate
     state = contr.playAnotherCard
     exit
   }
@@ -203,6 +206,7 @@ class EffectHandler(
   }
 
   def exit:GameStateInterface = {
+    contr.setVarState(state) //sync gamestate
     state = contr.nextPlayer
     contr.resetControllerState
     contr.notifyObservers

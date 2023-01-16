@@ -1,5 +1,5 @@
 package de.htwg.lovecraftletter
-package model
+package model.DrawPileImpl
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers

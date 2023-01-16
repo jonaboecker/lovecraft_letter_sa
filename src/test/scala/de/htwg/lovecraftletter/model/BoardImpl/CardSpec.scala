@@ -1,4 +1,4 @@
-package de.htwg.lovecraftletter.model
+package de.htwg.lovecraftletter.model.BoardImpl
 
 //import Card.scala
 

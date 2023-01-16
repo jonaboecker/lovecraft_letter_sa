@@ -21,6 +21,8 @@ trait ControllerInterface extends Observable{
 
   def setVarControllerState(cs: controllState, s: String): Unit
 
+  def setVarState(state: GameStateInterface): Unit
+
   def getVarControllerState: (controllState, String)
 
   def getVarAllowedInput: Vector[String]

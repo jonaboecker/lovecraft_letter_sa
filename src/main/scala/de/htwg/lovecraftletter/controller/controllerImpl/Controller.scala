@@ -36,6 +36,8 @@ case class Controller(
   override def setVarUserInput(input: Int) = userInput = input;
 
   override def setVarControllerState(cs: controllState, s: String) = controllerState = (cs, s);
+
+  override def setVarState(state: GameStateInterface) = this.state = state;
   override def getVarControllerState = controllerState;
 
   override def getVarAllowedInput = allowedInput;

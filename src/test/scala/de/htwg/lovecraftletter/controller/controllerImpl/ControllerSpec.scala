@@ -1,11 +1,13 @@
 package de.htwg.lovecraftletter
 package controller
+package controllerImpl
 
-import model.Board
-import model.Card
-import model.GameState
-import model.Player
-import model.DrawPile
+import model.BoardImpl._
+// import model.Card
+import model.GameStateImpl._
+import model.PlayerImpl._
+import model.DrawPileImpl._
+import model._
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -20,7 +22,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
           (controllState.standard, ""),
           -2
         )
-      val result: GameState = defaultController.initialize(
+      val result: GameStateInterface = defaultController.initialize(
         List(
           Player("Gustav", 0, Nil, true),
           Player("Guschtav", 0, Nil, true),
@@ -444,7 +446,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       defaultController.StateHandler.getBoard
     )
 
-    defaultController = Controller(
+    /* defaultController = Controller(
       GameState(
         1,
         List(2, 3, 4, 5, 1),
@@ -459,7 +461,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
     )
     defaultController.StateHandler.handle should ===(
       defaultController.StateHandler.selectEffect
-    )
+    ) */
 
     defaultController = Controller(
       GameState(

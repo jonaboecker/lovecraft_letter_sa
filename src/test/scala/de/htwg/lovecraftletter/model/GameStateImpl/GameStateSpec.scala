@@ -1,8 +1,9 @@
-package de.htwg.lovecraftletter.model
+package de.htwg.lovecraftletter.model.GameStateImpl
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest._
+import de.htwg.lovecraftletter.model.PlayerImpl._
 
 class GameStateSpec extends AnyWordSpec with Matchers {
   "A GameState" should {
