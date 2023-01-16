@@ -30,13 +30,29 @@ class FileIOJSON extends FileIOInterface{
     //val source = scala.io.Source.fromFile(selectedFile)
     //val xml = XML.loadString(source.mkString)
     val json: JsValue = Json.parse(source)
-    //val currentPlayer = (xml \ "currentPlayer").text.toInt
-    //val drawPile: List[Int] = (xml \ "drawPile").text.trim.split("t").map(_.toInt).toList
-    //val player: List[Player] = loadPlayer(xml)
-    //val currentCard = (xml \ "currentCard").text.toInt
+    val currentPlayer = json("currentPlayer").as[Int]
+    val drawPile: List[Int] = (json \ "drawPile").as[List[Int]]
+    val player: List[Player] = loadPlayer(json)
+    val currentCard:Int = (json \ "currentCard").as[Int]
     //val gameState = GameState(currentPlayer, drawPile, player, currentCard)
     oldGameState
   }
+
+  def loadPlayer(json:JsValue): List[Player] = {
+    val player = (json \ "player").as[List[JsValue]]
+    var playerList: List[Player] = Nil
+    for (i <- 0 until player.length) {
+        val name = (player(i) \ "name").as[String]
+        val hand: Int = (player(i) \ "hand").as[Int]
+        val discardPile: List[Int] = (player(i)  \ "discardPile").as[List[Int]]
+        val inGame:Boolean = (player(i) \ "inGame").as[Boolean]
+        val p = Player(name, hand, discardPile, inGame)
+        playerList = p :: playerList
+    } 
+    playerList
+  }
+
+
 
   override def save(gameState: GameStateInterface): Unit = {
     val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
@@ -62,27 +78,5 @@ class FileIOJSON extends FileIOInterface{
         ),
         "currentCard" -> gameState.currentCard
     ).toString
-  }
-
-    // implicit val playerWrites = new Writes[Player] {
-    //   def writes(player: Player) = Json.obj(
-    //       "name" -> player.name,
-    //       "hand" -> player.hand,
-    //       "discardPile" -> Json.toJson(player.discardPile),
-    //       "inGame" -> player.inGame
-    //   )
-    // }
-
-
-  def playerToXML(player: PlayerInterface) = {
-    <value>
-        <name>{player.name}</name>
-        <hand>{player.hand}</hand>
-        <discardPile>
-            { for (x <- 0 until player.discardPile.length)
-                yield { player.discardPile(x) + "t"}}
-        </discardPile>
-        <inGame>{player.inGame}</inGame>
-    </value>
   }
 }
