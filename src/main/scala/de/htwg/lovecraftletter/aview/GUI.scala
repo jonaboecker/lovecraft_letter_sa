@@ -42,6 +42,12 @@ class GUI(using controller: ControllerInterface) extends Frame with Observer {
             contents += new MenuItem(Action("Rueckgaengig Rueckgaengig machen") {
                 controller.redoStep
             })
+            contents += new MenuItem(Action("Speichern") {
+                controller.save
+            })
+            contents += new MenuItem(Action("Laden") {
+                controller.load
+            })
             contents += MenuItem(Action("mach mal") {
                 handle
             })
