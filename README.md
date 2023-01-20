@@ -2,7 +2,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=DeveloperBranch)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=DeveloperBranch)
 
-### Usage
+## Usage
 
 You can run this Project with sbt.
 
@@ -22,7 +22,7 @@ sbt console
 ```
 will start a Scala 3 REPL.
 
-### Spielablauf
+## Spielablauf
 
 Der Spieler, der am Zug ist, zieht zunächst die oberste Karte des
 Nachziehstapels. Da er zuvor
@@ -56,3 +56,13 @@ hat. Dies passiert automatisch.
 Deckt er dabei eine Wahnsinnskarte auf, scheidet er sofort aus.
 Der Spieler legt die aufgedeckten Karten anschließend offen
 auf seinen Ablagestapel, ohne deren Funktionen auszuführen.
+
+
+---
+
+## Contributors
+| [Tobias Stöhr](https://github.com/TobiasReyEye)  |  [Jona Böcker](https://github.com/jbcker) | 
+|---|---|
+| ![image](https://github-readme-streak-stats.herokuapp.com/?user=TobiasReyEye) | ![image](https://github-readme-streak-stats.herokuapp.com/?user=jbcker)  |
+
+---
