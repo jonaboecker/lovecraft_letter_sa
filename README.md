@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=DeveloperBranch)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=DeveloperBranch)
 ![Scala CI](https://github.com/TobiasReyEye/lovecraft_letter/actions/workflows/scala.yml/badge.svg)
 ![RepoSize](https://img.shields.io/github/repo-size/TobiasReyEye/lovecraft_letter)
+[![License](https://img.shields.io/github/license/TobiasReyEye/lovecraft_letter?color=green)](https://cdn130.picsart.com/272563229032201.jpg?r1024x1024)
 
 
 ## Usage
