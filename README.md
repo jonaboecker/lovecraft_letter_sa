@@ -5,7 +5,6 @@
 ![RepoSize](https://img.shields.io/github/repo-size/TobiasReyEye/lovecraft_letter)
 [![License](https://img.shields.io/github/license/TobiasReyEye/lovecraft_letter?color=green)](https://cdn130.picsart.com/272563229032201.jpg?r1024x1024)
 
-
 ## Usage
 
 You can run this Project with sbt.
@@ -25,6 +24,8 @@ and
 sbt console
 ```
 will start a Scala 3 REPL.
+
+---
 
 ## Spielablauf
 
@@ -61,12 +62,9 @@ Deckt er dabei eine Wahnsinnskarte auf, scheidet er sofort aus.
 Der Spieler legt die aufgedeckten Karten anschließend offen
 auf seinen Ablagestapel, ohne deren Funktionen auszuführen.
 
-
 ---
 
 ## Contributors
 | [Tobias Stöhr](https://github.com/TobiasReyEye)  |  [Jona Böcker](https://github.com/jbcker) | 
 |---|---|
 | ![image](https://github-readme-streak-stats.herokuapp.com/?user=TobiasReyEye) | ![image](https://github-readme-streak-stats.herokuapp.com/?user=jbcker)  |
-
----
