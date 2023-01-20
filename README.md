@@ -1,6 +1,9 @@
 # lovecraft_letter
 
 [![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=DeveloperBranch)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=DeveloperBranch)
+![Scala CI](https://github.com/TobiasReyEye/lovecraft_letter/actions/workflows/scala.yml/badge.svg)
+![RepoSize](https://img.shields.io/github/repo-size/TobiasReyEye/lovecraft_letter)
+
 
 ## Usage
 
