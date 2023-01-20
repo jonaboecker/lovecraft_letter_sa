@@ -34,12 +34,12 @@ ausführen, auch wenn es zu seinem Nachteil ist. Abschließend legt er
 sie offen auf seinen persönlichen Ablagestapel, den er vor sich bildet.
 Damit ist sein Zug beendet, und der Spieler links von ihm ist am Zug.
 
-Karten ablegen
+### Karten ablegen
 Die Spieler müssen aufgrund verschiedener Kartenfunktionen oftmals
 Karten ablegen. Dies bedeutet immer, dass der Spieler diese Karten offen
 auf seinen Ablagestapel legt, die Funktion dieser Karte aber nicht ausführt.
 
-Wahnsinn und Wahnsinnskontrolle
+### Wahnsinn und Wahnsinnskontrolle
 Liegt eine Wahnsinnskarte offen auf dem Ablagestapel eines Spielers,
 unabhängig davon, wie sie dort gelandet ist, ist dieser Spieler in Kontakt
 mit verbotenem Wissen gekommen und wird sofort für den Rest der
