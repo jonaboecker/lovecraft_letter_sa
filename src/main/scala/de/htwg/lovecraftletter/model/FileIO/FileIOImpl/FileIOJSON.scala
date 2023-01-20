@@ -34,8 +34,8 @@ class FileIOJSON extends FileIOInterface{
     val drawPile: List[Int] = (json \ "drawPile").as[List[Int]]
     val player: List[Player] = loadPlayer(json)
     val currentCard:Int = (json \ "currentCard").as[Int]
-    //val gameState = GameState(currentPlayer, drawPile, player, currentCard)
-    oldGameState
+    val gameState = GameState(currentPlayer, drawPile, player, currentCard)
+    gameState
   }
 
   def loadPlayer(json:JsValue): List[Player] = {
@@ -48,7 +48,7 @@ class FileIOJSON extends FileIOInterface{
         val inGame:Boolean = (player(i) \ "inGame").as[Boolean]
         val p = Player(name, hand, discardPile, inGame)
         playerList = p :: playerList
-    } 
+    }
     playerList
   }
 
