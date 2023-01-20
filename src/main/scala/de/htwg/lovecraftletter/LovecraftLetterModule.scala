@@ -18,6 +18,6 @@ import de.htwg.lovecraftletter.model.FileIO.FileIOImpl._
 
 object LovecraftLetterModule {
   given ControllerInterface = Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
-  given FileIOInterface = FileIOJSON()
+  given FileIOInterface = FileIOXML()
   //given DrawPileInterface = DrawPile()
 }
