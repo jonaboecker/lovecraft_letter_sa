@@ -2,7 +2,28 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=DeveloperBranch)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=DeveloperBranch)
 
-Spielablauf
+### Usage
+
+You can run this Project with sbt.
+
+[install sbt](https://www.scala-sbt.org/1.x/docs/Setup.html)
+
+Compile code with:
+```
+sbt compile
+```
+run it with:
+```
+sbt run
+```
+and
+```
+sbt console
+```
+will start a Scala 3 REPL.
+
+### Spielablauf
+
 Der Spieler, der am Zug ist, zieht zunächst die oberste Karte des
 Nachziehstapels. Da er zuvor
 bereits 1 Karte auf der Hand hatte, besitzt er nun 2 Handkarten.
