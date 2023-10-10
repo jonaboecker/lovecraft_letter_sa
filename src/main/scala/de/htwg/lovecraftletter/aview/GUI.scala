@@ -15,6 +15,16 @@ import LovecraftLetterModule.{given}
 class GUI(using controller: ControllerInterface) extends Frame with Observer {
     controller.add(this)
 
+    val hintTA = TextArea(5, 50)
+    hintTA.font =(new Font("Monospaced", 0,16))
+    hintTA.editable = false
+    hintTA.text = "Willkommen bei Lovecraft Letter"
+
+    val hintScroll = new ScrollPane(hintTA) {
+        horizontalScrollBarPolicy = ScrollPane.BarPolicy.Never
+        verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded // Oder Always, je nach Bedarf
+    }
+
     val boardTA = TextArea(21, 82)
     boardTA.font =(new Font("Monospaced", 0,14))
     boardTA.editable = false
@@ -56,10 +66,10 @@ class GUI(using controller: ControllerInterface) extends Frame with Observer {
 
     contents = new BorderPanel {
         //add(new Label("Willkommen bei Lovecraft Letter"), BorderPanel.Position.North)
+        add(hintScroll, BorderPanel.Position.East)
         add(boardTA, BorderPanel.Position.North)
         add(effectTA, BorderPanel.Position.Center)
         add(inputCO, BorderPanel.Position.South)
-
     }
 
     pack()
@@ -117,7 +127,9 @@ class GUI(using controller: ControllerInterface) extends Frame with Observer {
             effectTA.text = "Welche Karte moechtest du spielen? (1|2)"
             inputCO.listData = Vector("1", "2")
         } else if (controller.getVarControllerState(0) == controllState.informOverPlayedEffect || controller.getVarControllerState(0) == controllState.playerWins || controller.getVarControllerState(0) == controllState.tellEliminatedPlayer) {
-            Dialog.showMessage(this, controller.handle)
+            //Dialog.showMessage(this, controller.handle)
+            hintTA.text = hintTA.text + "\n\n" + controller.handle
+            hintScroll.verticalScrollBar.value = hintScroll.verticalScrollBar.maximum
         } else {
             effectTA.text = output
         }
