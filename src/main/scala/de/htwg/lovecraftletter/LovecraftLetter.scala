@@ -15,12 +15,6 @@ import de.htwg.lovecraftletter.LovecraftLetterModule.given_ControllerInterface
 
 @main def run: Unit = {
   println("Welcome to LovecraftLetter")
-  //val gamestate = new GameState(0, Nil, Nil, 0)
-  //val controller: ControllerInterface = ControllerInterface
   val gui = GUI()
   val tui = TUI()
-  //tui.runLL
-  // val tempVec = Vector(1, 1, 1)
-  // print(new Board(tempVec))
-  // getInputAndPrintLoop()
 }

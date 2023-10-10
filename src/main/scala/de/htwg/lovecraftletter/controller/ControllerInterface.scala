@@ -85,5 +85,5 @@ trait ControllerInterface extends Observable{
 
   def load(using fileIO: FileIOInterface): Unit
   
-  def resetGame(value: String): Unit
+  def resetGame: Unit
 }

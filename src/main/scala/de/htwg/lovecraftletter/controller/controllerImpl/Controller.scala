@@ -2,12 +2,9 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
-import model.BoardInterface
 import model.BoardImpl.Board
 import model.GameStateInterface
-//import model.GameState
 import model.PlayerInterface
-//import model.Player
 import model.DrawPileInterface
 import model.DrawPileImpl.DrawPile
 import model._
@@ -139,8 +136,6 @@ case class Controller(
         state = state.swapHandAndCurrent
         MadHandler.play
     // handle discarded card
-    /* nextPlayer
-    notifyObservers */
     state
   }
 
@@ -181,7 +176,6 @@ case class Controller(
     effectHandlerSelection = Vector(selectedEffect)
     state = EffectHandler(this, state, effectHandlerSelection).initializeEffectHandler
     state
-    // println("play Effect")
   }
 
   override def playerChoosed(choosedPlayer: Int): GameStateInterface = {
@@ -211,23 +205,14 @@ case class Controller(
   override def playerWins(winningPlayer: Int): GameStateInterface = {
     controllerState =
       (controllState.playerWins, state.player(winningPlayer).name)
-    // checking if player won the game
-    // if not start new round
     notifyObservers
-    // for now stop here
-    // System.exit(0)
+    resetGame
     state
   }
 
   override def getAllowedPlayerForPlayerSelection: Vector[String] = {
-    // val res = for (x <- 0 until (state.player.length)) yield (x + 1).toString
-    // todo current player should not in Vector
-    // todo eliminated Player schould not in Vector
     val res =
     rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
-    //print(res)
-    // val res2 = res.toVector.drop(state.currentPlayer)
-    // print(res2)
     res
   }
 
@@ -323,7 +308,6 @@ case class Controller(
       (controllState.tellEliminatedPlayer, state.player(player).name)
     notifyObservers
     checkUponWin
-    // nextPlayer
     state
   }
 
@@ -333,7 +317,6 @@ case class Controller(
     def handle = {
       controllerState(0) match
         case controllState.standard => getBoard
-        //case controllState.selectEffect => selectEffect
         case controllState.initGetPlayerAmount =>
           allowedInput = Vector("3", "4", "5", "6")
           "Bitte Spieleranzahl zwischen 3 und 6 angeben"
@@ -344,7 +327,7 @@ case class Controller(
           "Spieler " + controllerState(1) + " wurde eliminiert"
         case controllState.playerWins =>
           allowedInput = Vector("j", "n")
-          "Spieler " + controllerState(1) + " hat die Runde gewonnen\nMoechtest du eine neue Runde starten? (j|n)"
+          "Spieler " + controllerState(1) + " hat die Runde gewonnen\nEs wird eine neue Runde gestartet."
         case controllState.getEffectedPlayer =>
           allowedInput = getAllowedPlayerForPlayerSelection
           "Waehle einen Spieler auf den du deine Aktion anwenden willst " + allowedInput.toString()
@@ -382,23 +365,15 @@ case class Controller(
   }
 
   override def save(using fileIO: FileIOInterface) = {
-    //val fileIO = FileIOInterface()
     fileIO.save(state)
   }
 
   override def load(using fileIO: FileIOInterface) = {
-    //val fileIO = FileIOInterface()
     state = fileIO.load(state)
     notifyObservers
   }
 
-  override def resetGame(value:String) = {
-    print("huhu")
-    if(value == "j"){
-      state = state.updatePlayer(Nil)
-      runLL
-  } else {
-      System.exit(0)
-    }
+  override def resetGame = {
+    initialize()
   }
 }

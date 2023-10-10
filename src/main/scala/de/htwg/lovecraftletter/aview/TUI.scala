@@ -36,7 +36,7 @@ final class TUI(using controller: ControllerInterface) extends Observer {
         case "2" =>
           controller.setVarUserInput(2)
           controller.makeTurn
-        case "q" | "Q" => return
+        case "q" | "Q" => sys.exit(0)
         case "undoStep" => controller.undoStep
         case "redoStep" => controller.redoStep
         case "save" =>
@@ -60,13 +60,9 @@ final class TUI(using controller: ControllerInterface) extends Observer {
             controller.playerAmount(input.toInt)
           case controllState.initGetPlayerName =>
             controller.playerName(input)
-          case controllState.playerWins =>
-            controller.resetGame(input)
           case _ => controller.resetControllerState
       }
     }
     getInputAndPrintLoop
-
-
   }
 }
