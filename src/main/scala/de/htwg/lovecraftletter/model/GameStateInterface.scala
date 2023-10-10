@@ -34,4 +34,6 @@ trait GameStateInterface(
   def swapHandAndCurrent: GameStateInterface
 
   def eliminatePlayer(toEliminatePlayer: Int): GameStateInterface
+
+  def addPlayer(name: String): GameStateInterface
 }

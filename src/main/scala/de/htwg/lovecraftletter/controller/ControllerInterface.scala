@@ -7,6 +7,8 @@ import de.htwg.lovecraftletter.model.GameStateInterface
 
 enum controllState {
   case standard
+  case initGetPlayerAmount
+  case initGetPlayerName
   case tellEliminatedPlayer
   case playerWins
   case getEffectedPlayer
@@ -27,9 +29,13 @@ trait ControllerInterface extends Observable{
 
   def getVarAllowedInput: Vector[String]
 
-  def initialize(playerList: List[PlayerInterface]): GameStateInterface
+  def runLL: Unit
 
-  def playerAmount(input: String): Int
+  def playerAmount(input: Int): Unit
+
+  def playerName(input: String): Unit
+
+  def initialize(): GameStateInterface
 
   def nextPlayer: GameStateInterface
 
@@ -78,4 +84,6 @@ trait ControllerInterface extends Observable{
   def save(using fileIO: FileIOInterface): Unit
 
   def load(using fileIO: FileIOInterface): Unit
+  
+  def resetGame(value: String): Unit
 }

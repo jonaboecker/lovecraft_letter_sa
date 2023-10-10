@@ -19,7 +19,7 @@ import de.htwg.lovecraftletter.LovecraftLetterModule.given_ControllerInterface
   //val controller: ControllerInterface = ControllerInterface
   val gui = GUI()
   val tui = TUI()
-  tui.runLL
+  //tui.runLL
   // val tempVec = Vector(1, 1, 1)
   // print(new Board(tempVec))
   // getInputAndPrintLoop()

@@ -1,7 +1,8 @@
 package de.htwg.lovecraftletter
 package model.GameStateImpl
 
-import de.htwg.lovecraftletter.model._
+import de.htwg.lovecraftletter.model.*
+import de.htwg.lovecraftletter.model.PlayerImpl.Player
 import model.DrawPileImpl.DrawPile
 
 final case class GameState(override val currentPlayer: Int, override val drawPile: List[Int], override val player: List[PlayerInterface], override val currentCard: Int)
@@ -46,5 +47,10 @@ final case class GameState(override val currentPlayer: Int, override val drawPil
         player(toEliminatePlayer).eliminatePlayer()
       )
     GameState(currentPlayer, drawPile, tempPlayer, currentCard)
+  }
+
+  override def addPlayer(name: String): GameState = {
+    val updatedList = new Player(name, 0, Nil, true) :: player
+    GameState(currentPlayer, drawPile, updatedList, currentCard)
   }
 }
