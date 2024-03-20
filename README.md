@@ -1,9 +1,9 @@
 # lovecraft_letter
 
-[![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=main)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=main)
-![Scala CI](https://github.com/TobiasReyEye/lovecraft_letter/actions/workflows/scala.yml/badge.svg)
-![RepoSize](https://img.shields.io/github/repo-size/TobiasReyEye/lovecraft_letter)
-![Lines of Code](https://tokei.rs/b1/github/TobiasReyEye/lovecraft_letter)
+[![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=main)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=tryAtomaticTesting)
+![Scala CI](https://github.com/jonaboecker/lovecraft_letter_sa/actions/workflows/scala.yml/badge.svg)
+![RepoSize](https://img.shields.io/github/repo-size/jonaboecker/lovecraft_letter_sa)
+![Lines of Code](https://tokei.rs/b1/github/jonaboecker/lovecraft_letter_sa)
 [![License](https://img.shields.io/github/license/TobiasReyEye/lovecraft_letter?color=green)](https://cdn130.picsart.com/272563229032201.jpg?r1024x1024)
 
 ## Usage
@@ -66,6 +66,6 @@ auf seinen Ablagestapel, ohne deren Funktionen auszuführen.
 ---
 
 ## Contributors
-| [Tobias Stöhr](https://github.com/TobiasReyEye)  |  [Jona Böcker](https://github.com/jbcker) | 
+| [Tobias Stöhr](https://github.com/TobiasReyEye)  |  [Jona Böcker](https://github.com/jonaboecker) | 
 |---|---|
-| ![image](https://github-readme-streak-stats.herokuapp.com/?user=TobiasReyEye) | ![image](https://github-readme-streak-stats.herokuapp.com/?user=jbcker)  |
+| ![image](https://github-readme-streak-stats.herokuapp.com/?user=TobiasReyEye) | ![image](https://github-readme-streak-stats.herokuapp.com/?user=jonaboecker)  |
