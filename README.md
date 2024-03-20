@@ -1,6 +1,6 @@
 # lovecraft_letter
 
-[![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=main)](https://coveralls.io/github/TobiasReyEye/lovecraft_letter?branch=tryAtomaticTesting)
+![Coverage Status](https://coveralls.io/repos/github/TobiasReyEye/lovecraft_letter/badge.svg?branch=tryAtomaticTesting)
 ![Scala CI](https://github.com/jonaboecker/lovecraft_letter_sa/actions/workflows/scala.yml/badge.svg)
 ![RepoSize](https://img.shields.io/github/repo-size/jonaboecker/lovecraft_letter_sa)
 ![Lines of Code](https://tokei.rs/b1/github/jonaboecker/lovecraft_letter_sa)
