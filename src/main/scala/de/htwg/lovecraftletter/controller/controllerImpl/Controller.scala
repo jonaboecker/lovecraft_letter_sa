@@ -98,29 +98,36 @@ case class Controller(
   }
 
   override def checkForCard7or15(playedCard: Int): Int = {
-    if ((state.currentCard == (7 | 15) || state.player(state.currentPlayer).hand == (7 | 15)) && !(state.currentCard == (7 | 15) && state.player(state.currentPlayer).hand == (7 | 15))) {
-      if ((state.currentCard == 15 || state.player(state.currentPlayer).hand == 15) && state.player(state.currentPlayer).madCheck() > 0) {
-        return playedCard
+    val currentPlayer = state.player(state.currentPlayer)
+    val currentCardIsSpecial = state.currentCard == 7 || state.currentCard == 15
+    val handCardIsSpecial = currentPlayer.hand == 7 || currentPlayer.hand == 15
+    val oneCardIsSpecial = currentCardIsSpecial || handCardIsSpecial
+    val bothCardsAreSpecial = currentCardIsSpecial && handCardIsSpecial
+  
+    if (oneCardIsSpecial && !bothCardsAreSpecial) {
+      val cardToPlay = if (currentPlayer.madCheck() > 0 && (state.currentCard == 15 || currentPlayer.hand == 15)) {
+        playedCard
+      } else if (currentCardIsSpecial && isCardForcedToPlay(currentPlayer.hand)) {
+        1
+      } else if (handCardIsSpecial && isCardForcedToPlay(state.currentCard)) {
+        2
+      } else {
+        playedCard
       }
-      if (state.currentCard == (7 | 15)) {
-        state.player(state.currentPlayer).hand match
-          case 5 | 6 | 8 | 13 | 14 | 16 =>
-            controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 1 spielen")
-            notifyObservers
-            resetControllerState()
-            return 1
-          case _ => return playedCard
-      } else if (state.player(state.currentPlayer).hand == (7 | 15)) {
-        state.currentCard match
-          case 5 | 6 | 8 | 13 | 14 | 16 =>
-            controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 2 spielen")
-            notifyObservers
-            resetControllerState()
-            return 2
-          case _ => return playedCard
-      }
+      return cardToPlay
     }
     playedCard
+  }
+
+  private def isCardForcedToPlay(card: Int): Boolean = {
+    card match {
+      case 5 | 6 | 8 | 13 | 14 | 16 =>
+        controllerState = (controllState.informOverPlayedEffect, "Du musst Karte " + card + " spielen")
+        notifyObservers
+        resetControllerState()
+        true
+      case _ => false
+    }
   }
 
   override def makeTurn: GameStateInterface = {
@@ -172,23 +179,22 @@ case class Controller(
   }
 
   override def playEffect(selectedEffect: Int): GameStateInterface = {
-    resetControllerState()
     effectHandlerSelection = Vector(selectedEffect)
-    state = EffectHandler(this, state, effectHandlerSelection).initializeEffectHandler
-    state
+    executeEffectHandler(_.initializeEffectHandler)
   }
 
-  override def playerChoosed(choosedPlayer: Int): GameStateInterface = {
-    resetControllerState()
-    effectHandlerSelection = Vector(effectHandlerSelection(0), choosedPlayer - 1)
-    state = EffectHandler(this, state, effectHandlerSelection).strategy
-    state
+  override def playerChosen(chosenPlayer: Int): GameStateInterface = {
+    effectHandlerSelection = Vector(effectHandlerSelection(0), chosenPlayer - 1)
+    executeEffectHandler(_.strategy)
   }
 
   override def investgatorGuessed(guess: Int): GameStateInterface = {
-    resetControllerState()
     effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
-    state = EffectHandler(this, state, effectHandlerSelection).guessTeammateHandcard2
+    executeEffectHandler(_.guessTeammateHandcard2)
+  }
+  private def executeEffectHandler(effectHandlerMethod: EffectHandler => GameStateInterface): GameStateInterface = {
+    resetControllerState()
+    state = effectHandlerMethod(EffectHandler(this, state, effectHandlerSelection))
     state
   }
 
@@ -217,47 +223,31 @@ case class Controller(
   }
 
   override def rekGetAllowedPlayerForPlayerSelection(
-                                                      counter: Int,
-                                                      playerList: List[PlayerInterface],
-                                                      allowedPlayers: Vector[String]
-                                                    ): Vector[String] = {
-    if (playerList.isEmpty) {
-      allowedPlayers
-    } else {
-      if (
-        playerList.head.inGame && playerList.head != state.player(
-          state.currentPlayer
-        ) && state.player(counter - 1).discardPile.head != 4 && state
-          .player(counter - 1)
-          .discardPile
-          .head != 12
-      ) {
-        val tempAllowedPlayers: Vector[String] =
-          allowedPlayers.appended(counter.toString)
-        rekGetAllowedPlayerForPlayerSelection(
-          counter + 1,
-          playerList.tail,
-          tempAllowedPlayers
-        )
-      } else {
-        val tempAllowedPlayers: Vector[String] = allowedPlayers
-        rekGetAllowedPlayerForPlayerSelection(
-          counter + 1,
-          playerList.tail,
-          tempAllowedPlayers
-        )
-      }
+    counter: Int,
+    playerList: List[PlayerInterface],
+    allowedPlayers: Vector[String]
+  ): Vector[String] = {
+    playerList match {
+      case Nil => allowedPlayers
+      case head :: tail =>
+        val isPlayerAllowed = head.inGame && head != state.player(state.currentPlayer) &&
+                              state.player(counter - 1).discardPile.head != 4 &&
+                              state.player(counter - 1).discardPile.head != 12
+        val updatedAllowedPlayers = if (isPlayerAllowed) allowedPlayers.appended(counter.toString) else allowedPlayers
+        rekGetAllowedPlayerForPlayerSelection(counter + 1, tail, updatedAllowedPlayers)
     }
   }
 
   object MadHandler {
     def draw: GameStateInterface =
       if (
-        state.player(state.currentPlayer).discardPile.head != 12 && state
-          .player(state.currentPlayer)
-          .madCheck() > 0
+        !isPlayerInvincible && state.player(state.currentPlayer).isPlayerMad
       ) drawMad
       else drawNormal
+
+    private def isPlayerInvincible = {
+      state.player(state.currentPlayer).discardPile.head == 12
+    }
 
     private def drawNormal = {
       drawCard
@@ -273,7 +263,6 @@ case class Controller(
             nextPlayer
           } else {
             state = state.playCard
-            //drawCard
           }
         }
       }
@@ -292,13 +281,8 @@ case class Controller(
     }
 
     private def playMad = {
-      if (state.currentCard > 8) {
-        state = state.playCard
-        playEffect(2)
-      } else {
-        state = state.playCard
-        playEffect(1)
-      }
+      state = state.playCard
+      playEffect(if (state.currentCard > 8) 2 else 1)
     }
   }
 

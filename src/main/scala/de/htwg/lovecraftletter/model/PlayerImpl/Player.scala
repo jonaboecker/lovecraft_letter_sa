@@ -28,4 +28,8 @@ case class Player(
   override def madCheck(): Int = {
     discardPile.filter(_ > 8).length
   }
+
+  override def isPlayerMad: Boolean = {
+    madCheck() > 0
+  }
 }

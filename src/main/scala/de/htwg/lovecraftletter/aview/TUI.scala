@@ -51,7 +51,7 @@ final class TUI(using controller: ControllerInterface) extends Observer {
       } else {
         controller.getVarControllerState(0) match
           case controllState.getEffectedPlayer =>
-            controller.playerChoosed(input.toInt)
+            controller.playerChosen(input.toInt)
           case controllState.getInvestigatorGuess =>
             controller.investgatorGuessed(input.toInt)
           case controllState.getInputToPlayAnotherCard =>

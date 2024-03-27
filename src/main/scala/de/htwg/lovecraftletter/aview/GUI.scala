@@ -103,7 +103,7 @@ class GUI(using controller: ControllerInterface) extends Frame with Observer {
             controller.setVarUserInput(2)
             controller.makeTurn
       case controllState.getEffectedPlayer =>
-        controller.playerChoosed(inputCO.selection.items(0).toInt)
+        controller.playerChosen(inputCO.selection.items(0).toInt)
       case controllState.getInvestigatorGuess =>
         controller.investgatorGuessed(inputCO.selection.items(0).toInt)
       case controllState.getInputToPlayAnotherCard =>

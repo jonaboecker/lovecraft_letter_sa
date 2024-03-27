@@ -58,7 +58,7 @@ trait ControllerInterface extends Observable{
 
   def playEffect(selectedEffect: Int): GameStateInterface
 
-  def playerChoosed(choosedPlayer: Int): GameStateInterface
+  def playerChosen(choosedPlayer: Int): GameStateInterface
 
   def investgatorGuessed(guess: Int): GameStateInterface
 

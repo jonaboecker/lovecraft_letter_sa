@@ -16,4 +16,6 @@ trait PlayerInterface(
   def eliminatePlayer(): PlayerInterface
 
   def madCheck(): Int
+  
+  def isPlayerMad: Boolean
 }
