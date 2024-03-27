@@ -8,13 +8,13 @@ import util.Observer
 import model.PlayerInterface
 import model.PlayerImpl.Player
 
-import LovecraftLetterModule.{given}
+import LovecraftLetterModule.given
 
 import scala.io.StdIn.readLine
 
 final class TUI(using controller: ControllerInterface) extends Observer {
   controller.add(this)
-  controller.runLL
+  controller.runLL()
   getInputAndPrintLoop
 
 
@@ -60,7 +60,7 @@ final class TUI(using controller: ControllerInterface) extends Observer {
             controller.playerAmount(input.toInt)
           case controllState.initGetPlayerName =>
             controller.playerName(input)
-          case _ => controller.resetControllerState
+          case _ => controller.resetControllerState()
       }
     }
     getInputAndPrintLoop

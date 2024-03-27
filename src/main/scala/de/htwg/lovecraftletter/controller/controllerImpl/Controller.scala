@@ -11,7 +11,7 @@ import model._
 import util._
 import scala.util.control.Breaks._
 import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
-import de.htwg.lovecraftletter.LovecraftLetterModule.{given}
+import de.htwg.lovecraftletter.LovecraftLetterModule.given
 
 
 case class Controller(
@@ -19,39 +19,39 @@ case class Controller(
                        var controllerState: (controllState, String),
                        var userInput: Int
                      ) extends ControllerInterface {
-  val undoManager = new UndoManager[GameStateInterface]
-  var allowedInput = Vector("1", "2")
-  var effectHandlerSelection: Vector[Int] = Vector(-999)
+  private val undoManager = new UndoManager[GameStateInterface]
+  private var allowedInput: Vector[String] = Vector("1", "2")
+  private var effectHandlerSelection: Vector[Int] = Vector(-999)
 
-  val drawPile: Option[DrawPileInterface] = Some(new DrawPile())
+  val drawPile: Option[DrawPileInterface] = Some(DrawPile())
 
-  val drawPileO = drawPile match {
+  private val drawPileO = drawPile match {
     case Some(b) => b
     case None => new DrawPile
   }
 
-  override def setVarUserInput(input: Int) = userInput = input;
+  override def setVarUserInput(input: Int): Unit = userInput = input
 
-  override def setVarControllerState(cs: controllState, s: String) = controllerState = (cs, s);
+  override def setVarControllerState(cs: controllState, s: String): Unit = controllerState = (cs, s)
 
-  override def setVarState(state: GameStateInterface) = this.state = state;
+  override def setVarState(state: GameStateInterface): Unit = this.state = state
 
-  override def getVarControllerState = controllerState;
+  override def getVarControllerState: (controllState, String) = controllerState
 
-  override def getVarAllowedInput = allowedInput;
+  override def getVarAllowedInput: Vector[String] = allowedInput
 
-  override def runLL = {
+  override def runLL(): Unit = {
     controllerState = (controllState.initGetPlayerAmount, "")
     notifyObservers
   }
 
-  override def playerAmount(input: Int) = {
+  override def playerAmount(input: Int): Unit = {
     state = state.updateCurrentPlayer(input)
     controllerState = (controllState.initGetPlayerName, "")
     notifyObservers
   }
 
-  override def playerName(input: String) = {
+  override def playerName(input: String): Unit = {
     state = state.addPlayer(input)
     if (state.player.length >= state.currentPlayer) {
       state = state.updatePlayer(state.player.reverse)
@@ -73,13 +73,13 @@ case class Controller(
       state = state.updatePlayer(state.player.updated(i, player))
     }
     drawCard
-    resetControllerState
+    resetControllerState()
     notifyObservers
     state
   }
 
 
-  override def nextPlayer = {
+  override def nextPlayer: GameStateInterface = {
     state = state.nextPlayer
     while (!state.player(state.currentPlayer).inGame) {
       state = state.nextPlayer
@@ -107,7 +107,7 @@ case class Controller(
           case 5 | 6 | 8 | 13 | 14 | 16 =>
             controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 1 spielen")
             notifyObservers
-            resetControllerState
+            resetControllerState()
             return 1
           case _ => return playedCard
       } else if (state.player(state.currentPlayer).hand == (7 | 15)) {
@@ -115,7 +115,7 @@ case class Controller(
           case 5 | 6 | 8 | 13 | 14 | 16 =>
             controllerState = (controllState.informOverPlayedEffect, "Du  musst Karte 2 spielen")
             notifyObservers
-            resetControllerState
+            resetControllerState()
             return 2
           case _ => return playedCard
       }
@@ -131,7 +131,7 @@ case class Controller(
   override def playCard: GameStateInterface = {
     val card = checkForCard7or15(userInput)
     card match
-      case 1 => MadHandler.play // todo change state to
+      case 1 => MadHandler.play
       case 2 =>
         state = state.swapHandAndCurrent
         MadHandler.play
@@ -148,10 +148,10 @@ case class Controller(
   }
 
   override def playAnotherCard2(otherCard: Int): GameStateInterface = {
-    resetControllerState
+    resetControllerState()
     val card = checkForCard7or15(otherCard)
     card match
-      case 1 => MadHandler.play // todo change state to
+      case 1 => MadHandler.play
       case 2 =>
         state = state.swapHandAndCurrent
         MadHandler.play
@@ -172,21 +172,21 @@ case class Controller(
   }
 
   override def playEffect(selectedEffect: Int): GameStateInterface = {
-    resetControllerState
+    resetControllerState()
     effectHandlerSelection = Vector(selectedEffect)
     state = EffectHandler(this, state, effectHandlerSelection).initializeEffectHandler
     state
   }
 
   override def playerChoosed(choosedPlayer: Int): GameStateInterface = {
-    resetControllerState
+    resetControllerState()
     effectHandlerSelection = Vector(effectHandlerSelection(0), choosedPlayer - 1)
     state = EffectHandler(this, state, effectHandlerSelection).strategy
     state
   }
 
   override def investgatorGuessed(guess: Int): GameStateInterface = {
-    resetControllerState
+    resetControllerState()
     effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
     state = EffectHandler(this, state, effectHandlerSelection).guessTeammateHandcard2
     state
@@ -196,7 +196,7 @@ case class Controller(
     val players = state.player.filter(_.inGame)
     if (players.length == 1) {
       // state.player.indexOf(players(0))
-      playerWins(state.player.indexOf(players(0)))
+      playerWins(state.player.indexOf(players.head))
       return true
     }
     false
@@ -206,7 +206,7 @@ case class Controller(
     controllerState =
       (controllState.playerWins, state.player(winningPlayer).name)
     notifyObservers
-    resetGame
+    resetGame()
     state
   }
 
@@ -221,8 +221,8 @@ case class Controller(
                                                       playerList: List[PlayerInterface],
                                                       allowedPlayers: Vector[String]
                                                     ): Vector[String] = {
-    if (playerList.length == 0) {
-      return allowedPlayers
+    if (playerList.isEmpty) {
+      allowedPlayers
     } else {
       if (
         playerList.head.inGame && playerList.head != state.player(
@@ -232,16 +232,16 @@ case class Controller(
           .discardPile
           .head != 12
       ) {
-        var tempAllowedPlayers: Vector[String] =
-          allowedPlayers.appended(counter.toString())
-        return rekGetAllowedPlayerForPlayerSelection(
+        val tempAllowedPlayers: Vector[String] =
+          allowedPlayers.appended(counter.toString)
+        rekGetAllowedPlayerForPlayerSelection(
           counter + 1,
           playerList.tail,
           tempAllowedPlayers
         )
       } else {
-        var tempAllowedPlayers: Vector[String] = allowedPlayers
-        return rekGetAllowedPlayerForPlayerSelection(
+        val tempAllowedPlayers: Vector[String] = allowedPlayers
+        rekGetAllowedPlayerForPlayerSelection(
           counter + 1,
           playerList.tail,
           tempAllowedPlayers
@@ -251,7 +251,7 @@ case class Controller(
   }
 
   object MadHandler {
-    def draw =
+    def draw: GameStateInterface =
       if (
         state.player(state.currentPlayer).discardPile.head != 12 && state
           .player(state.currentPlayer)
@@ -259,11 +259,11 @@ case class Controller(
       ) drawMad
       else drawNormal
 
-    def drawNormal = {
+    private def drawNormal = {
       drawCard
     }
 
-    def drawMad: GameStateInterface = {
+    private def drawMad: GameStateInterface = {
       val tempCurrentPlayer = state.currentPlayer
       for (x <- 0 until state.player(tempCurrentPlayer).madCheck()) {
         if (state.player(tempCurrentPlayer).inGame) {
@@ -282,16 +282,16 @@ case class Controller(
       state
     }
 
-    def play =
+    def play: GameStateInterface =
       if (state.player(state.currentPlayer).madCheck() > 0) playMad
       else playNormal
 
-    def playNormal = {
+    private def playNormal = {
       state = state.playCard
       playEffect(1)
     }
 
-    def playMad = {
+    private def playMad = {
       if (state.currentCard > 8) {
         state = state.playCard
         playEffect(2)
@@ -314,7 +314,7 @@ case class Controller(
   override def handle: String = StateHandler.handle
 
   object StateHandler {
-    def handle = {
+    def handle: String = {
       controllerState(0) match
         case controllState.standard => getBoard
         case controllState.initGetPlayerAmount =>
@@ -340,7 +340,7 @@ case class Controller(
           "Welche Karte moechtest du spielen? (1|2)"
     }
 
-    def getBoard = {
+    def getBoard: String = {
       val currentPlayer = state.player(state.currentPlayer)
       val board = Board(3, Vector(
         state.currentCard,
@@ -352,7 +352,7 @@ case class Controller(
         board.toString + "\nWelche Karte moechtest du spielen? (1|2)"
     }
 
-    def isCurrentPlayerMad: String = {
+    private def isCurrentPlayerMad: String = {
       if (state.player(state.currentPlayer).madCheck() > 0) {
         return " und wahnsinnig"
       }
@@ -360,20 +360,20 @@ case class Controller(
     }
   }
 
-  override def resetControllerState = {
+  override def resetControllerState(): Unit = {
     controllerState = (controllState.standard, "")
   }
 
-  override def save(using fileIO: FileIOInterface) = {
+  override def save(using fileIO: FileIOInterface): Unit = {
     fileIO.save(state)
   }
 
-  override def load(using fileIO: FileIOInterface) = {
+  override def load(using fileIO: FileIOInterface): Unit = {
     state = fileIO.load(state)
     notifyObservers
   }
 
-  override def resetGame = {
+  override def resetGame(): Unit = {
     initialize()
   }
 }

@@ -1,9 +1,8 @@
 package de.htwg.lovecraftletter.controller
 
-import de.htwg.lovecraftletter.model.{GameStateInterface, PlayerInterface}
 import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
+import de.htwg.lovecraftletter.model.{GameStateInterface, PlayerInterface}
 import de.htwg.lovecraftletter.util.Observable
-import de.htwg.lovecraftletter.model.GameStateInterface
 
 enum controllState {
   case standard
@@ -29,7 +28,7 @@ trait ControllerInterface extends Observable{
 
   def getVarAllowedInput: Vector[String]
 
-  def runLL: Unit
+  def runLL(): Unit
 
   def playerAmount(input: Int): Unit
 
@@ -79,11 +78,11 @@ trait ControllerInterface extends Observable{
 
   def handle: String
 
-  def resetControllerState: Unit
+  def resetControllerState(): Unit
 
   def save(using fileIO: FileIOInterface): Unit
 
   def load(using fileIO: FileIOInterface): Unit
   
-  def resetGame: Unit
+  def resetGame(): Unit
 }

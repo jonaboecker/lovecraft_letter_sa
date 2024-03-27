@@ -3,28 +3,32 @@ package FileIO
 package FileIOImpl
 
 import javax.swing.JFileChooser
-import java.io._
-import scala.xml._
+import java.io.*
+import scala.xml.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import de.htwg.lovecraftletter.model.GameStateImpl._
-import de.htwg.lovecraftletter.model.PlayerImpl._
+import de.htwg.lovecraftletter.model.GameStateImpl.*
+import de.htwg.lovecraftletter.model.PlayerImpl.*
+
+import java.awt.Component
 
 class FileIOXML extends FileIOInterface{
   override def load(oldGameState: GameStateInterface): GameStateInterface = {
     //select safeGame File
-    var chooser = new JFileChooser()
+    val chooser = new JFileChooser()
     chooser.setCurrentDirectory(new java.io.File("src\\savegames\\"))
     chooser.setDialogTitle("SaveGame laden")
     // Set shown file filter to JSON files only
     //chooser.extensionFilters.addAll(
     //  new ExtensionFilter("JSON Files", "*.json")
     //)
-    chooser.showOpenDialog(null)
-    val selectedFile = chooser.getSelectedFile().getAbsolutePath()
-    if (selectedFile == null) {
+    val parentWindowOption: Option[Component] = None
+    chooser.showOpenDialog(parentWindowOption.orNull)
+    val selectedFileOption = Option(chooser.getSelectedFile())
+    if (selectedFileOption.isEmpty) {
         return oldGameState
     }
+    val selectedFile = selectedFileOption.get.getAbsolutePath()
     val source = scala.io.Source.fromFile(selectedFile)
     val xml = XML.loadString(source.mkString)
     val currentPlayer = (xml \ "currentPlayer").text.toInt
@@ -40,11 +44,16 @@ class FileIOXML extends FileIOInterface{
     val hands = xml \\ "gameState" \\ "player" \\ "value" \\ "hand" flatMap(_.child)
     val discardPiles = xml \\ "gameState" \\ "player" \\ "value" \\ "discardPile" flatMap(_.child)
     val inGames = xml \\ "gameState" \\ "player" \\ "value" \\ "inGame" flatMap(_.child)
-    var playerList: List[Player] = Nil
-    for (x <- 0 until names.length) {
-        playerList = Player(names(x).text.trim, hands(x).text.trim.toInt, getDiscardPile(discardPiles(x)), inGames(x).text.trim.toBoolean)::playerList
+  
+    def loop(i: Int, acc: List[Player]): List[Player] = {
+      if (i >= names.length) acc
+      else {
+        val player = Player(names(i).text.trim, hands(i).text.trim.toInt, getDiscardPile(discardPiles(i)), inGames(i).text.trim.toBoolean)
+        loop(i + 1, player :: acc)
+      }
     }
-    playerList.reverse
+  
+    loop(0, Nil).reverse
   }
 
   def getDiscardPile(dcp: Node): List[Int] = {

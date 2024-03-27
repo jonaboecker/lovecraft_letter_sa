@@ -200,13 +200,13 @@ class EffectHandler(
   def standardOutput(output: String) = { // show Effect result to player
     contr.setVarControllerState(controllState.informOverPlayedEffect, output)
     contr.notifyObservers
-    contr.resetControllerState
+    contr.resetControllerState()
   }
 
   def exit:GameStateInterface = {
     contr.setVarState(state) //sync gamestate
     state = contr.nextPlayer
-    contr.resetControllerState
+    contr.resetControllerState()
     contr.notifyObservers
     state
   }

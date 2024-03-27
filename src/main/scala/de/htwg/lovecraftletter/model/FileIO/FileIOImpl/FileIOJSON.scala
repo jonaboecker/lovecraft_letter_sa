@@ -3,29 +3,33 @@ package FileIO
 package FileIOImpl
 
 import javax.swing.JFileChooser
-import java.io._
+import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import de.htwg.lovecraftletter.model.GameStateImpl._
-import de.htwg.lovecraftletter.model.PlayerImpl._
+import de.htwg.lovecraftletter.model.GameStateImpl.*
+import de.htwg.lovecraftletter.model.PlayerImpl.*
 import play.api.libs.json.*
+
+import java.awt.Component
 import scala.io.Source
 
 class FileIOJSON extends FileIOInterface{
   override def load(oldGameState: GameStateInterface): GameStateInterface = {
     //select safeGame File
-    var chooser = new JFileChooser()
+    val chooser = new JFileChooser()
     chooser.setCurrentDirectory(new java.io.File("src\\savegames\\"))
     chooser.setDialogTitle("SaveGame laden")
     // Set shown file filter to JSON files only
     //chooser.extensionFilters.addAll(
     //  new ExtensionFilter("JSON Files", "*.json")
     //)
-    chooser.showOpenDialog(null)
-    val selectedFile = chooser.getSelectedFile().getAbsolutePath()
-    if (selectedFile == null) {
+    val parentWindowOption: Option[Component] = None
+    chooser.showOpenDialog(parentWindowOption.orNull)
+    val selectedFileOption = Option(chooser.getSelectedFile())
+    if (selectedFileOption.isEmpty) {
         return oldGameState
     }
+    val selectedFile = selectedFileOption.get.getAbsolutePath()
     val source: String = Source.fromFile(selectedFile).getLines.mkString
     //val source = scala.io.Source.fromFile(selectedFile)
     //val xml = XML.loadString(source.mkString)
@@ -40,16 +44,20 @@ class FileIOJSON extends FileIOInterface{
 
   def loadPlayer(json:JsValue): List[Player] = {
     val player = (json \ "player").as[List[JsValue]]
-    var playerList: List[Player] = Nil
-    for (i <- 0 until player.length) {
+
+    def loop(i: Int, acc: List[Player]): List[Player] = {
+      if (i >= player.length) acc
+      else {
         val name = (player(i) \ "name").as[String]
         val hand: Int = (player(i) \ "hand").as[Int]
         val discardPile: List[Int] = (player(i)  \ "discardPile").as[List[Int]]
         val inGame:Boolean = (player(i) \ "inGame").as[Boolean]
         val p = Player(name, hand, discardPile, inGame)
-        playerList = p :: playerList
+        loop(i + 1, p :: acc)
+      }
     }
-    playerList
+
+    loop(0, Nil).reverse
   }
 
 

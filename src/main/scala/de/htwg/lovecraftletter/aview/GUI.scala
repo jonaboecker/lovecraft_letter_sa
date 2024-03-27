@@ -112,7 +112,7 @@ class GUI(using controller: ControllerInterface) extends Frame with Observer {
         controller.playerAmount(inputCO.selection.items(0).toInt)
       case controllState.initGetPlayerName =>
         controller.playerName(inputCO.selection.items(0))
-      case _ => controller.resetControllerState
+      case _ => controller.resetControllerState()
   }
 
   def show(output: String) = {
