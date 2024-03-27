@@ -1,4 +1,4 @@
-val scala3Version = "3.3.1"
+val scala3Version = "3.3.3"
 //val scala3Version = "3.2.2-RC2"
 //val scala3Version = "3.2.2-RC1-bin-20221101-d84007c-NIGHTLY"
 
