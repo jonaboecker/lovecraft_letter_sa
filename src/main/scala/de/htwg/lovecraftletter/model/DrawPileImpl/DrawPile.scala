@@ -16,16 +16,20 @@ case class DrawPile() extends DrawPileInterface {
   }
 
   override def drawAndGet(drawPile: List[Int]): (List[Int], Int) = {
-    val headProblem = Try(drawPile.head)
-    val head = headProblem match {
+    val drawResult = for {
+      head <- Try(drawPile.head)
+    } yield head
+    val head = drawResult match {
       case Success(v) => v
       case Failure(e) =>
-        //todo start new round
-        println("Nachziehstapel ist leer")
+        // Nachziehstapel leer
         -1
     }
-    val tailProblem = Try(drawPile.tail)
-    val tail = tailProblem match {
+
+    val tailResult = for {
+      tail <- Try(drawPile.tail)
+    } yield tail
+    val tail = tailResult match {
       case Success(v) => v
       case Failure(e) => Nil
     }
