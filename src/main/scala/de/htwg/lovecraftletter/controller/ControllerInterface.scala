@@ -34,8 +34,6 @@ trait ControllerInterface extends Observable{
 
   def playerName(input: String): Unit
 
-  def initialize(): GameStateInterface
-
   def nextPlayer: GameStateInterface
 
   def getPlayerName: String

@@ -22,13 +22,7 @@ case class Controller(
   private val undoManager = new UndoManager[GameStateInterface]
   private var allowedInput: Vector[String] = Vector("1", "2")
   private var effectHandlerSelection: Vector[Int] = Vector(-999)
-
-  val drawPile: Option[DrawPileInterface] = Some(DrawPile())
-
-  private val drawPileO = drawPile match {
-    case Some(b) => b
-    case None => new DrawPile
-  }
+  
 
   override def setVarUserInput(input: Int): Unit = userInput = input
 
@@ -46,39 +40,13 @@ case class Controller(
   }
 
   override def playerAmount(input: Int): Unit = {
-    state = state.updateCurrentPlayer(input)
-    controllerState = (controllState.initGetPlayerName, "")
-    notifyObservers
+    Initializer(this, state).playerAmount(input)
   }
 
   override def playerName(input: String): Unit = {
-    state = state.addPlayer(input)
-    if (state.player.length >= state.currentPlayer) {
-      state = state.updatePlayer(state.player.reverse)
-      initialize()
-    } else {
-      controllerState = (controllState.initGetPlayerName, "")
-      notifyObservers
-    }
+    Initializer(this, state).playerName(input)
   }
-
-  override def initialize(): GameStateInterface = {
-    state = state.updateCurrentPlayer(0)
-    state = state.updateDrawPile(drawPileO.newPile)
-    for (i <- state.player.indices) {
-      val (newDrawPile: List[Int], hand: Int) =
-        drawPileO.drawAndGet(state.drawPile)
-      state = state.updateDrawPile(newDrawPile)
-      val player = state.player(i).updateCardAndDiscardPile(hand, List(0))
-      state = state.updatePlayer(state.player.updated(i, player))
-    }
-    drawCard
-    resetControllerState()
-    notifyObservers
-    state
-  }
-
-
+  
   override def nextPlayer: GameStateInterface = {
     state = state.nextPlayer
     while (!state.player(state.currentPlayer).inGame) {
@@ -358,6 +326,6 @@ case class Controller(
   }
 
   override def resetGame(): Unit = {
-    initialize()
+    Initializer(this, state).initialize()
   }
 }
