@@ -10,11 +10,11 @@ import model._
 import scala.util._
 
 class EffectHandler(
-    val contr: ControllerInterface,
     var state: GameStateInterface,
     val selection: Vector[Int]
     // => selectedEffect, chosenPlayer, others
 ) {
+  val contr: ControllerRequestActor = ControllerRequestActor()
   def initializeEffectHandler:GameStateInterface = {
     state.player(state.currentPlayer).discardPile.head match
         case 1|2|3|5|6|9|10|11|13|14 =>
@@ -23,7 +23,7 @@ class EffectHandler(
                 return exit
             } else {
                 contr.setVarControllerState(controllState.getEffectedPlayer, "")
-                contr.notifyObservers
+                contr.notifyObservers()
             }
             state
         case _ => strategy
@@ -77,7 +77,7 @@ class EffectHandler(
         return exit
     }
     contr.setVarControllerState(controllState.getInvestigatorGuess, "")
-    contr.notifyObservers
+    contr.notifyObservers()
     state
   }
 
@@ -100,7 +100,7 @@ class EffectHandler(
     standardOutput(output)
     if(selection(0) == 2) { //madcard played
         standardOutput("Du darfst nochmal ziehen")
-        state = contr.playAnotherCard
+        state = contr.playAnotherCard()
     }
     exit
   }
@@ -180,7 +180,7 @@ class EffectHandler(
     state = state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(17)))
     standardOutput("Du darfst nochmal ziehen")
     contr.setVarState(state) //sync gamestate
-    state = contr.playAnotherCard
+    state = contr.playAnotherCard()
     exit
   }
 
@@ -211,15 +211,15 @@ class EffectHandler(
 
   private def standardOutput(output: String): Unit = { // show Effect result to player
     contr.setVarControllerState(controllState.informOverPlayedEffect, output)
-    contr.notifyObservers
+    contr.notifyObservers()
     contr.resetControllerState()
   }
 
   def exit:GameStateInterface = {
     contr.setVarState(state) //sync gamestate
-    state = contr.nextPlayer
+    state = contr.nextPlayer()
     contr.resetControllerState()
-    contr.notifyObservers
+    contr.notifyObservers()
     state
   }
 }

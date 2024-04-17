@@ -34,7 +34,7 @@ case class Controller(
 
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-  val fileIO = FileIOJSON()
+  val fileIO: FileIOJSON = FileIOJSON()
 
   private val route: Route = {
     path("notifyObservers") {
@@ -42,7 +42,7 @@ case class Controller(
         notifyObservers
         complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Notified Observers"))
       }
-    } ~ 
+    } ~
     path("drawCard") {
       get {
         drawCard
@@ -68,9 +68,51 @@ case class Controller(
           complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "ControllerState updated"))
         }
       }
+    } ~
+    path("eliminatePlayer") {
+      post {
+        entity(as[String]) { input =>
+          val json = Json.parse(input)
+          val player = (json \ "player").as[String].toInt
+          eliminatePlayer(player)
+          val stateJsonString: String = fileIO.gameStateToJSON(state)
+          complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+        }
+      }
+    } ~
+    path("playAnotherCard") {
+      get {
+        playAnotherCard
+        val stateJsonString: String = fileIO.gameStateToJSON(state)
+        complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+      }
+    } ~
+    path("playerWins") {
+      post {
+        entity(as[String]) { input =>
+          val json = Json.parse(input)
+          val player = (json \ "player").as[String].toInt
+          playerWins(player)
+          val stateJsonString: String = fileIO.gameStateToJSON(state)
+          complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+        }
+      }
+    } ~
+    path("nextPlayer") {
+      get {
+        nextPlayer
+        val stateJsonString: String = fileIO.gameStateToJSON(state)
+        complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+      }
+    } ~
+    path("getAllowedPlayerForPlayerSelection") {
+      get {
+        val allowedPlayers = getAllowedPlayerForPlayerSelection
+        complete(HttpEntity(ContentTypes.`application/json`, Json.toJson(allowedPlayers).toString()))
+      }
     }
   }
-  
+
 
   val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8081).bind(route)
   
@@ -213,7 +255,7 @@ case class Controller(
   }
   private def executeEffectHandler(effectHandlerMethod: EffectHandler => GameStateInterface): GameStateInterface = {
     resetControllerState()
-    state = effectHandlerMethod(EffectHandler(this, state, effectHandlerSelection))
+    state = effectHandlerMethod(EffectHandler(state, effectHandlerSelection))
     state
   }
 
