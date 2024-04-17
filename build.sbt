@@ -56,6 +56,6 @@ ThisBuild / assemblyMergeStrategy := {
   case "module-info.class" => MergeStrategy.last
   case "META-INF/versions/9/module-info.class" => MergeStrategy.last
   case x =>
-    val oldStrategy = (assemblyMergeStrategy).value
+    val oldStrategy = assemblyMergeStrategy.value
     oldStrategy(x)
 }
