@@ -2,6 +2,9 @@ import scala.language.postfixOps
 
 val scala3Version = "3.3.3"
 
+val akkaVersion = "2.8.5"
+val akkaHttpVersion = "10.5.3"
+
 val controllerVersion = "0.1.0-SNAPSHOT"
 val effectHandlerVersion = "0.1.0-SNAPSHOT"
 val initializerVersion = "0.1.0-SNAPSHOT"
@@ -19,7 +22,13 @@ lazy val dependencies  = Seq(
   dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.17.0",
   libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.17.0",
   libraryDependencies += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.17.0",
-  libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.17.0"
+  libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.17.0",
+  libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  libraryDependencies += "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  libraryDependencies += "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+  libraryDependencies += "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+  libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.2"
 )
 
 lazy val controller = (project in file("controller"))
