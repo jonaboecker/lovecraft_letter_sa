@@ -22,7 +22,7 @@ class ControllerRequestActor {
 
     try {
       val response = Await.result(responseFuture, 10.seconds)
-      println("Response: " + response)
+      // println("Response: " + response)
     } catch {
       case _: TimeoutException => println("Request timed out")
       case e: Exception => println("Something went wrong: " + e.getMessage)
@@ -39,7 +39,7 @@ class ControllerRequestActor {
 
     try {
       val response = Await.result(responseFuture, 10.seconds)
-      println("Response: " + response)
+      // println("Response: " + response)
     } catch {
       case _: TimeoutException => println("Request timed out")
       case e: Exception => println("Something went wrong: " + e.getMessage)
@@ -57,7 +57,7 @@ class ControllerRequestActor {
 
     try {
       val response = Await.result(responseFuture, 10.seconds)
-      println("Response: " + response)
+      // println("Response: " + response)
     } catch {
       case _: TimeoutException => println("Request timed out")
       case e: Exception => println("Something went wrong: " + e.getMessage)
@@ -79,7 +79,7 @@ class ControllerRequestActor {
 
     try {
       val response = Await.result(responseFuture, 10.seconds)
-      println("Response: " + response)
+      // println("Response: " + response)
     } catch {
       case _: TimeoutException => println("Request timed out")
       case e: Exception => println("Something went wrong: " + e.getMessage)
@@ -98,12 +98,12 @@ class ControllerRequestActor {
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
-    println("Response: " + response)
+    // println("Response: " + response)
 
     val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
     val responseString = Unmarshal(responseEntity).to[String].value.get.get
 
-    println("Response string: " + responseString)
+    // println("Response string: " + responseString)
 
     fileIO.jsonToGameState(responseString)
   }
@@ -113,12 +113,12 @@ class ControllerRequestActor {
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
-    println("Response: " + response)
+    // println("Response: " + response)
 
     val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
     val responseString = Unmarshal(responseEntity).to[String].value.get.get
 
-    println("Response string: " + responseString)
+    // println("Response string: " + responseString)
 
     fileIO.jsonToGameState(responseString)
   }
@@ -135,12 +135,12 @@ class ControllerRequestActor {
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
-    println("Response: " + response)
+    // println("Response: " + response)
 
     val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
     val responseString = Unmarshal(responseEntity).to[String].value.get.get
 
-    println("Response string: " + responseString)
+    // println("Response string: " + responseString)
 
     fileIO.jsonToGameState(responseString)
   }
@@ -150,12 +150,12 @@ class ControllerRequestActor {
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
-    println("Response: " + response)
+    // println("Response: " + response)
 
     val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
     val responseString = Unmarshal(responseEntity).to[String].value.get.get
 
-    println("Response string: " + responseString)
+    // println("Response string: " + responseString)
 
     fileIO.jsonToGameState(responseString)
   }
@@ -165,7 +165,7 @@ class ControllerRequestActor {
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
-    println("Response: " + response)
+    // println("Response: " + response)
     response.entity.toString.split(",").toVector
   }
 

@@ -2,19 +2,48 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.server.Directives.{as, complete, entity, path, post}
+import akka.http.scaladsl.server.Route
+import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
 import model.BoardImpl.Board
 import model.GameStateInterface
 import model.DrawPileImpl.DrawPile
-import model._
+import model.*
+import play.api.libs.json.Json
 
-import scala.util._
+import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.util.*
 
-class EffectHandler(
-    var state: GameStateInterface,
-    val selection: Vector[Int]
-    // => selectedEffect, chosenPlayer, others
-) {
+class EffectHandler {
   val contr: ControllerRequestActor = ControllerRequestActor()
+  var state: GameStateInterface = _
+  var selection: Vector[Int] = _
+
+  implicit val system: ActorSystem = ActorSystem("ActorSystemController")
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  val fileIO: FileIOJSON = FileIOJSON()
+  
+  private val route: Route = {
+    path("init") {
+      post {
+        entity(as[String]) { input =>
+          val json = Json.parse(input)
+          val gs = (json \ "state").as[String]
+          selection = (json \ "selection").as[List[Int]].toVector
+          state = fileIO.jsonToGameState(gs)
+          val newState = initializeEffectHandler
+          val stateJsonString: String = fileIO.gameStateToJSON(newState)
+          complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+        }
+      }
+    }
+  }
+  
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8083).bind(route)
+  
   def initializeEffectHandler:GameStateInterface = {
     state.player(state.currentPlayer).discardPile.head match
         case 1|2|3|5|6|9|10|11|13|14 =>

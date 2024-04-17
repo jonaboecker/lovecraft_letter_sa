@@ -7,16 +7,19 @@ import model.GameStateInterface
 import model.PlayerInterface
 import model.*
 import util.*
+
+import scala.concurrent.duration.*
 import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
 import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future, TimeoutException}
 
 
 case class Controller(
@@ -27,10 +30,7 @@ case class Controller(
   private val undoManager = new UndoManager[GameStateInterface]
   private var allowedInput: Vector[String] = Vector("1", "2")
   private var effectHandlerSelection: Vector[Int] = Vector(-999)
-
-  //contr.setVarState(state.updateCurrentPlayer(input))
-  //contr.setVarControllerState(controllState.initGetPlayerName, "")
-
+  
 
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
@@ -133,11 +133,39 @@ case class Controller(
   }
 
   override def playerAmount(input: Int): Unit = {
-    Initializer(state).playerAmount(input)
+    val stateJson = fileIO.gameStateToJSON(state)
+    val jsString = Json.obj(
+      "state" -> stateJson,
+      "player" -> input
+    ).toString
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = "http://localhost:8082/playerAmount",
+      entity = HttpEntity(ContentTypes.`application/json`, jsString)
+    )
+    val responseFuture = Http().singleRequest(request)
+
+
+    val response = Await.result(responseFuture, 10.seconds)
+    // ("Response: " + response)
   }
 
   override def playerName(input: String): Unit = {
-    Initializer(state).playerName(input)
+    val stateJson = fileIO.gameStateToJSON(state)
+    val jsString = Json.obj(
+      "state" -> stateJson,
+      "player" -> input
+    ).toString
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = "http://localhost:8082/playerName",
+      entity = HttpEntity(ContentTypes.`application/json`, jsString)
+    )
+    val responseFuture = Http().singleRequest(request)
+
+
+    val response = Await.result(responseFuture, 10.seconds)
+    // ("Response: " + response)
   }
   
   override def nextPlayer: GameStateInterface = {
@@ -255,7 +283,28 @@ case class Controller(
   }
   private def executeEffectHandler(effectHandlerMethod: EffectHandler => GameStateInterface): GameStateInterface = {
     resetControllerState()
-    state = effectHandlerMethod(EffectHandler(state, effectHandlerSelection))
+    
+    val stateJson = fileIO.gameStateToJSON(state)
+    val jsString = Json.obj(
+      "state" -> stateJson,
+      "selection" -> effectHandlerSelection
+    ).toString
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = "http://localhost:8083/init",
+      entity = HttpEntity(ContentTypes.`application/json`, jsString)
+    )
+    val responseFuture = Http().singleRequest(request)
+
+    
+    val response = Await.result(responseFuture, 10.seconds)
+    // println("Response: " + response)
+    val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
+    val responseString = Unmarshal(responseEntity).to[String].value.get.get
+
+    // println("Response string: " + responseString)
+
+    state = fileIO.jsonToGameState(responseString)
     state
   }
 
@@ -419,6 +468,16 @@ case class Controller(
   }
 
   override def resetGame(): Unit = {
-    Initializer(state).initialize()
+    val stateJsonString = fileIO.gameStateToJSON(state)
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = "http://localhost:8082/initialize",
+      entity = HttpEntity(ContentTypes.`application/json`, stateJsonString)
+    )
+    val responseFuture = Http().singleRequest(request)
+
+
+    val response = Await.result(responseFuture, 10.seconds)
+    // ("Response: " + response)
   }
 }
