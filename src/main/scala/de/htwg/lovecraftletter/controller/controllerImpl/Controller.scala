@@ -5,13 +5,18 @@ package controllerImpl
 import model.BoardImpl.Board
 import model.GameStateInterface
 import model.PlayerInterface
-import model.DrawPileInterface
-import model.DrawPileImpl.DrawPile
-import model._
-import util._
-import scala.util.control.Breaks._
+import model.*
+import util.*
 import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
-import de.htwg.lovecraftletter.LovecraftLetterModule.given
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.server.Route
+import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
+import play.api.libs.json.Json
+
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 
 case class Controller(
@@ -22,6 +27,52 @@ case class Controller(
   private val undoManager = new UndoManager[GameStateInterface]
   private var allowedInput: Vector[String] = Vector("1", "2")
   private var effectHandlerSelection: Vector[Int] = Vector(-999)
+
+  //contr.setVarState(state.updateCurrentPlayer(input))
+  //contr.setVarControllerState(controllState.initGetPlayerName, "")
+
+
+  implicit val system: ActorSystem = ActorSystem("ActorSystemController")
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  val fileIO = FileIOJSON()
+
+  private val route: Route = {
+    path("notifyObservers") {
+      get {
+        notifyObservers
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Notified Observers"))
+      }
+    } ~ 
+    path("drawCard") {
+      get {
+        drawCard
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Card drawn"))
+      }
+    } ~
+    path("setVarGameState") {
+      post {
+        entity(as[String]) { input =>
+          val newState = fileIO.jsonToGameState(input)
+          setVarState(newState)
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "State updated"))
+        }
+      }
+    } ~
+    path("setVarControllerState") {
+      post {
+        entity(as[String]) { input =>
+          val json = Json.parse(input)
+          val cs = (json \ "cs").as[Int]
+          val s = (json \ "s").as[String]
+          setVarControllerState(controllState.fromOrdinal(cs), s)
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "ControllerState updated"))
+        }
+      }
+    }
+  }
+  
+
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8081).bind(route)
   
 
   override def setVarUserInput(input: Int): Unit = userInput = input
@@ -40,11 +91,11 @@ case class Controller(
   }
 
   override def playerAmount(input: Int): Unit = {
-    Initializer(this, state).playerAmount(input)
+    Initializer(state).playerAmount(input)
   }
 
   override def playerName(input: String): Unit = {
-    Initializer(this, state).playerName(input)
+    Initializer(state).playerName(input)
   }
   
   override def nextPlayer: GameStateInterface = {
@@ -326,6 +377,6 @@ case class Controller(
   }
 
   override def resetGame(): Unit = {
-    Initializer(this, state).initialize()
+    Initializer(state).initialize()
   }
 }

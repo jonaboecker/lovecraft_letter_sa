@@ -33,13 +33,7 @@ class FileIOJSON extends FileIOInterface{
     val source: String = Source.fromFile(selectedFile).getLines.mkString
     //val source = scala.io.Source.fromFile(selectedFile)
     //val xml = XML.loadString(source.mkString)
-    val json: JsValue = Json.parse(source)
-    val currentPlayer = json("currentPlayer").as[Int]
-    val drawPile: List[Int] = (json \ "drawPile").as[List[Int]]
-    val player: List[Player] = loadPlayer(json)
-    val currentCard:Int = (json \ "currentCard").as[Int]
-    val gameState = GameState(currentPlayer, drawPile, player, currentCard)
-    gameState
+    jsonToGameState(source)
   }
 
   def loadPlayer(json:JsValue): List[Player] = {
@@ -72,19 +66,29 @@ class FileIOJSON extends FileIOInterface{
 
   def gameStateToJSON(gameState: GameStateInterface): String = {
     Json.obj(
-        "currentPlayer" -> gameState.currentPlayer,
-        "drawPile" -> Json.toJson(gameState.drawPile),
-        "player" -> Json.toJson(
-            for (x <- 0 until gameState.player.length) yield {
-                Json.obj(
-                "name" -> gameState.player(x).name,
-                "hand" -> gameState.player(x).hand,
-                "discardPile" -> Json.toJson(gameState.player(x).discardPile),
-                "inGame" -> gameState.player(x).inGame
-                )
-            }
-        ),
-        "currentCard" -> gameState.currentCard
+      "currentPlayer" -> gameState.currentPlayer,
+      "drawPile" -> Json.toJson(gameState.drawPile),
+      "player" -> Json.toJson(
+        for (x <- 0 until gameState.player.length) yield {
+          Json.obj(
+            "name" -> gameState.player(x).name,
+            "hand" -> gameState.player(x).hand,
+            "discardPile" -> Json.toJson(gameState.player(x).discardPile),
+            "inGame" -> gameState.player(x).inGame
+          )
+        }
+      ),
+      "currentCard" -> gameState.currentCard
     ).toString
+  }
+  
+  def jsonToGameState(source: String): GameStateInterface = {
+    val json: JsValue = Json.parse(source)
+    val currentPlayer = json("currentPlayer").as[Int]
+    val drawPile: List[Int] = (json \ "drawPile").as[List[Int]]
+    val player: List[Player] = loadPlayer(json)
+    val currentCard: Int = (json \ "currentCard").as[Int]
+    val gameState = GameState(currentPlayer, drawPile, player, currentCard)
+    gameState
   }
 }

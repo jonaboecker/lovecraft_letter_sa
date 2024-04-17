@@ -2,22 +2,19 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
-import model.BoardImpl.Board
 import model.GameStateInterface
-import model.PlayerInterface
 import model.DrawPileInterface
 import model.DrawPileImpl.DrawPile
-import model._
-import util._
-import scala.util.control.Breaks._
-import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
-import de.htwg.lovecraftletter.LovecraftLetterModule.given
+import model.*
 
-case class Initializer (val contr: ControllerInterface,
-                        var state: GameStateInterface) extends InitializerInterface {
+import akka.http.scaladsl.server.Directives.*
+
+
+case class Initializer (var state: GameStateInterface) extends InitializerInterface {
 
   val drawPile: Option[DrawPileInterface] = Some(DrawPile())
-
+  val contr: ControllerRequestActor = ControllerRequestActor()
+  
   private val drawPileO = drawPile match {
     case Some(b) => b
     case None => new DrawPile
@@ -25,7 +22,7 @@ case class Initializer (val contr: ControllerInterface,
   override def playerAmount(input: Int): Unit = {
     contr.setVarState(state.updateCurrentPlayer(input))
     contr.setVarControllerState(controllState.initGetPlayerName, "")
-    contr.notifyObservers
+    contr.notifyObservers()
   }
 
   override def playerName(input: String): Unit = {
@@ -36,7 +33,7 @@ case class Initializer (val contr: ControllerInterface,
     } else {
       contr.setVarState(state)
       contr.setVarControllerState(controllState.initGetPlayerName, "")
-      contr.notifyObservers
+      contr.notifyObservers()
     }
   }
 
@@ -51,9 +48,9 @@ case class Initializer (val contr: ControllerInterface,
       state = state.updatePlayer(state.player.updated(i, player))
     }
     contr.setVarState(state)
-    contr.drawCard
+    contr.drawCard()
     contr.resetControllerState()
-    contr.notifyObservers
+    contr.notifyObservers()
     state
   }
 

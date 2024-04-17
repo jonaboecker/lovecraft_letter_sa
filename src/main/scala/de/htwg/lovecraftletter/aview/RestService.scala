@@ -11,7 +11,7 @@ import de.htwg.lovecraftletter.util.Observer
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 class RestService(using controller: ControllerInterface) extends Observer {
-  implicit val system: ActorSystem = ActorSystem("mySystem")
+  implicit val system: ActorSystem = ActorSystem("ActorSystemRestService")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   controller.add(this)
