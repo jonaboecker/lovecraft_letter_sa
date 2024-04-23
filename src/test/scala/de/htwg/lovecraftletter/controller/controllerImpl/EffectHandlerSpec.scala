@@ -2,15 +2,15 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
-import model._
-import model.BoardImpl._
-import model.GameStateImpl._
-import model.PlayerImpl._
-import model.DrawPileImpl._
-
+import de.htwg.lovecraftletter.controller.effectHandler.EffectHandler
+import model.*
+import model.BoardImpl.*
+import model.GameStateImpl.*
+import model.PlayerImpl.*
+import model.DrawPileImpl.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest._
+import org.scalatest.*
 
 class EffectHandlerSpec extends AnyWordSpec with Matchers {
   "A EffectHandler" should {

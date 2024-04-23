@@ -1,17 +1,15 @@
-package de.htwg.lovecraftletter
-package controller
-package controllerImpl
+package de.htwg.lovecraftletter.controller.effectHandler
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.{as, complete, entity, path, post}
 import akka.http.scaladsl.server.Route
+import de.htwg.lovecraftletter.controller.{ControllerRequestActor, controllState}
+import de.htwg.lovecraftletter.model.BoardImpl.Board
+import de.htwg.lovecraftletter.model.DrawPileImpl.DrawPile
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
-import model.BoardImpl.Board
-import model.GameStateInterface
-import model.DrawPileImpl.DrawPile
-import model.*
+import de.htwg.lovecraftletter.model.{GameStateInterface, PlayerInterface}
 import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -34,7 +32,12 @@ class EffectHandler {
           val gs = (json \ "state").as[String]
           selection = (json \ "selection").as[List[Int]].toVector
           state = fileIO.jsonToGameState(gs)
-          val newState = initializeEffectHandler
+          var newState: GameStateInterface = state
+          (json \ "method").as[String] match {
+            case "playEffect" => newState = initializeEffectHandler
+            case "strategy" => newState = strategy
+            case "guessTeammateHandcard2" => newState = guessTeammateHandcard2
+          }
           val stateJsonString: String = fileIO.gameStateToJSON(newState)
           complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
         }
@@ -42,7 +45,7 @@ class EffectHandler {
     }
   }
   
-  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8083).bind(route)
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8083).bind(route)
   
   def initializeEffectHandler:GameStateInterface = {
     state.player(state.currentPlayer).discardPile.head match

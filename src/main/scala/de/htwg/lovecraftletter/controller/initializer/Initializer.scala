@@ -1,17 +1,14 @@
-package de.htwg.lovecraftletter
-package controller
-package controllerImpl
+package de.htwg.lovecraftletter.controller.initializer
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import model.GameStateInterface
-import model.DrawPileInterface
-import model.DrawPileImpl.DrawPile
-import model.*
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
+import de.htwg.lovecraftletter.controller.{ControllerRequestActor, InitializerInterface, controllState}
+import de.htwg.lovecraftletter.model.DrawPileImpl.DrawPile
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
+import de.htwg.lovecraftletter.model.{DrawPileInterface, GameStateInterface}
 import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -64,7 +61,7 @@ case class Initializer () extends InitializerInterface {
     }
   }
 
-  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8082).bind(route)
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8082).bind(route)
 
 
   private val drawPileO = drawPile match {

@@ -34,7 +34,7 @@ class RestService(using controller: ControllerInterface) extends Observer {
     }
   }
 
-  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8080).bind(route)
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8080).bind(route)
 
   private def handle(input: String) = {
     controller.getVarControllerState(0) match

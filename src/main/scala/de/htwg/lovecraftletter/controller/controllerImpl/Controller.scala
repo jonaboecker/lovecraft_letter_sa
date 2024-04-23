@@ -16,6 +16,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequ
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import de.htwg.lovecraftletter.controller.effectHandler.EffectHandler
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
 import play.api.libs.json.Json
 
@@ -114,7 +115,7 @@ case class Controller(
   }
 
 
-  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("localhost", 8081).bind(route)
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8081).bind(route)
   
 
   override def setVarUserInput(input: Int): Unit = userInput = input
@@ -140,7 +141,7 @@ case class Controller(
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://localhost:8082/playerAmount",
+      uri = "http://0.0.0.0:8082/playerAmount",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -158,7 +159,7 @@ case class Controller(
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://localhost:8082/playerName",
+      uri = "http://0.0.0.0:8082/playerName",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -269,29 +270,30 @@ case class Controller(
 
   override def playEffect(selectedEffect: Int): GameStateInterface = {
     effectHandlerSelection = Vector(selectedEffect)
-    executeEffectHandler(_.initializeEffectHandler)
+    executeEffectHandler("playEffect")
   }
 
   override def playerChosen(chosenPlayer: Int): GameStateInterface = {
     effectHandlerSelection = Vector(effectHandlerSelection(0), chosenPlayer - 1)
-    executeEffectHandler(_.strategy)
+    executeEffectHandler("strategy")
   }
 
   override def investgatorGuessed(guess: Int): GameStateInterface = {
     effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
-    executeEffectHandler(_.guessTeammateHandcard2)
+    executeEffectHandler("guessTeammateHandcard2")
   }
-  private def executeEffectHandler(effectHandlerMethod: EffectHandler => GameStateInterface): GameStateInterface = {
+  private def executeEffectHandler(effectHandlerMethod: String): GameStateInterface = {
     resetControllerState()
     
     val stateJson = fileIO.gameStateToJSON(state)
     val jsString = Json.obj(
       "state" -> stateJson,
-      "selection" -> effectHandlerSelection
+      "selection" -> effectHandlerSelection,
+      "method" -> effectHandlerMethod
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://localhost:8083/init",
+      uri = "http://host.docker.internal:8083/init",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -471,7 +473,7 @@ case class Controller(
     val stateJsonString = fileIO.gameStateToJSON(state)
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://localhost:8082/initialize",
+      uri = "http://0.0.0.0:8082/initialize",
       entity = HttpEntity(ContentTypes.`application/json`, stateJsonString)
     )
     val responseFuture = Http().singleRequest(request)
