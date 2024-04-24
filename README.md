@@ -13,20 +13,43 @@ You can run this Project with sbt.
 [install sbt](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
 Compile code with:
-```
+```bash
 sbt compile
-```
+```bash
 run it with:
-```
+```bash
 sbt run
 ```
 and
-```
+```bash
 sbt console
 ```
 will start a Scala 3 REPL.
 
 ---
+
+## Docker
+To start the docker container, you need to run the following commands in your Project Path:
+```bash
+docker-compose up -d
+docker attach lovecraft_letter_sa-lovecraft_letter-1
+```
+To stop the Containers:
+```bash
+docker-compose down
+```
+To start each container individually:
+```bash
+docker run -p 8080:8080 -p 8081:8081 -it -e DISPLAY=host.docker.internal:0.0 your_container_id
+docker run -p 8082:8082 initializer
+docker run -p 8083:8083 effecthandler
+```
+To build the containers (in the main Project Path):
+```bash
+docker build -t lovecraftletter_game_controller .
+docker build -f src\main\scala\de\htwg\lovecraftletter\controller\effectHandler\Dockerfile -t effecthandler .
+docker build -f src\main\scala\de\htwg\lovecraftletter\controller\initializer\Dockerfile -t initializer .
+```
 
 ## Spielablauf
 
