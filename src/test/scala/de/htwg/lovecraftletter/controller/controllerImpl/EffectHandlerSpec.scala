@@ -4,10 +4,8 @@ package controllerImpl
 
 import de.htwg.lovecraftletter.controller.effectHandler.EffectHandler
 import model.*
-import model.BoardImpl.*
 import model.GameStateImpl.*
 import model.PlayerImpl.*
-import model.DrawPileImpl.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.*
@@ -26,7 +24,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(4, 5, 1),
           List(
@@ -46,7 +44,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ), (controllState.standard, ""), 1)
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(),
           List(
@@ -66,7 +64,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ), (controllState.standard, ""), 1)
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           1,
           List(4, 5, 1),
           List(
@@ -86,7 +84,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           ),
           1
         ), (controllState.standard, ""), 1)
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           1,
           List(4, 5, 1),
           List(
@@ -108,7 +106,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -130,7 +128,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           1,
           List(3, 4, 5, 1),
           List(
@@ -149,7 +147,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -171,7 +169,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -193,7 +191,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           1
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(1, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -215,7 +213,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           2
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(4, 5, 1),
           List(
@@ -237,7 +235,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           2
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           1,
           List(5, 1),
           List(
@@ -259,7 +257,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(4, 5, 1),
           List(
@@ -281,7 +279,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           1,
           List(4, 5, 1),
           List(
@@ -303,7 +301,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -325,7 +323,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -345,7 +343,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -367,7 +365,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -387,7 +385,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        EffectHandler(contr, contr.state, Vector(2, 0)).strategy should === (GameState(
+        EffectHandler().strategy should === (GameState(
           0,
           List(3, 4, 5, 1),
           List(
@@ -411,7 +409,7 @@ class EffectHandlerSpec extends AnyWordSpec with Matchers {
           0
         ), (controllState.standard, ""), 1)
 
-        val result = EffectHandler(contr, contr.state, Vector(2, 0)).strategy
+        val result = EffectHandler().strategy
         result.drawPile should not be empty
     }
   }
