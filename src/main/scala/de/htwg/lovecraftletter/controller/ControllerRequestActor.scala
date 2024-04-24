@@ -17,7 +17,7 @@ class ControllerRequestActor {
   val fileIO: FileIOJSON = FileIOJSON()
 
   def notifyObservers(): Unit = {
-    val request = HttpRequest(uri = "http://0.0.0.0:8081/notifyObservers")
+    val request = HttpRequest(uri = "http://host.docker.internal:8081/notifyObservers")
     val responseFuture = Http().singleRequest(request)
 
     try {
@@ -34,7 +34,7 @@ class ControllerRequestActor {
   }
 
   def drawCard(): Unit = {
-    val request = HttpRequest(uri = "http://0.0.0.0:8081/drawCard")
+    val request = HttpRequest(uri = "http://host.docker.internal:8081/drawCard")
     val responseFuture = Http().singleRequest(request)
 
     try {
@@ -50,7 +50,7 @@ class ControllerRequestActor {
     val stateJson = fileIO.gameStateToJSON(state)
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8081/setVarGameState",
+      uri = "http://host.docker.internal:8081/setVarGameState",
       entity = HttpEntity(ContentTypes.`application/json`, stateJson)
     )
     val responseFuture = Http().singleRequest(request)
@@ -71,7 +71,7 @@ class ControllerRequestActor {
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8081/setVarControllerState",
+      uri = "http://host.docker.internal:8081/setVarControllerState",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -92,7 +92,7 @@ class ControllerRequestActor {
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8081/eliminatePlayer",
+      uri = "http://host.docker.internal:8081/eliminatePlayer",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -109,7 +109,7 @@ class ControllerRequestActor {
   }
 
   def playAnotherCard(): GameStateInterface = {
-    val request = HttpRequest(uri = "http://0.0.0.0:8081/playAnotherCard")
+    val request = HttpRequest(uri = "http://host.docker.internal:8081/playAnotherCard")
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
@@ -129,7 +129,7 @@ class ControllerRequestActor {
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8081/playerWins",
+      uri = "http://host.docker.internal:8081/playerWins",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -146,7 +146,7 @@ class ControllerRequestActor {
   }
 
   def nextPlayer(): GameStateInterface = {
-    val request = HttpRequest(uri = "http://0.0.0.0:8081/nextPlayer")
+    val request = HttpRequest(uri = "http://host.docker.internal:8081/nextPlayer")
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)
@@ -161,7 +161,7 @@ class ControllerRequestActor {
   }
 
   def getAllowedPlayerForPlayerSelection: Vector[String] = {
-    val request = HttpRequest(uri = "http://0.0.0.0:8081/getAllowedPlayerForPlayerSelection")
+    val request = HttpRequest(uri = "http://host.docker.internal:8081/getAllowedPlayerForPlayerSelection")
     val responseFuture = Http().singleRequest(request)
 
     val response = Await.result(responseFuture, 10.seconds)

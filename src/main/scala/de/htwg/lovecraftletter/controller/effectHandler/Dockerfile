@@ -5,4 +5,4 @@ EXPOSE 8083
 WORKDIR /effectHandler
 ADD . /effectHandler
 
-CMD sbt "runMain de.htwg.lovecraftletter.controller.effectHandler.run"
+CMD sbt "runMain de.htwg.lovecraftletter.controller.effectHandler.effectHandlerRun"

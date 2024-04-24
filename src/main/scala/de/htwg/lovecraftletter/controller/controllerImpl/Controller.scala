@@ -141,7 +141,7 @@ case class Controller(
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8082/playerAmount",
+      uri = "http://host.docker.internal:8082/playerAmount",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -159,7 +159,7 @@ case class Controller(
     ).toString
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8082/playerName",
+      uri = "http://host.docker.internal:8082/playerName",
       entity = HttpEntity(ContentTypes.`application/json`, jsString)
     )
     val responseFuture = Http().singleRequest(request)
@@ -473,7 +473,7 @@ case class Controller(
     val stateJsonString = fileIO.gameStateToJSON(state)
     val request = HttpRequest(
       method = HttpMethods.POST,
-      uri = "http://0.0.0.0:8082/initialize",
+      uri = "http://host.docker.internal:8082/initialize",
       entity = HttpEntity(ContentTypes.`application/json`, stateJsonString)
     )
     val responseFuture = Http().singleRequest(request)

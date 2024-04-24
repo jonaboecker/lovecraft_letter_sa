@@ -1,0 +1,21 @@
+version: '3'
+services:
+  lovecraft_letter:
+    image: c19bec7a99e0c7cce2c28e67d59813e2984f3bd6c61685ffbb66780518970b02
+    ports:
+      - 8080:8080
+      - 8081:8081
+    environment:
+      - DISPLAY=host.docker.internal:0.0
+    stdin_open: true
+    tty: true
+
+  initializer:
+    image: initializer
+    ports:
+      - 8082:8082
+
+  effecthandler:
+    image: effecthandler
+    ports:
+      - 8083:8083

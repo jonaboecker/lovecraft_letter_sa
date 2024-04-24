@@ -3,9 +3,9 @@ package de.htwg.lovecraftletter.controller.effectHandler
 import java.lang.Thread.sleep
 
 object effectHandlerApi {
-  @main def run(): Unit = {
+  @main def effectHandlerRun(): Unit = {
     val effectHandler = EffectHandler()
-    println("press any key to exit...")
+    println("Effect Handler ist running... Strg + c to exit.")
     while (true) {
       sleep(100000)
     }
