@@ -19,3 +19,16 @@ services:
     image: effecthandler
     ports:
       - 8083:8083
+
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: database
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: database
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"

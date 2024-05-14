@@ -2,25 +2,22 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
-import model.BoardImpl.Board
-import model.GameStateInterface
-import model.PlayerInterface
-import model.*
-import util.*
-
-import scala.concurrent.duration.*
-import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import de.htwg.lovecraftletter.controller.effectHandler.EffectHandler
+import de.htwg.lovecraftletter.model.BoardImpl.Board
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
+import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
+import de.htwg.lovecraftletter.model.*
+import de.htwg.lovecraftletter.persistence.slick.SlickDBDAO
+import de.htwg.lovecraftletter.util.*
 import play.api.libs.json.Json
 
-import scala.concurrent.{Await, ExecutionContextExecutor, Future, TimeoutException}
+import scala.concurrent.duration.*
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 
 case class Controller(
@@ -35,6 +32,7 @@ case class Controller(
 
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  val fileIOToSave: SlickDBDAO = SlickDBDAO()
   val fileIO: FileIOJSON = FileIOJSON()
 
   private val route: Route = {
@@ -461,11 +459,11 @@ case class Controller(
   }
 
   override def save(using fileIO: FileIOInterface): Unit = {
-    fileIO.save(state)
+    fileIOToSave.save(state)
   }
 
   override def load(using fileIO: FileIOInterface): Unit = {
-    state = fileIO.load(state)
+    state = fileIOToSave.load(state)
     notifyObservers
   }
 

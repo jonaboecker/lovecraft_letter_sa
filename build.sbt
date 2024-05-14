@@ -9,26 +9,31 @@ val controllerVersion = "0.1.0-SNAPSHOT"
 val effectHandlerVersion = "0.1.0-SNAPSHOT"
 val initializerVersion = "0.1.0-SNAPSHOT"
 
-lazy val dependencies  = Seq(
+lazy val dependencies = Seq(
   version := "0.1.0-SNAPSHOT",
   scalaVersion := scala3Version,
   libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
   libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % "test",
   libraryDependencies += "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
-  libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.4",
+  libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.5",
   libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0" % "provided",
   dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.17.0",
-  dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.17.0",
+  dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.17.1",
   dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.17.0",
   libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.17.0",
-  libraryDependencies += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.17.0",
+  libraryDependencies += "com.fasterxml.jackson.core" % "jackson-annotations" % "2.17.1",
   libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % "2.17.0",
   libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
   libraryDependencies += "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   libraryDependencies += "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
   libraryDependencies += "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
-  libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.2"
+  libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.6",
+  libraryDependencies ++= Seq(
+    "com.typesafe.slick" %% "slick" % "3.5.0",
+    "org.slf4j" % "slf4j-nop" % "2.0.13",
+    "org.postgresql" % "postgresql" % "42.7.3"
+  ),
 )
 
 lazy val controller = (project in file("controller"))
