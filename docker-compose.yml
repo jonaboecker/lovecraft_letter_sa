@@ -1,7 +1,7 @@
 version: '3'
 services:
   lovecraft_letter:
-    image: c19bec7a99e0c7cce2c28e67d59813e2984f3bd6c61685ffbb66780518970b02
+    image: 98483c283170
     ports:
       - 8080:8080
       - 8081:8081

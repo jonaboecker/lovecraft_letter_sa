@@ -17,7 +17,7 @@ class SlickDBDAO() extends DBDAO {
 
   def openDB(): Unit = {
     db = Database.forURL(
-      url = "jdbc:postgresql://localhost:5432/postgres",
+      url = "jdbc:postgresql://host.docker.internal:5432/postgres",
       driver = "org.postgresql.Driver",
       user = "user",
       password = "password"
