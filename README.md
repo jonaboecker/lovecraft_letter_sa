@@ -29,7 +29,8 @@ will start a Scala 3 REPL.
 ---
 
 ## Docker
-To start the docker container, you need to run the following commands in your Project Path:
+To start the docker container, you need to run the following commands in your Project Path.
+To do this, an X client such as XLaunch must be installed on your device!
 ```bash
 docker-compose up -d
 docker attach lovecraft_letter_sa-lovecraft_letter-1
