@@ -32,7 +32,9 @@ lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
     "com.typesafe.slick" %% "slick" % "3.5.0",
     "org.slf4j" % "slf4j-nop" % "2.0.13",
-    "org.postgresql" % "postgresql" % "42.7.3"
+    "org.postgresql" % "postgresql" % "42.7.3",
+    "org.mongodb.scala" %% "mongo-scala-driver" % "4.8.0" cross CrossVersion.for3Use2_13,
+    "org.mongodb" % "mongodb-driver-reactivestreams" % "5.1.0",
   ),
 )
 

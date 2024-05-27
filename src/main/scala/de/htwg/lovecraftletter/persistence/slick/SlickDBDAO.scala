@@ -102,7 +102,7 @@ class SlickDBDAO() extends DBDAO {
       GameState(currentPlayer, drawPile, players, currentCard)
     }.headOption.getOrElse(oldGameState)
   }
-  
+
   private def getPlayerById(id: Int): Player = {
     val queryAction = players.filter(_.id === id).result
     val resultFuture: Future[Seq[PlayerRow]] = db.run(queryAction)

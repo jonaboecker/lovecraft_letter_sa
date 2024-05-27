@@ -1,7 +1,7 @@
 version: '3'
 services:
   lovecraft_letter:
-    image: 98483c283170
+    image: dffdc31b10493474da6b0c44d05307c1ea01a727770b873e7f7d74618f702b17
     ports:
       - 8080:8080
       - 8081:8081
@@ -32,3 +32,12 @@ services:
       POSTGRES_PORT: 5432
     ports:
       - "5432:5432"
+  mongo:
+    image: mongo:7.0.9
+    restart: always
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123

@@ -12,6 +12,7 @@ import de.htwg.lovecraftletter.model.BoardImpl.Board
 import de.htwg.lovecraftletter.model.FileIO.FileIOImpl.FileIOJSON
 import de.htwg.lovecraftletter.model.FileIO.FileIOInterface
 import de.htwg.lovecraftletter.model.*
+import de.htwg.lovecraftletter.persistence.mongo.MongoDBDAO
 import de.htwg.lovecraftletter.persistence.slick.SlickDBDAO
 import de.htwg.lovecraftletter.util.*
 import play.api.libs.json.Json
@@ -32,7 +33,8 @@ case class Controller(
 
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-  val fileIOToSave: SlickDBDAO = SlickDBDAO()
+  //private val fileIOToSave: SlickDBDAO = SlickDBDAO()
+  private val fileIOToSave: MongoDBDAO = MongoDBDAO()
   val fileIO: FileIOJSON = FileIOJSON()
 
   private val route: Route = {
