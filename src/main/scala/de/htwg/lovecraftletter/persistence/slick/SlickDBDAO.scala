@@ -24,7 +24,7 @@ class SlickDBDAO() extends DBDAO {
     )
   }
 
-  override def dropTables(): Unit = {
+  override def dropDatabase(): Unit = {
     val dropAction = DBIO.seq(
       gameStates.schema.drop,
       players.schema.drop
@@ -42,7 +42,7 @@ class SlickDBDAO() extends DBDAO {
 
   override def save(game: GameStateInterface): Unit = {
     openDB()
-    dropTables()
+    dropDatabase()
     createTables()
     // players aus datenbank löschen
     val deleteAction = players.delete

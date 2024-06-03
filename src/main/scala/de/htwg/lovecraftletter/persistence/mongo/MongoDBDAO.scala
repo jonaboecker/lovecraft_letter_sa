@@ -21,7 +21,7 @@ class MongoDBDAO() extends DBDAO {
   private val gameStateCollection: MongoCollection[Document] = db.getCollection("gameState")
 
 
-  override def dropTables(): Unit = {
+  override def dropDatabase(): Unit = {
     Await.result(gameStateCollection.drop().toFuture(), 10.seconds)
   }
 
@@ -30,7 +30,7 @@ class MongoDBDAO() extends DBDAO {
   }
 
   override def save(game: GameStateInterface): Unit = {
-    dropTables()
+    dropDatabase()
     createTables()
 
     val gameStateDocument: Document = Document(
