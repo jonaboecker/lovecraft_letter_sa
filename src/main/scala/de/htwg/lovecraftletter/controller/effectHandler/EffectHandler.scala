@@ -3,7 +3,7 @@ package de.htwg.lovecraftletter.controller.effectHandler
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.server.Directives.{as, complete, entity, path, post}
+import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
 import de.htwg.lovecraftletter.controller.{ControllerRequestActor, controllState}
 import de.htwg.lovecraftletter.model.BoardImpl.Board
@@ -23,7 +23,7 @@ class EffectHandler {
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
   val fileIO: FileIOJSON = FileIOJSON()
-  
+
   private val route: Route = {
     path("init") {
       post {
@@ -42,23 +42,28 @@ class EffectHandler {
           complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
         }
       }
+    } ~
+      path("startUp") {
+      get {
+        complete("OK")
+      }
     }
   }
-  
+
   val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8083).bind(route)
-  
-  def initializeEffectHandler:GameStateInterface = {
+
+  def initializeEffectHandler: GameStateInterface = {
     state.player(state.currentPlayer).discardPile.head match
-        case 1|2|3|5|6|9|10|11|13|14 =>
-            if(contr.getAllowedPlayerForPlayerSelection.isEmpty) {
-                standardOutput("Es kann kein Gegner ausgewaehlt werden")
-                return exit
-            } else {
-                contr.setVarControllerState(controllState.getEffectedPlayer, "")
-                contr.notifyObservers()
-            }
-            state
-        case _ => strategy
+      case 1 | 2 | 3 | 5 | 6 | 9 | 10 | 11 | 13 | 14 =>
+        if (contr.getAllowedPlayerForPlayerSelection.isEmpty) {
+          standardOutput("Es kann kein Gegner ausgewaehlt werden")
+          return exit
+        } else {
+          contr.setVarControllerState(controllState.getEffectedPlayer, "")
+          contr.notifyObservers()
+        }
+        state
+      case _ => strategy
   }
 
   def strategy: GameStateInterface = selection(0) match
@@ -67,7 +72,7 @@ class EffectHandler {
 
   private def strategyNormal: GameStateInterface =
     state.player(state.currentPlayer).discardPile.head match
-      case 1 | 9  => guessTeammateHandcard
+      case 1 | 9 => guessTeammateHandcard
       case 2 | 10 => showTeammateHandcard
       case 3 | 11 => compareTeammateHandcard
       case 4 | 12 =>
@@ -86,7 +91,7 @@ class EffectHandler {
 
   private def strategyMad: GameStateInterface =
     state.player(state.currentPlayer).discardPile.head match
-      case 9  => guessTeammateHandcard
+      case 9 => guessTeammateHandcard
       case 10 => showTeammateHandcard
       case 11 => eliminateMadPlayer
       case 12 =>
@@ -102,11 +107,11 @@ class EffectHandler {
         exit
 
   private def guessTeammateHandcard: GameStateInterface = {
-    if(selection(0) == 2) { //if mad effect
-        if(state.player(selection(1)).hand == 1) {
-            state = contr.eliminatePlayer(selection(1))
-        }
-        return exit
+    if (selection(0) == 2) { //if mad effect
+      if (state.player(selection(1)).hand == 1) {
+        state = contr.eliminatePlayer(selection(1))
+      }
+      return exit
     }
     contr.setVarControllerState(controllState.getInvestigatorGuess, "")
     contr.notifyObservers()
@@ -117,7 +122,7 @@ class EffectHandler {
     val playerHand = state.player(selection(1)).hand
     val isSpecialCard = selection(2) == 0 && playerHand == 16
     val isMatchingCard = selection(2) != 0 && (playerHand == selection(2) || playerHand == selection(2) + 8)
-  
+
     if (isSpecialCard || isMatchingCard) {
       state = contr.eliminatePlayer(selection(1))
     } else {
@@ -130,9 +135,9 @@ class EffectHandler {
     val output = state.player(selection(1)).name + "s Handkarte ist\n" + Board(1, Vector(state.player(selection(1)).hand),
       0).toString
     standardOutput(output)
-    if(selection(0) == 2) { //madcard played
-        standardOutput("Du darfst nochmal ziehen")
-        state = contr.playAnotherCard()
+    if (selection(0) == 2) { //madcard played
+      standardOutput("Du darfst nochmal ziehen")
+      state = contr.playAnotherCard()
     }
     exit
   }
@@ -152,35 +157,35 @@ class EffectHandler {
 
   private def discardAndDraw: GameStateInterface = {
     val selectedPlayer = state.player(selection(1))
-  
+
     // Handkarte ablegen
     state = state.updatePlayer(state.player.updated(selection(1), selectedPlayer.discardCard(selectedPlayer.hand)))
-  
+
     // Neue Karte ziehen
     val drawPile = new DrawPile
     val (tempDrawPile: List[Int], tempCard: Int) = drawPile.drawAndGet(state.drawPile)
-  
+
     // Draw pile aktualisieren und gezogene Karte als Handkarte setzen
     state = state.updateDrawPile(tempDrawPile)
     state = state.updatePlayer(state.player.updated(selection(1), selectedPlayer.changeHand(tempCard)))
-  
+
     // Zustand synchronisieren
     contr.setVarState(state)
-  
+
     // Überprüfen, ob der Spieler ausscheiden muss
     state = checkPlayerElimination(selectedPlayer)
-  
+
     exit
   }
-  
+
   private def checkPlayerElimination(player: PlayerInterface): GameStateInterface = {
     val discardedCard = player.discardPile.head
-  
+
     if (discardedCard == 8) {
       standardOutput("Necronomicon abgelegt")
       return contr.eliminatePlayer(selection(1))
     }
-  
+
     if (discardedCard == 16) {
       standardOutput("Cthulhu abgelegt")
       if (player.madCheck() >= 2) {
@@ -189,20 +194,20 @@ class EffectHandler {
         return contr.eliminatePlayer(selection(1))
       }
     }
-  
+
     state
   }
 
   private def swapHandcards: GameStateInterface = {
-    val tempCard:Int = state.player(state.currentPlayer).hand
+    val tempCard: Int = state.player(state.currentPlayer).hand
     state = state.updatePlayer(state.player.updated(state.currentPlayer, state.player(state.currentPlayer).changeHand(state.player(selection(1)).hand)))
     state = state.updatePlayer(state.player.updated(selection(1), state.player(selection(1)).changeHand(tempCard)))
     exit
   }
 
   private def eliminateMadPlayer: GameStateInterface = {
-    if(state.player(selection(1)).madCheck() == 0) {
-        state = contr.eliminatePlayer(selection(1))
+    if (state.player(selection(1)).madCheck() == 0) {
+      state = contr.eliminatePlayer(selection(1))
     }
     exit
   }
@@ -217,26 +222,26 @@ class EffectHandler {
   }
 
   private def playniegrhaasdfsaj: GameStateInterface = {
-    val cards = for(p <- state.player) yield p.hand
-    val cardsVec:Vector[Int] = Random.shuffle(cards.toVector)
-    for(i <- state.player.indices) {
-        state = state.updatePlayer(state.player.updated(i, state.player(i).changeHand(cardsVec(i))))
+    val cards = for (p <- state.player) yield p.hand
+    val cardsVec: Vector[Int] = Random.shuffle(cards.toVector)
+    for (i <- state.player.indices) {
+      state = state.updatePlayer(state.player.updated(i, state.player(i).changeHand(cardsVec(i))))
     }
     exit
   }
 
   private def playTrapezoeder: GameStateInterface = {
     state.player(state.currentPlayer).hand match
-        case 5|6|7|8|13|14|16 => state = contr.playerWins(state.currentPlayer)
-        case _ =>
+      case 5 | 6 | 7 | 8 | 13 | 14 | 16 => state = contr.playerWins(state.currentPlayer)
+      case _ =>
     exit
   }
 
   private def playCthulu: GameStateInterface = {
-    if(state.player(state.currentPlayer).madCheck() > 2) {
-        state = contr.playerWins(state.currentPlayer)
+    if (state.player(state.currentPlayer).madCheck() > 2) {
+      state = contr.playerWins(state.currentPlayer)
     } else {
-       state = contr.eliminatePlayer(state.currentPlayer)
+      state = contr.eliminatePlayer(state.currentPlayer)
     }
     exit
   }
@@ -247,7 +252,7 @@ class EffectHandler {
     contr.resetControllerState()
   }
 
-  def exit:GameStateInterface = {
+  def exit: GameStateInterface = {
     contr.setVarState(state) //sync gamestate
     state = contr.nextPlayer()
     contr.resetControllerState()

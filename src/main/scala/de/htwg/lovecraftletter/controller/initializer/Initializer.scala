@@ -58,6 +58,12 @@ case class Initializer () extends InitializerInterface {
           complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Game initialized"))
         }
       }
+    } ~
+    path("startUp") {
+      get {
+          println("ini\nini\nini\nini\nini\nini\nini\nini\nini\n")
+          complete("OK")
+      }
     }
   }
 

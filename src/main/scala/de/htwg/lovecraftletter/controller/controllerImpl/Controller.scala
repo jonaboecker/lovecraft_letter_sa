@@ -36,6 +36,10 @@ case class Controller(
   //private val fileIOToSave: SlickDBDAO = SlickDBDAO()
   private val fileIOToSave: MongoDBDAO = MongoDBDAO()
   val fileIO: FileIOJSON = FileIOJSON()
+  private val request1 = HttpRequest(uri = "http://host.docker.internal:8082/startUp")
+  private val request2 = HttpRequest(uri = "http://host.docker.internal:8083/startUp")
+  Http().singleRequest(request1)
+  Http().singleRequest(request2)
 
   private val route: Route = {
     path("notifyObservers") {

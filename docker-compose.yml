@@ -1,7 +1,7 @@
 version: '3'
 services:
   lovecraft_letter:
-    image: dffdc31b10493474da6b0c44d05307c1ea01a727770b873e7f7d74618f702b17
+    image: lovecraftletter_game_controller
     ports:
       - 8080:8080
       - 8081:8081
