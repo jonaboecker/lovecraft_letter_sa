@@ -2,6 +2,7 @@ package de.htwg.lovecraftletter
 package controller
 package controllerImpl
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
@@ -19,6 +20,15 @@ import play.api.libs.json.Json
 
 import scala.concurrent.duration.*
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import akka.actor.ActorSystem
+import akka.stream.scaladsl.*
+import akka.stream.{ActorMaterializer, OverflowStrategy}
+import akka.stream.scaladsl.Sink
+
+import scala.concurrent.{Await, Future, TimeoutException}
+import scala.concurrent.duration.*
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.*
 
 
 case class Controller(
@@ -29,7 +39,7 @@ case class Controller(
   private val undoManager = new UndoManager[GameStateInterface]
   private var allowedInput: Vector[String] = Vector("1", "2")
   private var effectHandlerSelection: Vector[Int] = Vector(-999)
-  
+
 
   implicit val system: ActorSystem = ActorSystem("ActorSystemController")
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
@@ -44,79 +54,79 @@ case class Controller(
         complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Notified Observers"))
       }
     } ~
-    path("drawCard") {
-      get {
-        drawCard
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Card drawn"))
-      }
-    } ~
-    path("setVarGameState") {
-      post {
-        entity(as[String]) { input =>
-          val newState = fileIO.jsonToGameState(input)
-          setVarState(newState)
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "State updated"))
+      path("drawCard") {
+        get {
+          drawCard
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Card drawn"))
         }
-      }
-    } ~
-    path("setVarControllerState") {
-      post {
-        entity(as[String]) { input =>
-          val json = Json.parse(input)
-          val cs = (json \ "cs").as[Int]
-          val s = (json \ "s").as[String]
-          setVarControllerState(controllState.fromOrdinal(cs), s)
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "ControllerState updated"))
+      } ~
+      path("setVarGameState") {
+        post {
+          entity(as[String]) { input =>
+            val newState = fileIO.jsonToGameState(input)
+            setVarState(newState)
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "State updated"))
+          }
         }
-      }
-    } ~
-    path("eliminatePlayer") {
-      post {
-        entity(as[String]) { input =>
-          val json = Json.parse(input)
-          val player = (json \ "player").as[String].toInt
-          eliminatePlayer(player)
+      } ~
+      path("setVarControllerState") {
+        post {
+          entity(as[String]) { input =>
+            val json = Json.parse(input)
+            val cs = (json \ "cs").as[Int]
+            val s = (json \ "s").as[String]
+            setVarControllerState(controllState.fromOrdinal(cs), s)
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "ControllerState updated"))
+          }
+        }
+      } ~
+      path("eliminatePlayer") {
+        post {
+          entity(as[String]) { input =>
+            val json = Json.parse(input)
+            val player = (json \ "player").as[String].toInt
+            eliminatePlayer(player)
+            val stateJsonString: String = fileIO.gameStateToJSON(state)
+            complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+          }
+        }
+      } ~
+      path("playAnotherCard") {
+        get {
+          playAnotherCard
           val stateJsonString: String = fileIO.gameStateToJSON(state)
           complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
         }
-      }
-    } ~
-    path("playAnotherCard") {
-      get {
-        playAnotherCard
-        val stateJsonString: String = fileIO.gameStateToJSON(state)
-        complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
-      }
-    } ~
-    path("playerWins") {
-      post {
-        entity(as[String]) { input =>
-          val json = Json.parse(input)
-          val player = (json \ "player").as[String].toInt
-          playerWins(player)
+      } ~
+      path("playerWins") {
+        post {
+          entity(as[String]) { input =>
+            val json = Json.parse(input)
+            val player = (json \ "player").as[String].toInt
+            playerWins(player)
+            val stateJsonString: String = fileIO.gameStateToJSON(state)
+            complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
+          }
+        }
+      } ~
+      path("nextPlayer") {
+        get {
+          nextPlayer
           val stateJsonString: String = fileIO.gameStateToJSON(state)
           complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
         }
+      } ~
+      path("getAllowedPlayerForPlayerSelection") {
+        get {
+          val allowedPlayers = getAllowedPlayerForPlayerSelection
+          complete(HttpEntity(ContentTypes.`application/json`, Json.toJson(allowedPlayers).toString()))
+        }
       }
-    } ~
-    path("nextPlayer") {
-      get {
-        nextPlayer
-        val stateJsonString: String = fileIO.gameStateToJSON(state)
-        complete(HttpEntity(ContentTypes.`application/json`, stateJsonString))
-      }
-    } ~
-    path("getAllowedPlayerForPlayerSelection") {
-      get {
-        val allowedPlayers = getAllowedPlayerForPlayerSelection
-        complete(HttpEntity(ContentTypes.`application/json`, Json.toJson(allowedPlayers).toString()))
-      }
-    }
   }
 
 
   val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt("0.0.0.0", 8081).bind(route)
-  
+
 
   override def setVarUserInput(input: Int): Unit = userInput = input
 
@@ -168,7 +178,7 @@ case class Controller(
     val response = Await.result(responseFuture, 10.seconds)
     // ("Response: " + response)
   }
-  
+
   override def nextPlayer: GameStateInterface = {
     state = state.nextPlayer
     while (!state.player(state.currentPlayer).inGame) {
@@ -193,7 +203,7 @@ case class Controller(
     val handCardIsSpecial = currentPlayer.hand == 7 || currentPlayer.hand == 15
     val oneCardIsSpecial = currentCardIsSpecial || handCardIsSpecial
     val bothCardsAreSpecial = currentCardIsSpecial && handCardIsSpecial
-  
+
     if (oneCardIsSpecial && !bothCardsAreSpecial) {
       val cardToPlay = if (currentPlayer.madCheck() > 0 && (state.currentCard == 15 || currentPlayer.hand == 15)) {
         playedCard
@@ -282,9 +292,10 @@ case class Controller(
     effectHandlerSelection = Vector(effectHandlerSelection(0), effectHandlerSelection(1), guess)
     executeEffectHandler("guessTeammateHandcard2")
   }
+
   private def executeEffectHandler(effectHandlerMethod: String): GameStateInterface = {
     resetControllerState()
-    
+
     val stateJson = fileIO.gameStateToJSON(state)
     val jsString = Json.obj(
       "state" -> stateJson,
@@ -298,7 +309,7 @@ case class Controller(
     )
     val responseFuture = Http().singleRequest(request)
 
-    
+
     val response = Await.result(responseFuture, 10.seconds)
     // println("Response: " + response)
     val responseEntity = Await.result(response.entity.toStrict(2.seconds), 2.seconds)
@@ -329,22 +340,36 @@ case class Controller(
   }
 
   override def getAllowedPlayerForPlayerSelection: Vector[String] = {
-    val res =
-    rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
+    //val res = rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
+    val res = streamGetAllowedPlayerForPlayerSelection(state.player, Vector[String]())
     res
   }
 
+  private def streamGetAllowedPlayerForPlayerSelection(playerList: List[PlayerInterface], allowedPlayers: Vector[String]): Vector[String] = {
+    val source = Source(state.player.zipWithIndex)
+    val flow = Flow[(PlayerInterface, Int)].filter { case (player, index) =>
+      player.inGame && player != state.player(state.currentPlayer) &&
+        state.player(index).discardPile.head != 4 &&
+        state.player(index).discardPile.head != 12
+    }.map { case (player, index) => (player, index.+(1)) }.map { case (player, index) => index.toString }
+    val sink = Sink.seq[String]
+    val stream = source.via(flow).toMat(sink)(Keep.right)
+    val futureResult = stream.run()
+    val result = Await.result(futureResult, 10.seconds)
+    result.toVector
+  }
+
   override def rekGetAllowedPlayerForPlayerSelection(
-    counter: Int,
-    playerList: List[PlayerInterface],
-    allowedPlayers: Vector[String]
-  ): Vector[String] = {
+                                                      counter: Int,
+                                                      playerList: List[PlayerInterface],
+                                                      allowedPlayers: Vector[String]
+                                                    ): Vector[String] = {
     playerList match {
       case Nil => allowedPlayers
       case head :: tail =>
         val isPlayerAllowed = head.inGame && head != state.player(state.currentPlayer) &&
-                              state.player(counter - 1).discardPile.head != 4 &&
-                              state.player(counter - 1).discardPile.head != 12
+          state.player(counter - 1).discardPile.head != 4 &&
+          state.player(counter - 1).discardPile.head != 12
         val updatedAllowedPlayers = if (isPlayerAllowed) allowedPlayers.appended(counter.toString) else allowedPlayers
         rekGetAllowedPlayerForPlayerSelection(counter + 1, tail, updatedAllowedPlayers)
     }
@@ -482,4 +507,6 @@ case class Controller(
     val response = Await.result(responseFuture, 10.seconds)
     // ("Response: " + response)
   }
+
+
 }

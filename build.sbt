@@ -29,6 +29,8 @@ lazy val dependencies = Seq(
   libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
   libraryDependencies += "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
   libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.6",
+  libraryDependencies += "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
   libraryDependencies ++= Seq(
     "com.typesafe.slick" %% "slick" % "3.5.0",
     "org.slf4j" % "slf4j-nop" % "2.0.13",
