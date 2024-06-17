@@ -38,6 +38,10 @@ lazy val dependencies = Seq(
     "org.mongodb.scala" %% "mongo-scala-driver" % "4.8.0" cross CrossVersion.for3Use2_13,
     "org.mongodb" % "mongodb-driver-reactivestreams" % "5.1.0",
   ),
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2",
+    "org.apache.kafka" % "kafka-clients" % "3.7.0"
+  ),
 )
 
 lazy val controller = (project in file("controller"))

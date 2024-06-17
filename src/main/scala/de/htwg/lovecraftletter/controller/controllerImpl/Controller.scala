@@ -30,6 +30,13 @@ import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.*
 
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import java.util.Properties
+import scala.collection.JavaConverters._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 case class Controller(
                        var state: GameStateInterface,
@@ -339,6 +346,102 @@ case class Controller(
     state
   }
 
+
+
+  // Kafka Producer erstellen
+  val props = new Properties()
+  props.put("bootstrap.servers", "http://host.docker.internal:9092")
+  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  private val producer = new KafkaProducer[String, String](props)
+
+  def getAllowedPlayerForPlayerSelectionKafka: Vector[String] = {
+    val future = Future {
+      streamGetAllowedPlayerForPlayerSelection(state.player, Vector[String]())
+    }
+    // Nachricht an Kafka senden
+    val record = new ProducerRecord[String, String]("allowedPlayersTopic", "getAllowedPlayers", "")
+    producer.send(record)
+    producer.close()
+
+    // Kafka Consumer erstellen
+    val props2 = new Properties()
+    props2.put("bootstrap.servers", "http://host.docker.internal:9092")
+    props2.put("group.id", "test")
+    props2.put("enable.auto.commit", "true")
+    props2.put("auto.commit.interval.ms", "1000")
+    props2.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props2.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    val consumer = new KafkaConsumer[String, String](props2)
+
+    // Auf Nachricht von Kafka warten
+    consumer.subscribe(java.util.Collections.singletonList("allowedPlayersTopic"))
+
+    val records = consumer.poll(5000).asScala
+    records.map(record => record.value()).toVector
+  }
+
+  private def streamGetAllowedPlayerForPlayerSelectionKafka(playerList: List[PlayerInterface], allowedPlayers: Vector[String]): Vector[String] = {
+    // Kafka Consumer erstellen
+    val props = new Properties()
+    props.put("bootstrap.servers", "http://host.docker.internal:9092")
+    props.put("group.id", "test")
+    props.put("enable.auto.commit", "true")
+    props.put("auto.commit.interval.ms", "1000")
+    props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+    val consumer = new KafkaConsumer[String, String](props)
+
+    // Auf Nachricht von Kafka warten
+    consumer.subscribe(java.util.Collections.singletonList("allowedPlayersTopic"))
+    val records = consumer.poll(30000).asScala
+    for (record <- records) {
+      if (record.key() == "getAllowedPlayers") {
+        // Logik zur Generierung der erlaubten Spieler
+        val source = Source(state.player.zipWithIndex)
+        val flow = Flow[(PlayerInterface, Int)].filter { case (player, index) =>
+          player.inGame && player != state.player(state.currentPlayer) &&
+            state.player(index).discardPile.head != 4 &&
+            state.player(index).discardPile.head != 12
+        }.map { case (player, index) => (player, index.+(1)) }.map { case (player, index) => index.toString }
+        val sink = Sink.seq[String]
+        val stream = source.via(flow).toMat(sink)(Keep.right)
+        val futureResult = stream.run()
+        val result = Await.result(futureResult, 10.seconds)
+        val allowedPlayers = result.toVector
+
+        // Nachricht an Kafka senden
+        val props2 = new Properties()
+        props2.put("bootstrap.servers", "http://host.docker.internal:9092")
+        props2.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+        props2.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+        val producer = new KafkaProducer[String, String](props2)
+        val record = new ProducerRecord[String, String]("allowedPlayersTopic", "allowedPlayers", allowedPlayers.mkString(","))
+        producer.send(record)
+        producer.close()
+      }
+    }
+
+    consumer.close()
+    Vector()
+  }
+
+  override def rekGetAllowedPlayerForPlayerSelection(
+                                                      counter: Int,
+                                                      playerList: List[PlayerInterface],
+                                                      allowedPlayers: Vector[String]
+                                                    ): Vector[String] = {
+    playerList match {
+      case Nil => allowedPlayers
+      case head :: tail =>
+        val isPlayerAllowed = head.inGame && head != state.player(state.currentPlayer) &&
+          state.player(counter - 1).discardPile.head != 4 &&
+          state.player(counter - 1).discardPile.head != 12
+        val updatedAllowedPlayers = if (isPlayerAllowed) allowedPlayers.appended(counter.toString) else allowedPlayers
+        rekGetAllowedPlayerForPlayerSelection(counter + 1, tail, updatedAllowedPlayers)
+    }
+  }
+
   override def getAllowedPlayerForPlayerSelection: Vector[String] = {
     //val res = rekGetAllowedPlayerForPlayerSelection(1, state.player, Vector[String]())
     val res = streamGetAllowedPlayerForPlayerSelection(state.player, Vector[String]())
@@ -357,22 +460,6 @@ case class Controller(
     val futureResult = stream.run()
     val result = Await.result(futureResult, 10.seconds)
     result.toVector
-  }
-
-  override def rekGetAllowedPlayerForPlayerSelection(
-                                                      counter: Int,
-                                                      playerList: List[PlayerInterface],
-                                                      allowedPlayers: Vector[String]
-                                                    ): Vector[String] = {
-    playerList match {
-      case Nil => allowedPlayers
-      case head :: tail =>
-        val isPlayerAllowed = head.inGame && head != state.player(state.currentPlayer) &&
-          state.player(counter - 1).discardPile.head != 4 &&
-          state.player(counter - 1).discardPile.head != 12
-        val updatedAllowedPlayers = if (isPlayerAllowed) allowedPlayers.appended(counter.toString) else allowedPlayers
-        rekGetAllowedPlayerForPlayerSelection(counter + 1, tail, updatedAllowedPlayers)
-    }
   }
 
   object MadHandler {
